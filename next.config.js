@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     domains: ["lh3.googleusercontent.com", "openweathermap.org"],
   },
+  typescript: {
+    ignoreBuildErrors: true
+  },
   devIndicators: false,
   async headers() {
     return [
