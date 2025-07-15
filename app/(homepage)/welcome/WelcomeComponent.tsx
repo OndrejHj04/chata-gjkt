@@ -2,8 +2,11 @@ import { Button, Divider, Paper, Typography } from "@mui/material";
 import React from "react";
 import LoginForm from "./LoginForm";
 import ResetPassword from "./ResetPassword";
+import { getNewRoles } from "@/lib/api";
 
-export default function WelcomeComponent() {
+export default async function WelcomeComponent() {
+  const roles = await getNewRoles()
+  console.log(roles)
 
   return (
     <div className="flex flex-col gap-2">
