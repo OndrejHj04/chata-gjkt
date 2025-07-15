@@ -13,6 +13,12 @@ const checkUserSession = async () => {
   return user?.user.email === "host@nemazat.cz";
 };
 
+export const getNewRoles = async () => {
+  const req = await fetch(`${process.env.BE_URL}/api/roles`)
+  const data = await req.json()
+  return data
+}
+
 export const getUserList = async ({
   page,
   search,
