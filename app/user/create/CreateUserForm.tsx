@@ -1,9 +1,8 @@
 "use client";
-import { createUserAccount } from "@/lib/api";
+import { createNewUser } from "@/lib/api";
 import { Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { withToast } from "@/utils/toast/withToast";
 
 const roles = [
   { id: 1, label: "Admin" },
@@ -18,20 +17,10 @@ export default function CreateUserForm({ role }: { role: any }) {
     formState: { isValid, isDirty },
     reset
   } = useForm();
-  const { refresh, push } = useRouter()
 
   const onSubmit = async (data: any) => {
+    withToast(createNewUser(JSON.stringify(data)), {message: "user.create"})
     reset(data)
-    createUserAccount({
-      ...data,
-    }).then(({ success, msg }) => {
-      if (success) {
-        toast.success("Uživatel úspěšně vytvořen");
-        push("/user/list")
-        refresh()
-      }
-      else toast.error(msg || "Něco se nepovedlo");
-    });
   };
 
   return (
