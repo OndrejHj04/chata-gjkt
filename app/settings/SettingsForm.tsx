@@ -1,9 +1,9 @@
 "use client";
 import { updateSettings } from "@/lib/api";
+import { withToast } from "@/utils/toast/withToast";
 import { Button, InputAdornment, TextField, Typography } from "@mui/material";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 
 export default function SettingsForm({ data }: any) {
   const {
@@ -39,10 +39,7 @@ export default function SettingsForm({ data }: any) {
   });
 
   const onSubmit = (data: any) => {
-    updateSettings(data).then(({ success, msg }) => {
-      if (success) toast.success(`Nastavení úspěšně uloženo`);
-      else toast.error(msg || "Něco se pokazilo");
-    });
+    withToast(updateSettings(data), {message: "settings.update"})
     reset(data);
   };
 

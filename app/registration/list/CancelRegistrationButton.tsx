@@ -1,10 +1,10 @@
 "use client"
 
 import { cancelRegistration } from "@/lib/api"
+import { withToast } from "@/utils/toast/withToast"
 import { Button, CircularProgress } from "@mui/material"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { toast } from "react-toastify"
 
 export default function CancelRegistrationButton({ formId }: { formId: any }) {
   const [loading, setLoading] = useState(false)
@@ -12,11 +12,8 @@ export default function CancelRegistrationButton({ formId }: { formId: any }) {
 
   const handleCancel = () => {
     setLoading(true)
-    cancelRegistration({ formId }).then(({ success }) => {
-      if (success) toast.success("Registrace na rezervaci úspěšně zastavena")
-      else toast.error("Něco se nepovedlo")
-      refresh()
-    })
+    withToast(cancelRegistration({ formId }), {message: "reservation.registration.cancel"})
+    refresh()
   }
 
   return (

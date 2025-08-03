@@ -28,8 +28,8 @@ import {
   resendRegistraionMail,
 } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import ForwardToInboxIcon from "@mui/icons-material/ForwardToInbox";
+import { withToast } from "@/utils/toast/withToast";
 
 export default function UserListItem({
   user,
@@ -46,7 +46,12 @@ export default function UserListItem({
 }) {
   const [open, setOpen] = useState(false);
   const { refresh } = useRouter();
-  const [selectedUser, setSelectedUser] = useState<{ mouseX: number, mouseY: number, id: number, role: number } | null>(null)
+  const [selectedUser, setSelectedUser] = useState<{
+    mouseX: number;
+    mouseY: number;
+    id: number;
+    role: number;
+  } | null>(null);
 
   const handleOpenSubRow = (e: any) => {
     e.stopPropagation();
@@ -72,47 +77,40 @@ export default function UserListItem({
   };
 
   const handleAddToGroup = (groupId: any) => {
-    userAddGroups({ user: selectedUser?.id, group: groupId }).then(
-      ({ success }) => {
-        if (success) toast.success("Uživatel úspěšně přidán do skupiny");
-        else toast.error("Něco se nepovedlo");
-        refresh();
-      }
-    );
-    setSelectedUser(null);
-  };
-
-  const handleAddToReservation = (reservationId: any) => {
-    userAddReservations({
-      user: selectedUser?.id,
-      reservation: reservationId,
-    }).then(({ success }) => {
-      if (success) toast.success("Uživatel úspěšně přidán do rezervace");
-      else toast.error("Něco se nepovedlo");
-      refresh();
+    withToast(userAddGroups({ user: selectedUser?.id, group: groupId }), {
+      message: "group.user.add",
     });
     setSelectedUser(null);
   };
 
+  const handleAddToReservation = (reservationId: any) => {
+    withToast(
+      userAddReservations({
+        user: selectedUser?.id,
+        reservation: reservationId,
+      }),
+      { message: "reservation.user.add", onSuccess: () => refresh() }
+    );
+    setSelectedUser(null);
+  };
+
   const handleUserSetPublic = () => {
-    setUserAsOutside({ userId: selectedUser?.id }).then(({ success }) => {
-      if (success) toast.success("Uživatel nastaven jako veřejnost");
-      else toast.error("Něco se nepovedlo");
-      refresh();
+    withToast(setUserAsOutside({ userId: selectedUser?.id }), {
+      message: "user.setAsOutside",
+      onSuccess: () => refresh(),
     });
     setSelectedUser(null);
   };
 
   const handleDeleteUser = (e: any) => {
     e.stopPropagation();
-    deleteUserWithChildren({
-      userId: selectedUser?.id,
-      isParent: selectedUser?.id === user.id,
-    }).then(({ success }) => {
-      if (success) toast.success("Uživatel byl odstraněn");
-      else toast.error("Něco se nepovedlo");
-      refresh();
-    });
+    withToast(
+      deleteUserWithChildren({
+        userId: selectedUser?.id,
+        isParent: selectedUser?.id === user.id,
+      }),
+      { message: "user.delete", onSuccess: () => refresh() }
+    );
     setSelectedUser(null);
   };
 
@@ -123,13 +121,12 @@ export default function UserListItem({
 
   const handleResendEmail = (e: any, user: any) => {
     e.stopPropagation();
-    resendRegistraionMail({
-      user,
-    }).then(({ success }) => {
-      if (success) toast.success("Registrační email byl znovu odeslán");
-      else toast.error("Něco se nepovedlo");
-      refresh();
-    });
+    withToast(
+      resendRegistraionMail({
+        user,
+      }),
+      { message: "user.resendEmail", onSuccess: () => refresh() }
+    );
   };
 
   return (

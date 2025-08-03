@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from "@mui/material";
-import { toast } from "react-toastify";
 import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createNewReservation } from "@/lib/api";
 import { ReservationContext } from "./layout";
+import { withToast } from "@/utils/toast/withToast";
 
 export default function CreateButton() {
   const { createReservation, setCreateReservation } = useContext(ReservationContext);
@@ -28,10 +28,7 @@ export default function CreateButton() {
   };
   const handleSubmit = () => {
     setLoading(true);
-    createNewReservation({ ...createReservation }).then(({ success }) => {
-      if (success) toast.success("Rezervace úspěšně vytvořena");
-      else toast.error("Něco se nepovedlo");
-    });
+    withToast(createNewReservation({ ...createReservation }), {message: "reservation.create"})
     push("/reservation/list")
     refresh()
     setDefault()

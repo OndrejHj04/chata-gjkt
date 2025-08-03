@@ -1,23 +1,20 @@
 "use client";
-import { Accordion, AccordionDetails, AccordionSummary, Button, FormControlLabel, ListItem, ListItemText, Paper, Switch, Typography } from "@mui/material";
+import { Button, FormControlLabel, ListItem, ListItemText, Paper, Switch, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { mailingEventsEdit } from "@/lib/api";
 import Link from "next/link";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { withToast } from "@/utils/toast/withToast";
 
 export default function MailingEvents({ events }: { events: any }) {
   const defaultValues = events.reduce((obj: any, item: any) => {
     obj[`Checkbox ${item.id}`] = Boolean(item.active)
     return obj
   }, {})
-  const { reset, control, watch, register, handleSubmit, formState: { isDirty } } = useForm({ defaultValues });
+  const { reset, control, register, handleSubmit, formState: { isDirty } } = useForm({ defaultValues });
 
   const onSubmit = (data: any) => {
-    mailingEventsEdit({ data }).then(() => {
-      toast.success("Události úspěšně upraveny");
-      reset(data);
-    });
+    withToast(mailingEventsEdit({ data }), {message: "mailing.events.edit"})
+    reset(data);
   };
 
   return (

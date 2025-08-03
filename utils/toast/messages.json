@@ -12,7 +12,8 @@
     },
     "events": {
       "edit": {
-        "success": "Události úspěšně upraveny"
+        "success": "Události úspěšně upraveny",
+        "error": ""
       }
     }
   },
@@ -37,6 +38,7 @@
       }
     },
     "login": {
+      "success": "",
       "error": "Přihlášení se nepodařilo"
     }
   },
@@ -86,7 +88,8 @@
       },
       "formLink": {
         "copy": {
-          "success": "Odkaz na formulář máte zkopírovaný (použijte ho ctrl-v)"
+          "success": "Odkaz na formulář máte zkopírovaný (použijte ho ctrl-v)",
+          "error": ""
         }
       },
       "cancel": {
@@ -159,7 +162,7 @@
       "error": "Něco se nepovedlo"
     },
     "import": {
-      "success": "{count} uživatelů úspěšně importováno",
+      "success": "X uživatelů úspěšně importováno",
       "error": "Něco se nepovedlo"
     },
     "family": {

@@ -7,8 +7,8 @@ import { Controller, useForm } from "react-hook-form"
 import * as isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { useEffect, useState } from "react"
 import { createFamilyAccount } from "@/lib/api"
-import { toast } from "react-toastify"
 import { useRouter } from "next/navigation"
+import { withToast } from "@/utils/toast/withToast"
 dayjs.extend(isSameOrBefore as any);
 
 export default function CreateFamilyAccountForm({ user }: { user: any }) {
@@ -31,12 +31,10 @@ export default function CreateFamilyAccountForm({ user }: { user: any }) {
 
   const onSubmit = (data: any) => {
     reset(data)
-    createFamilyAccount({ ...data, email: user.email }).then(({ success, msg }) => {
-      if (success) toast.success("Účet úspěšně vytvořen")
-      else toast.error(msg || "Něco se nepovedlo")
+    withToast(createFamilyAccount({ ...data, email: user.email }), {message: "user.family.create", onSuccess: () => {
       push("/user/list")
       refresh()
-    })
+    }})
   }
 
   const handleAutoAdress = (_: any, value: any) => {

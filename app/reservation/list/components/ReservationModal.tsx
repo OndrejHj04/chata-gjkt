@@ -11,9 +11,9 @@ import {
 } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { reservationUpdateStatus } from "@/lib/api";
 import { dayjsExtended } from "@/lib/dayjsExtended";
+import { withToast } from "@/utils/toast/withToast";
 
 const style = {
   position: "absolute" as "absolute",
@@ -46,10 +46,7 @@ export default function ReservationModal({ reservation }: { reservation: any }) 
   const dirtyStatus = Boolean(dirtyFields.status)
 
   const onSubmit = (data: any) => {
-    reservationUpdateStatus({ id: reservation.id, newStatus: data.status, rejectReason: data.reject_reason, successLink: data.success_link }).then(({ success }) => {
-      if (success) toast.success("Status rezervace úspěšně upraven!")
-      else toast.error("Něco se nepovedlo")
-    })
+    withToast(reservationUpdateStatus({ id: reservation.id, newStatus: data.status, rejectReason: data.reject_reason, successLink: data.success_link }), {message: "reservation.status.update"})
     nextSearchParams.delete("reservation_id")
     replace(`/reservation/list?${nextSearchParams}`)
   }

@@ -2,16 +2,15 @@
 
 import { editUserDetail } from "@/lib/api"
 import AvatarWrapper from "@/ui-components/AvatarWrapper"
-import { ArrowCircleRightRounded } from "@mui/icons-material"
+import { withToast } from "@/utils/toast/withToast"
 import { Alert, Button, CardHeader, List, ListItem, ListItemText, MenuItem, TextField, Typography } from "@mui/material"
 import dayjs from "dayjs"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { toast } from "react-toastify"
 
 export default function UserDetailForm({ userDetail }: { userDetail: any }) {
 
-  const { watch, handleSubmit, register, reset, formState: { isValid, isDirty } } = useForm({
+  const { handleSubmit, register, reset, formState: { isValid, isDirty } } = useForm({
     defaultValues: {
       ID_code: userDetail.ID_code,
       adress: userDetail.adress,
@@ -20,11 +19,9 @@ export default function UserDetailForm({ userDetail }: { userDetail: any }) {
   })
 
   const onSubmit = (data: any) => {
-    editUserDetail({ userId: userDetail.id, ID_code: data.ID_code, adress: data.adress, organization: data.organization }).then(({ success }) => {
-      if (success) toast.success("Detail uživatele úspěšně upraven")
-      else toast.error("Něco se nepovedlo")
+    withToast(editUserDetail({ userId: userDetail.id, ID_code: data.ID_code, adress: data.adress, organization: data.organization }),  {message: "user.detail.update" , onSuccess: () => {
       reset(data)
-    })
+    }})
   }
 
   return (

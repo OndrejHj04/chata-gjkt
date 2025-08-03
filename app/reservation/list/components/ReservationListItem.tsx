@@ -14,9 +14,9 @@ import ReservationModal from "./ReservationModal";
 import { Cancel, CheckCircle } from "@mui/icons-material";
 import React, { useState } from "react";
 import { reservationDelete } from "@/lib/api";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { dayjsExtended } from "@/lib/dayjsExtended";
+import { withToast } from "@/utils/toast/withToast";
 
 export default function ReservationListItem({
   reservation,
@@ -35,10 +35,7 @@ export default function ReservationListItem({
   const [selectedReservation, setSelectedReservation] = useState<{ mouseX: number, mouseY: number, id: number } | null>(null)
 
   const handleDeleteReservations = () => {
-    reservationDelete({ reservationId: reservation.id }).then((res) => {
-      if (res.success) toast.success("Rezervace úspěšně odstraněny");
-      else toast.error("Něco se pokazilo");
-    });
+    withToast(reservationDelete({ reservationId: reservation.id }), {message: "reservation.delete"})
     refresh();
   };
 

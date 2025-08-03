@@ -860,7 +860,7 @@ export const mailingEventsEdit = async ({ data }: { data: any }) => {
     values: [],
   })) as any;
 
-  return { succes: affectedRows === array.length };
+  return { success: affectedRows === array.length };
 };
 
 export const getMailingEventsList = async () => {

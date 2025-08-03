@@ -1,11 +1,11 @@
 "use client"
 
 import { createOutsideUser } from "@/lib/api"
+import { withToast } from "@/utils/toast/withToast"
 import { Button, Paper, TextField, Typography } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
-import { toast } from "react-toastify"
 
 export default function ReservationRegistrationCustom({ id }: { id: any }) {
   const { register, control, handleSubmit, formState: { isValid } } = useForm()
@@ -15,12 +15,8 @@ export default function ReservationRegistrationCustom({ id }: { id: any }) {
     const filteredData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => value !== "")
     );
-    createOutsideUser({ ...filteredData, reservationId: id }).then(({ success, message }) => {
-      if (success) toast.success("Uživatel úspěšně vytvořen a přidán do rezervace.")
-      else toast.error(message || "Něco se nepovedlo")
-      refresh()
-    })
-
+    withToast(createOutsideUser({ ...filteredData, reservationId: id }), {message: "reservation.registration.outsideUser.create"})
+    refresh()
   }
 
   return (

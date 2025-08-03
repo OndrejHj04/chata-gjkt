@@ -1,18 +1,15 @@
 "use client"
 
 import { reservationDeleteUser } from "@/lib/api"
+import { withToast } from "@/utils/toast/withToast"
 import { Button } from "@mui/material"
 import { useRouter } from "next/navigation"
-import { toast } from "react-toastify"
 
 export default function ReservationUsersRemoveButton({ reservationId, userId }: { reservationId: any, userId: any }) {
   const { refresh } = useRouter()
   const handleRemoveUserFromReservation = () => {
-    reservationDeleteUser({ userId, reservationId }).then(({ success }) => {
-      if (success) toast.success("Uživatel úspěšně odstraněn z rezervace")
-      else toast.error("Něco se nepovedlo")
-      refresh()
-    })
+    withToast(reservationDeleteUser({ userId, reservationId }), {message: "reservation.user.remove"})
+    refresh()
   }
 
   return (

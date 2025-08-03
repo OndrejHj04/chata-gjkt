@@ -7,15 +7,15 @@ import {
   Typography,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { createNewGroup } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { withToast } from "@/utils/toast/withToast";
 
 export default function GroupNewForm({
   options,
   user,
 }: {
-  options: any
+  options: any;
   user: any;
 }) {
   const {
@@ -23,26 +23,32 @@ export default function GroupNewForm({
     handleSubmit,
     control,
     formState: { isValid, isDirty },
-    reset
+    reset,
   } = useForm({
     defaultValues: {
-      name: "", description: "", owner: options.find((item: any) => item.id === user.id)
-    }
+      name: "",
+      description: "",
+      owner: options.find((item: any) => item.id === user.id),
+    },
   });
-  const isAdmin = user.role.id !== 3
-  const { push, refresh } = useRouter()
+  const isAdmin = user.role.id !== 3;
+  const { push, refresh } = useRouter();
 
   const onSubmit = async (data: any) => {
-    reset(data)
-    createNewGroup({
-      ...data,
-      owner: data.owner.id,
-    }).then(({ success }) => {
-      if (success) toast.success(`Skupina  úspěšně vytvořena`);
-      else toast.error("Něco se pokazilo");
-      push("/group/list")
-      refresh()
-    });
+    reset(data);
+    withToast(
+      createNewGroup({
+        ...data,
+        owner: data.owner.id,
+      }),
+      {
+        message: "group.create",
+        onSuccess: () => {
+          push("/group/list");
+          refresh();
+        },
+      }
+    );
   };
 
   return (
@@ -82,12 +88,22 @@ export default function GroupNewForm({
                 }}
                 options={options}
                 getOptionLabel={(option: any) => option.name}
-                renderOption={(props: any, option: any) => <li {...props}><span className="flex justify-between w-full">
-                  <Typography>{option.name}</Typography>
-                  <Typography color="text.secondary">{option.email}</Typography>
-                </span></li>}
+                renderOption={(props: any, option: any) => (
+                  <li {...props}>
+                    <span className="flex justify-between w-full">
+                      <Typography>{option.name}</Typography>
+                      <Typography color="text.secondary">
+                        {option.email}
+                      </Typography>
+                    </span>
+                  </li>
+                )}
                 renderInput={(params) => (
-                  <TextField {...params} label="Majitel skupiny" helperText="Majitel skupiny bude automaticky přídán do skupiny a může poté spravovat její členy." />
+                  <TextField
+                    {...params}
+                    label="Majitel skupiny"
+                    helperText="Majitel skupiny bude automaticky přídán do skupiny a může poté spravovat její členy."
+                  />
                 )}
               />
             )}

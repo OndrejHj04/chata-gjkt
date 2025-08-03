@@ -15,10 +15,10 @@ import { useEffect, useRef, useState } from "react";
 import Papa from "papaparse";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { toast } from "react-toastify";
 import Link from "next/link";
 import { importNewUsers, validateImport } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { withToast } from "@/utils/toast/withToast";
 
 const importUsersValidFormat = [
   { value: "first_name", name: "Jméno" },
@@ -48,10 +48,7 @@ export default function UsersImportForm({ roles }: { roles: any }) {
         newData.push(obj);
       }
     });
-    importNewUsers({ users: newData }).then(({ success, count }) => {
-      if (success) toast.success(`${count} uživatelů úspěšně importováno`);
-      else toast.error(`Něco se nepovedlo`);
-    });
+    withToast(importNewUsers({ users: newData }), {message: "user.import"})
     refresh()
     push("/user/list")
   };

@@ -1,10 +1,10 @@
 "use client"
+import ToastManager from "@/utils/toast/ToastManager";
 import { Button, Divider, Paper, TextField, Typography } from "@mui/material";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 
 export default function LoginForm() {
   const { register, handleSubmit, formState: { isValid } } = useForm()
@@ -12,7 +12,7 @@ export default function LoginForm() {
   const signInError = params.get('error')
 
   useEffect(() => {
-    if (signInError) toast.error("Přihlášení se nepodařilo")
+    if (signInError) ToastManager.show("auth.login.error")
   }, [signInError])
 
   const onSubmit = (data: any) => {

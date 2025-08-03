@@ -2,9 +2,9 @@
 
 import { editGroupDetail } from "@/lib/api"
 import AvatarWrapper from "@/ui-components/AvatarWrapper"
+import { withToast } from "@/utils/toast/withToast"
 import { Button, CardHeader, Divider, TextField, Typography } from "@mui/material"
 import { useForm } from "react-hook-form"
-import { toast } from "react-toastify"
 
 export default function GroupDetailForm({ groupDetail }: { groupDetail: any }) {
   const { register, handleSubmit, formState: { isValid, isDirty }, reset } = useForm({
@@ -15,10 +15,7 @@ export default function GroupDetailForm({ groupDetail }: { groupDetail: any }) {
   })
 
   const onSubmit = (data: any) => {
-    editGroupDetail({ groupId: groupDetail.id, name: data.name, description: data.description }).then(({ success }) => {
-      if (success) toast.success("Detail skupiny úspěšně upraven")
-      else toast.error("Něco se nepovedlo")
-    })
+    withToast(editGroupDetail({ groupId: groupDetail.id, name: data.name, description: data.description }), {message: "group.detail.update"})
     reset(data)
   }
 

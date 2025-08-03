@@ -3,21 +3,18 @@
 import { getFullName } from "@/app/constants/fullName"
 import { groupDelete } from "@/lib/api"
 import AvatarWrapper from "@/ui-components/AvatarWrapper"
+import { withToast } from "@/utils/toast/withToast"
 import { Button, Menu, MenuItem, TableCell, TableRow } from "@mui/material"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import React, { useState } from "react"
-import { toast } from "react-toastify"
 
 export default function GroupListItem({ group, allowMenu }: { group: any, allowMenu: any }) {
   const { refresh } = useRouter()
   const [selectedGroup, setSelectedGroup] = useState<{ id: number, mouseX: number, mouseY: number } | null>(null)
 
   const handleDeleteGroups = () => {
-    groupDelete({ groupId: group.id }).then(({ success }) => {
-      if (success) toast.success("Rezervace úspěšně odstraněny");
-      else toast.error("Něco se pokazilo");
-    });
+    withToast(groupDelete({ groupId: group.id }), {message: "reservation.delete"})
     refresh()
   }
 
