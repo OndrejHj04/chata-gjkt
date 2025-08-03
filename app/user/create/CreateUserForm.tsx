@@ -19,7 +19,7 @@ export default function CreateUserForm({ role }: { role: any }) {
   } = useForm();
 
   const onSubmit = async (data: any) => {
-    withToast(createNewUser(JSON.stringify(data)), {message: "user.create"})
+    withToast(createNewUser(data), {message: "user.create"})
     reset(data)
   };
 

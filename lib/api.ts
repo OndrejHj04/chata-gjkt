@@ -11,10 +11,10 @@ import { roomsEnum } from "@/app/constants/rooms";
 export const createNewUser = async (dataReq: any) => {
   const req = await fetch(`${process.env.BE_URL}/api/users`, {
     method: "POST",
-    body: dataReq,
+    body: JSON.stringify(dataReq),
     headers: {
       "Content-Type": "application/json",
-      Accept: "application/json",
+      "Accept": "application/json",
     },
   });
   const data = await req.json();
