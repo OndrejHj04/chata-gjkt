@@ -1,0 +1,21 @@
+CREATE TABLE if not exists `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `role` int(11) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `verified` tinyint(1) NOT NULL DEFAULT 0,
+  `adress` varchar(255) DEFAULT NULL,
+  `birth_date` date DEFAULT NULL,
+  `ID_code` varchar(255) DEFAULT NULL,
+  `theme` tinyint(1) NOT NULL DEFAULT 1,
+  `organization` int(11) DEFAULT NULL,
+  `children` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `user_organizationFK` (`organization`),
+  KEY `user_roleFK` (`role`),
+  CONSTRAINT `user_organizationFK` FOREIGN KEY (`organization`) REFERENCES `organization` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `user_roleFK` FOREIGN KEY (`role`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=335 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
