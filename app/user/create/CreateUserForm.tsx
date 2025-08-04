@@ -1,26 +1,30 @@
 "use client";
-import { createNewUser } from "@/lib/api";
+import { createUserAccount } from "@/lib/api";
 import { Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { withToast } from "@/utils/toast/withToast";
+import { useRouter } from "next/navigation";
 
 const roles = [
   { id: 1, label: "Admin" },
   { id: 2, label: "Správce" },
-  { id: 3, label: "Uživatel" }
-]
+  { id: 3, label: "Uživatel" },
+];
 
 export default function CreateUserForm({ role }: { role: any }) {
   const {
     register,
     handleSubmit,
     formState: { isValid, isDirty },
-    reset
+    reset,
   } = useForm();
+  const { refresh, push } = useRouter();
 
   const onSubmit = async (data: any) => {
-    withToast(createNewUser(data), {message: "user.create"})
-    reset(data)
+    reset(data);
+    withToast(createUserAccount(data), { message: "user.create" });
+    push("/user/list");
+    refresh();
   };
 
   return (
@@ -56,9 +60,19 @@ export default function CreateUserForm({ role }: { role: any }) {
               },
             })}
           />
-          <TextField {...register("role", { required: true })} select label="Role">
+          <TextField
+            {...register("role", { required: true })}
+            select
+            label="Role"
+          >
             {roles.map((urole) => (
-              <MenuItem key={urole.id} disabled={urole.id < role} value={urole.id}>{urole.label}</MenuItem>
+              <MenuItem
+                key={urole.id}
+                disabled={urole.id < role}
+                value={urole.id}
+              >
+                {urole.label}
+              </MenuItem>
             ))}
           </TextField>
         </div>
