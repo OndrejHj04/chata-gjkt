@@ -1,5 +1,5 @@
 CREATE TABLE if not exists `status` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `color` varchar(255) NOT NULL,
   `display_name` varchar(255) NOT NULL,
