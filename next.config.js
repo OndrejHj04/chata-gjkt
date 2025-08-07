@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ["lh3.googleusercontent.com", "openweathermap.org"],
+    domains: ["lh3.googleusercontent.com", "openweathermap.org", "dpexwynrexcnrbvqkapd.supabase.co"],
   },
   typescript: {
     ignoreBuildErrors: true

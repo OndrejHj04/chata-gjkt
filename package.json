@@ -26,6 +26,8 @@
     "@mui/utils": "^6.1.4",
     "@mui/x-date-pickers": "^7.20.0",
     "@next/env": "^15.4.5",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.54.0",
     "@tinymce/tinymce-react": "^6.2.1",
     "@types/node": "20.5.1",
     "@types/react": "^19.0.7",

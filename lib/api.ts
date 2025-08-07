@@ -7,6 +7,42 @@ import { transporter } from "./email";
 import dayjs from "dayjs";
 import { sign } from "jsonwebtoken";
 import { roomsEnum } from "@/app/constants/rooms";
+import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
+
+export const getImages = async () => {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { data: images } = await supabase.storage.from("images").list();
+  const imageUrls = images?.map((item) => {
+    const { publicUrl } = supabase.storage
+      .from("images")
+      .getPublicUrl(item.name).data;
+    return {
+      id: item.created_at,
+      name: item.name,
+      created_at: item.created_at,
+      publicUrl,
+    };
+  });
+
+  return imageUrls;
+};
+
+export const uploadImage = async (fileData) => {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { data, error } = await supabase.storage
+    .from("images")
+    .upload(fileData.name, fileData, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+
+  console.log(data, error);
+};
 
 export const getUserList = async ({
   page,
