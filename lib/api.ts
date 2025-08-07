@@ -41,6 +41,12 @@ export const uploadImage = async (fileData) => {
       upsert: false,
     });
 
+    // create empty folder
+    //     .upload(`/xxxx/file/path`, new Blob([''], { type: 'text/plain' }), {
+    //   cacheControl: "3600",
+    //   upsert: false,
+    // });
+
   console.log(data, error);
 };
 
