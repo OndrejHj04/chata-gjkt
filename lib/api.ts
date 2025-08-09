@@ -489,10 +489,6 @@ export const userGoogleLogin = async ({ account }: { account: any }) => {
       query: `SELECT users.id, users.first_name, users.last_name, users.email, users.image, users.theme, users.verified, JSON_OBJECT('id', roles.id, 'name', roles.name) as role, users.adress FROM users INNER JOIN roles ON roles.id = users.role WHERE email = ? AND role <> 4`,
       values: [account.email],
     }),
-    query({
-      query: `UPDATE users SET image = ? WHERE email = ? AND role <> 4`,
-      values: [account.picture, account.email],
-    }),
   ])) as any;
 
   if (!data.length) {
@@ -503,7 +499,6 @@ export const userGoogleLogin = async ({ account }: { account: any }) => {
     user: {
       ...data[0],
       role: JSON.parse(data[0].role),
-      image: account.picture,
     },
   };
 };

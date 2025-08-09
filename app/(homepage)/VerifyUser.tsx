@@ -15,9 +15,10 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import { verifyUser } from "@/lib/api";
 import dayjs from "dayjs";
-import * as isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import Link from "next/link";
 import { DatePicker } from "@mui/x-date-pickers";
+
 dayjs.extend(isSameOrBefore as any);
 
 export default function VerifyUser({ id }: { id?: number }) {
