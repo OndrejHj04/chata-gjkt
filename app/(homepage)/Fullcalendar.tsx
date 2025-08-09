@@ -3,18 +3,54 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import csLocale from "@fullcalendar/core/locales/cs"
-import { Paper, Button, ToggleButton, ButtonGroup, ToggleButtonGroup, Typography, Tooltip, List, ListItem, ListItemText, Icon, ListItemIcon } from '@mui/material'
-import { roomsEnum } from '@/app/constants/rooms'
-import React, { useEffect, useRef, useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { Paper, Button, ToggleButton, ButtonGroup, ToggleButtonGroup, Typography, Tooltip, List, ListItem, ListItemText, Icon, ListItemIcon, Checkbox, InputLabel, FormControlLabel } from '@mui/material'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { NavigateBefore, NavigateNext } from "@mui/icons-material"
 import { getFullName } from '@/app/constants/fullName'
 
 import dayjs from 'dayjs'
 import { setBlockedDates } from '@/lib/api'
 
-export default function FullcalendarComponent({ searchParams, data, role }: { searchParams: any, data: any, role: any }) {
-  const [roomsFilter, setRoomsFilter] = useState<number[]>(searchParams.rooms?.length ? searchParams?.rooms.split(",").map(Number) : [])
+const roomNumberToString = (roomNumber: number) => {
+  switch(roomNumber) {
+    case 1:
+      return "firstRoom"
+    case 2:
+      return "secondRoom"
+    case 3:
+      return "thirdRoom"
+    case 4:
+      return "fourthRoom"
+    case 5:
+      return "fifthRoom"
+    default:
+      return ""
+  }
+}
+
+const translateRoom = (room: string) => {
+  switch(room) {
+    case "firstRoom":
+      return "Pokoj 1";
+    case "secondRoom":
+      return "Pokoj 2";
+    case "thirdRoom":
+      return "Pokoj 3";
+    case "fourthRoom":
+      return "Pokoj 4";
+    case "fifthRoom":
+      return "Pokoj 5";
+    default:
+      return room;
+  }
+}
+
+export default function FullcalendarComponent({ data, role }: { data: any, role: any }) {
+  const searchParams = useSearchParams()
+  const { replace } = useRouter();
+  const pathname = usePathname()
+  
   const [selectedDays, setSelectedDays] = useState<any>([])
 
   const calendarEventData = data.data.map((event: any) => ({
@@ -31,22 +67,8 @@ export default function FullcalendarComponent({ searchParams, data, role }: { se
   }))
 
   const calendarRef = useRef(null)
-  const pathname = usePathname();
-  const { replace, refresh } = useRouter()
+  const { refresh } = useRouter()
   const [calendarTitle, setCalendarTitle] = useState("")
-
-  const handleRoomsFilterChange = (_: any, values: any[]) => {
-    if (values.includes("all")) {
-      setRoomsFilter(r => r.length === roomsEnum.list.length ? [] : roomsEnum.list.map(room => room.id))
-    } else
-      setRoomsFilter(values)
-  }
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams)
-    params.set("rooms", roomsFilter.toString())
-    replace(`${pathname}?${params.toString()}`);
-  }, [roomsFilter])
 
   useEffect(() => {
     const calendarApi = (calendarRef.current as any).getApi()
@@ -95,6 +117,15 @@ export default function FullcalendarComponent({ searchParams, data, role }: { se
     refresh()
   }
 
+  const handleFilterRoom = (room: number) => {
+    const params = new URLSearchParams(searchParams);
+
+    if(searchParams.has(roomNumberToString(room))) params.delete(roomNumberToString(room))
+    else params.set(roomNumberToString(room), "1")
+    replace(`${pathname}?${params.toString()}`);
+
+  }
+
   return (
     <Paper className="flex w-full h-full sm:flex-row flex-col p-2">
       <div className='flex flex-col sm:mr-2 mb-2 gap-2'>
@@ -112,13 +143,14 @@ export default function FullcalendarComponent({ searchParams, data, role }: { se
           </ButtonGroup>
           <Button variant="outlined" size="small" onClick={() => mutateCalendar("today")}>Dnes</Button>
         </div>
-        <ToggleButtonGroup orientation='vertical' className='sm:flex-col flex-row' size='small' onChange={handleRoomsFilterChange} value={roomsFilter}>
-          <ToggleButton value="all" selected={roomsEnum.list.length === roomsFilter.length}>Celá chata</ToggleButton>
-          {roomsEnum.list.map(rooms => (
-            <ToggleButton key={rooms.id} value={rooms.id}>{rooms.label}</ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-
+        {[1,2,3,4,5].map((room, i) => (
+          <Button key={i} onClick={() => handleFilterRoom(i+1)} size='small'>
+            <div className='normal-case text-white flex items-center'>
+              <Typography>{translateRoom(roomNumberToString(i+1))}</Typography>
+              <Checkbox disableRipple checked={searchParams.get(roomNumberToString(i+1)) === "1" ? true : false}/>
+            </div>
+          </Button>
+        ))}
         {role.id === 1 && <Tooltip title="Kliknutím nebo potažením mezi jednotlivými dny vyberete období k blokaci">
           <span>
             <Button variant='contained' fullWidth disabled={!selectedDays.length} onClick={handleBlocation} size="small">Blokovat</Button>

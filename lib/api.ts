@@ -259,9 +259,9 @@ export const getReservationList = async ({
 };
 
 export const getReservationCalendarData = async ({
-  rooms = [],
+  rooms
 }: {
-  rooms: any;
+  rooms: boolean[];
 }) => {
   const [result] = (await Promise.all([
     query({
