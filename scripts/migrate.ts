@@ -28,7 +28,7 @@ async function runMigrations() {
   for (const file of files) {
     if (!completed.has(file)) {
       const sql = fs.readFileSync(path.join(migrationsDir, file), "utf-8");
-      await connection.execute(sql);
+      await connection.query(sql);
       await connection.execute("INSERT INTO migrations (id) VALUES (?)", [
         file,
       ]);
