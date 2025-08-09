@@ -1,5 +1,5 @@
 "use client";
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useContext } from "react";
 import { FusionContext } from "../layout";

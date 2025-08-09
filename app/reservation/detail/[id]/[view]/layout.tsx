@@ -1,4 +1,4 @@
-import { Paper, Tab, Tabs, Typography } from "@mui/material";
+import { Paper, Tab, Tabs } from "@mui/material";
 import Link from "next/link";
 import React from "react";
 

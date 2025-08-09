@@ -1,6 +1,6 @@
 import { getSendMails } from "@/lib/api"
 import TableListPagination from "@/ui-components/TableListPagination"
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import dayjs from "dayjs"
 import Link from "next/link"
 

@@ -2,7 +2,7 @@
 
 import { createOutsideUser } from "@/lib/api"
 import { withToast } from "@/utils/toast/withToast"
-import { Button, Paper, TextField, Typography } from "@mui/material"
+import { Button, TextField, Typography } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"

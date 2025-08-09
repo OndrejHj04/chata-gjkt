@@ -3,11 +3,10 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import csLocale from "@fullcalendar/core/locales/cs"
-import { Paper, Button, ToggleButton, ButtonGroup, ToggleButtonGroup, Typography, Tooltip, List, ListItem, ListItemText, Icon, ListItemIcon, Checkbox, InputLabel, FormControlLabel } from '@mui/material'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Paper, Button, ButtonGroup, Typography, Tooltip, List, ListItem, ListItemText, Checkbox, } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { NavigateBefore, NavigateNext } from "@mui/icons-material"
-import { getFullName } from '@/app/constants/fullName'
 
 import dayjs from 'dayjs'
 import { setBlockedDates } from '@/lib/api'
@@ -91,7 +90,7 @@ export default function FullcalendarComponent({ data, role }: { data: any, role:
   }
 
   const eventContentInjection = (event: any) => {
-    const { leader, rooms, display_name, icon } = event.event.extendedProps
+    const { leader, rooms, display_name } = event.event.extendedProps
 
     return <Tooltip title={<List className='p-0'>
       <ListItem className="!p-0">
@@ -101,7 +100,7 @@ export default function FullcalendarComponent({ data, role }: { data: any, role:
         <ListItemText>Pokoje: {rooms.map((item: any) => item.id).join(",")}</ListItemText>
       </ListItem>
       <ListItem className='!p-0'>
-        <ListItemText>Vedoucí: {getFullName(leader)}</ListItemText>
+        <ListItemText>Vedoucí: {leader.first_name} {leader.last_name}</ListItemText>
       </ListItem>
       <ListItem className="!p-0">
         <ListItemText>Status: {display_name}</ListItemText>
@@ -123,7 +122,6 @@ export default function FullcalendarComponent({ data, role }: { data: any, role:
     if(searchParams.has(roomNumberToString(room))) params.delete(roomNumberToString(room))
     else params.set(roomNumberToString(room), "1")
     replace(`${pathname}?${params.toString()}`);
-
   }
 
   return (

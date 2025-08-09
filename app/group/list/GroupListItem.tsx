@@ -1,6 +1,5 @@
 "use client"
 
-import { getFullName } from "@/app/constants/fullName"
 import { groupDelete } from "@/lib/api"
 import AvatarWrapper from "@/ui-components/AvatarWrapper"
 import { withToast } from "@/utils/toast/withToast"
@@ -39,7 +38,7 @@ export default function GroupListItem({ group, allowMenu }: { group: any, allowM
         <TableCell>{group.description}</TableCell>
         <TableCell className="!flex !items-center !gap-2">
           <AvatarWrapper data={group.owner} />
-          {getFullName(group.owner)}
+          {group.owner.first_name} {group.owner.last_name}
         </TableCell>
         <TableCell>
           {group.users.length}

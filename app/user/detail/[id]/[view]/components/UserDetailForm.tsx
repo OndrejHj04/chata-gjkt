@@ -3,7 +3,7 @@
 import { editUserDetail } from "@/lib/api"
 import AvatarWrapper from "@/ui-components/AvatarWrapper"
 import { withToast } from "@/utils/toast/withToast"
-import { Alert, Button, CardHeader, List, ListItem, ListItemButton, ListItemText, MenuItem, Modal, TextField, Typography } from "@mui/material"
+import { Alert, Button, CardHeader, List, ListItem, ListItemText, MenuItem, TextField, Typography } from "@mui/material"
 import dayjs from "dayjs"
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"

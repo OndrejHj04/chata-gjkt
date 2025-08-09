@@ -3,7 +3,6 @@ import React from "react";
 import LoginForm from "./LoginForm";
 import ResetPassword from "./ResetPassword";
 
-import UploadImage from "./UploadImage";
 
 export default async function WelcomeComponent() {
   return (

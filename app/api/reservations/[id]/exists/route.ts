@@ -1,5 +1,5 @@
 import { query } from "@/lib/db";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request, {params}:any) {
   const { user } = await req.json();

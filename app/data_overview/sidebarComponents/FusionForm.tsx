@@ -1,8 +1,7 @@
 "use client";
 
 import { Button, TextField, Typography } from "@mui/material";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { FusionContext } from "../layout";
 
 export default function FusionForm() {

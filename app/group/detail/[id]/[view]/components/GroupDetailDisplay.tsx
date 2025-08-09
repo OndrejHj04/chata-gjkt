@@ -1,5 +1,5 @@
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
-import { CardHeader, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
+import { List, ListItem, ListItemText } from "@mui/material";
 
 export default function GroupDetailDisplay({ groupDetail }: { groupDetail: any }) {
 

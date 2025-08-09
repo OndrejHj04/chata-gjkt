@@ -1,11 +1,9 @@
-import { getFullName } from "@/app/constants/fullName";
 import { smartTime } from "@/app/constants/smartTime";
 import { getRegistrationList } from "@/lib/api";
 import { dayjsExtended } from "@/lib/dayjsExtended";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import dayjs from "dayjs";
 import Link from "next/link";
 
 export default async function RegistrationList({ searchParams }: { searchParams: any }) {
@@ -44,7 +42,7 @@ export default async function RegistrationList({ searchParams }: { searchParams:
               <TableCell>
                 <div className="flex items-center gap-2">
                   <AvatarWrapper data={registration.author} size={34} />
-                  {getFullName(registration.author)}
+                  {registration.author.first_name} {registration.author.last_name}
                 </div>
               </TableCell>
               <TableCell>

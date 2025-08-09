@@ -1,7 +1,7 @@
 import { getUserGroups } from "@/lib/api";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
-import { Avatar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 
 export default async function UserGroupsTable({ id, page = 1 }: { id: any, page: any }) {
   const { data, count } = await getUserGroups({ userId: id, page: page })

@@ -1,7 +1,7 @@
 "use client";
 
 import { Sort, TrendingDown, TrendingUp } from "@mui/icons-material";
-import { Icon, TableCell } from "@mui/material";
+import { TableCell } from "@mui/material";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 

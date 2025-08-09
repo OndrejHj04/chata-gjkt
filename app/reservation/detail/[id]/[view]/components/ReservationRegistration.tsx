@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import ReservationRegistrationToggle from "./ReservationRegistrationToggle";
 import { getReservationRegisteredUsers, getReservationRegistration } from "@/lib/api"
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { Button, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { smartTime } from "@/app/constants/smartTime";
 import TableListPagination from "@/ui-components/TableListPagination";
 import UserApproveButton from "./UserApproveButton";

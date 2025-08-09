@@ -1,4 +1,4 @@
-import { getReservationGroups, getReservationUsers } from "@/lib/api";
+import { getReservationGroups } from "@/lib/api";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
