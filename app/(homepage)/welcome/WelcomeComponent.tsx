@@ -3,14 +3,9 @@ import React from "react";
 import LoginForm from "./LoginForm";
 import ResetPassword from "./ResetPassword";
 
-import Image from "next/image";
-import { getImages } from "@/lib/api";
 import UploadImage from "./UploadImage";
 
 export default async function WelcomeComponent() {
-  const imageUrls = await getImages()
-
-  console.log(imageUrls);
   return (
     <div className="flex flex-col gap-2">
       <Paper className="w-full p-2">
@@ -18,10 +13,6 @@ export default async function WelcomeComponent() {
           Vítejte na stránkách rezervačního systému Chata GJKT.
         </Typography>
       </Paper>
-      {imageUrls?.map((image) => (
-        <Image key={image.id} alt={image.name} src={image.publicUrl} width={100} height={100}/>
-      ))}
-      <UploadImage />
       <div className="flex gap-2 md:flex-row flex-col">
         <LoginForm />
         <Paper className="p-2 flex flex-col">

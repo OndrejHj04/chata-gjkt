@@ -3,12 +3,14 @@
 import { editUserDetail } from "@/lib/api"
 import AvatarWrapper from "@/ui-components/AvatarWrapper"
 import { withToast } from "@/utils/toast/withToast"
-import { Alert, Button, CardHeader, List, ListItem, ListItemText, MenuItem, TextField, Typography } from "@mui/material"
+import { Alert, Button, CardHeader, List, ListItem, ListItemButton, ListItemText, MenuItem, Modal, TextField, Typography } from "@mui/material"
 import dayjs from "dayjs"
-import React from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
+import ChangeProfilePictureModal from "./ChangeProfilePictureModal"
 
 export default function UserDetailForm({ userDetail }: { userDetail: any }) {
+  const [profileImageModal, setProfileImageModal] = useState(false)
 
   const { handleSubmit, register, reset, formState: { isValid, isDirty } } = useForm({
     defaultValues: {
@@ -26,6 +28,7 @@ export default function UserDetailForm({ userDetail }: { userDetail: any }) {
 
   return (
     <div>
+      <ChangeProfilePictureModal open={profileImageModal} setOpen={setProfileImageModal} />
       <CardHeader
         className="!p-0"
         avatar={<AvatarWrapper data={{ image: userDetail.image }} size={56} />}
@@ -45,6 +48,7 @@ export default function UserDetailForm({ userDetail }: { userDetail: any }) {
         </ListItem>
       </List>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 w-[300px]">
+        <Button variant="outlined" onClick={()=>setProfileImageModal(true)}>Změnit profilový obrázek</Button>
         {!!userDetail.parent_id && <Alert severity="info">Rodinný účet uživatele: {userDetail.parent_name}.</Alert>}
         {!!userDetail.children && <Alert severity="info">Správce rodinných účtů.</Alert>}
         <TextField label="Číslo OP" {...register("ID_code", { required: true })} />
