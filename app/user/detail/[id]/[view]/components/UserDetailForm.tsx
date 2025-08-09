@@ -28,7 +28,7 @@ export default function UserDetailForm({ userDetail }: { userDetail: any }) {
 
   return (
     <div>
-      <ChangeProfilePictureModal open={profileImageModal} setOpen={setProfileImageModal} />
+      <ChangeProfilePictureModal open={profileImageModal} setOpen={setProfileImageModal} userId={userDetail.id} />
       <CardHeader
         className="!p-0"
         avatar={<AvatarWrapper data={{ image: userDetail.image }} size={56} />}

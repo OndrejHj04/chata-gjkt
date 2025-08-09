@@ -30,6 +30,37 @@ export const getImages = async () => {
   return imageUrls;
 };
 
+export const uploadProfilePicture = async (image: any, userId: number) => {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+    const userImagePath = `user_${userId}/picture`;
+
+    await supabase.storage.from("profile-pictures").remove([userImagePath]);
+
+    await supabase.storage
+      .from("profile-pictures")
+      .upload(userImagePath, image, {
+        cacheControl: "0",
+      });
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("profile-pictures").getPublicUrl(userImagePath);
+
+    query({
+      query: `
+    UPDATE users 
+    SET image = ?
+    WHERE id = ?`,
+      values: [publicUrl, userId],
+    });
+    return { success: true };
+  } catch (e) {
+    return { success: false };
+  }
+};
+
 export const uploadImage = async (fileData) => {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
@@ -41,13 +72,11 @@ export const uploadImage = async (fileData) => {
       upsert: false,
     });
 
-    // create empty folder
-    //     .upload(`/xxxx/file/path`, new Blob([''], { type: 'text/plain' }), {
-    //   cacheControl: "3600",
-    //   upsert: false,
-    // });
-
-  console.log(data, error);
+  // create empty folder
+  //     .upload(`/xxxx/file/path`, new Blob([''], { type: 'text/plain' }), {
+  //   cacheControl: "3600",
+  //   upsert: false,
+  // });
 };
 
 export const getUserList = async ({

@@ -1,6 +1,9 @@
 "use client";
+import { uploadProfilePicture } from "@/lib/api";
+import { withToast } from "@/utils/toast/withToast";
 import { Button, Modal, Paper, Typography } from "@mui/material";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 const style = {
   position: "absolute" as "absolute",
@@ -10,7 +13,8 @@ const style = {
   transform: "translate(-50%, -50%)",
 };
 
-export default function ChangeProfilePictureModal({open, setOpen}: {open:boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>}) {
+export default function ChangeProfilePictureModal({open, setOpen, userId}: {open:boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, userId: number}) {
+  const { refresh } = useRouter()
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -24,6 +28,12 @@ export default function ChangeProfilePictureModal({open, setOpen}: {open:boolean
       setImageUrl(url);
     }
   };
+
+  const handleUploadProfilePicture = () => {
+    withToast(uploadProfilePicture(image,userId), {message: "user.detail.updateProfilePicture"})
+    setOpen(false)
+    refresh()
+  }
 
   return (
     <Modal open={open} onClose={()=>setOpen(false)}>
@@ -41,9 +51,9 @@ export default function ChangeProfilePictureModal({open, setOpen}: {open:boolean
         )}
         <Button variant={imageReady ? "outlined" : "contained"} component="label" className="w-full">
           {imageReady ? "Nahrát jinou fotografii" : "Nahrát fotografii"}
-          <input type="file" hidden onChange={handleImageChange} />
+          <input type="file" accept="image/png, image/jpg" hidden onChange={handleImageChange} />
         </Button>
-        {imageReady && <Button className="w-full" variant="contained">Uložit</Button>}
+        {imageReady && <Button className="w-full" variant="contained" onClick={handleUploadProfilePicture}>Uložit</Button>}
       </Paper>
     </Modal>
   );

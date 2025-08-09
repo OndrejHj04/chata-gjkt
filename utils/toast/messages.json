@@ -175,6 +175,10 @@
       "update": {
         "success": "Detail uživatele úspěšně upraven",
         "error": "Něco se nepovedlo"
+      },
+      "updateProfilePicture": {
+        "success": "Detail uživatele úspěšně upraven",
+        "error": "Něco se nepovedlo"
       }
     },
     "setAsOutside": {
