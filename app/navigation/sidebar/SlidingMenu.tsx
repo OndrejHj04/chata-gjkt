@@ -6,7 +6,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { Icon, Typography } from "@mui/material";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
-import changelog from "@/app/changelog/changelog.data"
 import { PanelContext } from "@/app/clientProvider";
 import { useContext } from "react";
 
@@ -17,7 +16,6 @@ export default function SlidingMenu({
   menuConfig: any;
   user: any
 }) {
-  const currentVersion = changelog.versions[0].title
   const { panel, setPanel } = useContext(PanelContext)
 
   return (
@@ -46,12 +44,6 @@ export default function SlidingMenu({
           </Typography>
         </MenuItem>
       </div>
-      <Link
-        className="text-xs text-center no-underline text-inherit"
-        href="/changelog"
-      >
-        {currentVersion}
-      </Link>
     </Drawer>
   );
 }

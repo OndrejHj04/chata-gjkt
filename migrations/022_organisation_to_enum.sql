@@ -6,4 +6,4 @@ UPDATE users SET organisation_new = CASE
     WHEN organization = 3 THEN 'veřejnost'
 END;
 ALTER TABLE users DROP COLUMN organization;
-ALTER TABLE users CHANGE organisation_new organisation ENUM('ZO', 'zaměstnanec', 'veřejnost');
+ALTER TABLE users CHANGE organisation_new organization ENUM('ZO', 'zaměstnanec', 'veřejnost');

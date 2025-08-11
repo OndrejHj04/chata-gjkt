@@ -6,9 +6,9 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { transporter } from "./email";
 import dayjs from "dayjs";
 import { sign } from "jsonwebtoken";
-import { roomsEnum } from "@/app/constants/rooms";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
+import { Room } from "@/app/constants/room";
 
 export const getImages = async () => {
   const cookieStore = await cookies();
@@ -213,7 +213,7 @@ export const getReservationList = async ({
                (SELECT COUNT(*) FROM users_reservations ur WHERE ur.reservationId = r.id AND ur.verified = 1) AS users_count,
                (SELECT SUM(ro.people) 
                 FROM reservations_rooms rr 
-                LEFT JOIN rooms ro ON ro.id = rr.roomId 
+                LEFT JOIN rooms ro ON ro.id = rr.room 
                 WHERE rr.reservationId = r.id) AS beds_count,
                 (SELECT EXISTS (SELECT rf.user_id FROM reservations_forms rf WHERE rf.reservation_id = r.id)) as active_registration,
                 CASE WHEN ${user.role.id} IN (1, 2) OR r.leader = ${user.id}
@@ -259,7 +259,7 @@ export const getReservationList = async ({
 };
 
 export const getReservationCalendarData = async ({
-  rooms
+  rooms,
 }: {
   rooms: boolean[];
 }) => {
@@ -274,7 +274,7 @@ export const getReservationCalendarData = async ({
         INNER JOIN status ON status.id = reservations.status
         LEFT JOIN users ON users.id = reservations.leader 
         LEFT JOIN reservations_rooms ON reservations_rooms.reservationId = reservations.id
-        LEFT JOIN rooms ON reservations_rooms.roomId = rooms.id
+        LEFT JOIN rooms ON reservations_rooms.room = rooms.id
         WHERE 1=1
         ${
           rooms.length
@@ -658,15 +658,16 @@ export const setBlockedDates = async ({
     query: `INSERT INTO reservations (from_date, to_date, name, status, leader, purpouse, instructions) VALUES(?, ?, "Blokace", 5, ?, "blokace", "")`,
     values: [from_date, to_date, user.id],
   })) as any;
+
   const [{ affectedRows: affectedRows }, _] = (await Promise.all([
     query({
       query: `UPDATE reservations SET status = 4 WHERE((from_date BETWEEN ? AND ?) OR(to_date BETWEEN ? AND ?)) AND status <>5 AND status <> 1`,
       values: [from_date, to_date, from_date, to_date],
     }),
     query({
-      query: `INSERT INTO reservations_rooms (reservationId, roomId) VALUES ?`,
+      query: `INSERT INTO reservations_rooms (reservationId, room) VALUES ?`,
       values: [
-        roomsEnum.list.map((room: any) => [blocation.insertId, room.id]),
+        Room.getAllRooms().map((room) => [blocation.insertId, room.name]),
       ],
     }),
   ])) as any;
@@ -986,7 +987,7 @@ export const reservationSaveRooms = async ({
       values: [reservation],
     }),
     query({
-      query: `INSERT INTO reservations_rooms (reservationId, roomId) VALUES ?`,
+      query: `INSERT INTO reservations_rooms (reservationId, room) VALUES ?`,
       values: [rooms.map((room: any) => [reservation, room])],
     }),
     query({
@@ -1361,7 +1362,7 @@ export const getReservationDetail = async ({
       SELECT ro.id, ro.people
       FROM reservations r
       LEFT JOIN reservations_rooms rr ON rr.reservationId = r.id
-      INNER JOIN rooms ro ON ro.id = rr.roomId
+      INNER JOIN rooms ro ON ro.id = rr.room
       WHERE r.id = ?
     `,
     values: [reservationId],
@@ -1601,7 +1602,7 @@ export const editReservationRooms = async ({
       values: [reservationId],
     }),
     query({
-      query: `INSERT INTO reservations_rooms (reservationId, roomId) VALUES ?`,
+      query: `INSERT INTO reservations_rooms (reservationId, room) VALUES ?`,
       values: [rooms.map((room: any) => [reservationId, room])],
     }),
   ])) as any;
@@ -1645,7 +1646,7 @@ export const createNewReservation = async ({
   if (rooms.length) {
     queries.push(
       query({
-        query: `INSERT INTO reservations_rooms (reservationId, roomId) VALUES ?`,
+        query: `INSERT INTO reservations_rooms (reservationId, room) VALUES ?`,
         values: [rooms.map((room: any) => [request.insertId, room])],
       })
     );
@@ -1852,7 +1853,7 @@ export const getReservationsByWeekCalendar = async () => {
     query: `SELECT r.id, r.name, r.from_date, r.to_date, GROUP_CONCAT(ro.id) as rooms, CONCAT(u.first_name, ' ', u.last_name) as leader_name, s.color as status_color, s.display_name as status_name, s.icon as status_icon 
     FROM reservations r
     LEFT JOIN reservations_rooms rr ON rr.reservationId = r.id
-    LEFT JOIN rooms ro ON ro.id = rr.roomId
+    LEFT JOIN rooms ro ON ro.id = rr.room
     LEFT JOIN users u ON u.id = r.leader
     LEFT JOIN status s ON s.id = r.status
     WHERE status <> 1

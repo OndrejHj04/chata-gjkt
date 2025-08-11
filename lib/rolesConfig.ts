@@ -20,6 +20,6 @@ const actionMenu = [
   { href: "/user/family", name: "Přidat rodinný účet", icon: "child_friendly", roles: [1, 2, 3] },
 ]
 
-const otherRoutes = ['/changelog', '/password-reset', '/vzorovy_soubor.csv', '/podminky.pdf']
+const otherRoutes = ['/password-reset', '/vzorovy_soubor.csv', '/podminky.pdf']
 
 export { sideMenu, actionMenu, otherRoutes }

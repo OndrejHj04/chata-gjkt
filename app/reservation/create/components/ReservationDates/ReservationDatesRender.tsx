@@ -27,25 +27,30 @@ import dayjs from "dayjs";
 import { Controller, useForm } from "react-hook-form";
 import { ReservationContext } from "../../layout";
 import FullCalendar from "@fullcalendar/react";
-import resourceTimelineWeek from "@fullcalendar/resource-timeline"
+import resourceTimelineWeek from "@fullcalendar/resource-timeline";
 
-import csLocale from "@fullcalendar/core/locales/cs"
+import csLocale from "@fullcalendar/core/locales/cs";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
-import { roomsEnum } from "@/app/constants/rooms";
 import { DatePicker } from "@mui/x-date-pickers";
+import { Room } from "@/app/constants/room";
 
 export default function ReservationDatesRender({
   reservations,
 }: {
   reservations: any[];
 }) {
-  const { createReservation, setCreateReservation } = useContext(ReservationContext);
+  const { createReservation, setCreateReservation } =
+    useContext(ReservationContext);
   const [expanded, setExpanded] = useState(false);
-  const isValid = createReservation.from_date && createReservation.to_date
-  const calendarRef = useRef(null)
-  const [calendarTitle, setCalendarTitle] = useState("")
+  const isValid = createReservation.from_date && createReservation.to_date;
+  const calendarRef = useRef(null);
+  const [calendarTitle, setCalendarTitle] = useState("");
   const { handleSubmit, control, watch, formState, reset, setValue } = useForm({
-    defaultValues: { from_date: null, to_date: null, rooms: [1, 2, 3, 4, 5] },
+    defaultValues: {
+      from_date: null,
+      to_date: null,
+      rooms: Room.getAllRooms().map((room) => room.name),
+    },
   });
 
   const { from_date, to_date, rooms } = watch();
@@ -58,16 +63,21 @@ export default function ReservationDatesRender({
     to_date: any;
   }) => {
     setExpanded(false);
-    setCreateReservation({ ...createReservation, from_date: dayjs(from_date).format("YYYY-MM-DD"), to_date: dayjs(to_date).format("YYYY-MM-DD"), rooms });
+    setCreateReservation({
+      ...createReservation,
+      from_date: dayjs(from_date).format("YYYY-MM-DD"),
+      to_date: dayjs(to_date).format("YYYY-MM-DD"),
+      rooms,
+    });
   };
 
   useEffect(() => {
-    const calendarApi = (calendarRef.current as any).getApi()
-    setCalendarTitle(calendarApi.currentData.viewTitle)
-  }, [])
+    const calendarApi = (calendarRef.current as any).getApi();
+    setCalendarTitle(calendarApi.currentData.viewTitle);
+  }, []);
 
   const calendarEventData = useMemo(() => {
-    const reservationData = reservations.map(reservation => ({
+    const reservationData = reservations.map((reservation) => ({
       id: reservation.id,
       title: reservation.name,
       start: reservation.from_date,
@@ -76,73 +86,93 @@ export default function ReservationDatesRender({
       leader: reservation.leader_name,
       color: reservation.status_color,
       icon: reservation.status_icon,
-      display_name: reservation.status_name
-    }))
+      display_name: reservation.status_name,
+    }));
 
     if (from_date && to_date) {
-      reservationData.push({ id: "custom", title: "Nová rezervace", start: dayjs(from_date).toDate(), end: dayjs(to_date).add(1, "day").toDate(), resourceIds: rooms, leader: "" } as any)
+      reservationData.push({
+        id: "custom",
+        title: "Nová rezervace",
+        start: dayjs(from_date).toDate(),
+        end: dayjs(to_date).add(1, "day").toDate(),
+        resourceIds: rooms,
+        leader: "",
+      } as any);
     }
 
-    return reservationData
-  }, [from_date, to_date, rooms])
+    return reservationData;
+  }, [from_date, to_date, rooms]);
 
   const calendarResources = useMemo(() => {
-    return roomsEnum.list.map((room) => ({ id: room.id, title: room.label }))
-  }, [])
+    return Room.getAllRooms().map((room) => ({
+      id: room.name,
+      title: room.name,
+    }));
+  }, []);
 
-  const bedsCount = useMemo(() => {
-    return roomsEnum.list.reduce((a, b) => {
-      if (rooms.includes(b.id as never)) {
-        a += b.capacity
-      }
-      return a
-    }, 0)
-  }, [rooms])
+  const bedsCount = useMemo(() => Room.getBedsCount(rooms), [rooms]);
 
   useEffect(() => {
     if (dayjs(from_date).isValid() && dayjs(to_date).isValid()) {
-      const calendarApi = (calendarRef.current as any).getApi()
-      calendarApi.gotoDate(dayjs(from_date).toISOString())
-      setCalendarTitle(calendarApi.currentData.viewTitle)
+      const calendarApi = (calendarRef.current as any).getApi();
+      calendarApi.gotoDate(dayjs(from_date).toISOString());
+      setCalendarTitle(calendarApi.currentData.viewTitle);
     }
-  }, [from_date, to_date])
+  }, [from_date, to_date]);
 
   const mutateCalendar = (action: "next" | "prev" | "today") => {
-    const calendarApi = (calendarRef.current as any).getApi()
+    const calendarApi = (calendarRef.current as any).getApi();
     switch (action) {
       case "next":
-        calendarApi.next()
-        break
+        calendarApi.next();
+        break;
       case "prev":
-        calendarApi.prev()
+        calendarApi.prev();
         break;
       case "today":
-        calendarApi.today()
+        calendarApi.today();
     }
-    setCalendarTitle(calendarApi.currentData.viewTitle)
-  }
+    setCalendarTitle(calendarApi.currentData.viewTitle);
+  };
 
   const eventContentInjection = (event: any) => {
-    const { leader, rooms, display_name, icon } = event.event.extendedProps
+    const { leader, rooms, display_name, icon } = event.event.extendedProps;
 
-    return <Tooltip title={<List className='p-0'>
-      <ListItem className='!p-0'>
-        <ListItemText>Vedoucí: {leader}</ListItemText>
-      </ListItem>
-      <ListItem className="!p-0">
-        <ListItemText>Status: {display_name}</ListItemText>
-        <ListItemIcon className='min-w-0 ml-2'>
-          {<Icon sx={{ color: event.event.backgroundColor }}>{icon}</Icon>}    </ListItemIcon>      </ListItem>
-    </List>}>
-      <p>{event.event.title}</p>
-    </Tooltip>
-  }
+    return (
+      <Tooltip
+        title={
+          <List className="p-0">
+            <ListItem className="!p-0">
+              <ListItemText>Vedoucí: {leader}</ListItemText>
+            </ListItem>
+            <ListItem className="!p-0">
+              <ListItemText>Status: {display_name}</ListItemText>
+              <ListItemIcon className="min-w-0 ml-2">
+                {
+                  <Icon sx={{ color: event.event.backgroundColor }}>
+                    {icon}
+                  </Icon>
+                }{" "}
+              </ListItemIcon>{" "}
+            </ListItem>
+          </List>
+        }
+      >
+        <p>{event.event.title}</p>
+      </Tooltip>
+    );
+  };
 
   const resetSection = () => {
-    reset()
-    mutateCalendar("today")
-    setCreateReservation({ ...createReservation, from_date: "", to_date: "", rooms: [] });
-  }
+    reset();
+    mutateCalendar("today");
+    setCreateReservation({
+      ...createReservation,
+      from_date: "",
+      to_date: "",
+      rooms: [],
+    });
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit as any)}>
@@ -170,44 +200,130 @@ export default function ReservationDatesRender({
                   <NavigateNext />
                 </Button>
               </ButtonGroup>
-              <Button variant="outlined" size="small" onClick={() => mutateCalendar("today")}>Dnes</Button>
-              <Typography variant="h6" className='!font-semibold'>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => mutateCalendar("today")}
+              >
+                Dnes
+              </Button>
+              <Typography variant="h6" className="!font-semibold">
                 {calendarTitle}
               </Typography>
             </div>
-            <FullCalendar ref={calendarRef} contentHeight="auto" locale={csLocale} plugins={[resourceTimelineWeek]} initialView="resourceTimelineWeek" events={calendarEventData} slotDuration={{ days: 1 }} slotLabelFormat={{ weekday: "short", day: "numeric", month: "numeric" }} resources={calendarResources} resourceAreaHeaderContent="Pokoje" slotMinWidth={100} resourceAreaWidth="101px" eventContent={eventContentInjection} />
+            <FullCalendar
+              ref={calendarRef}
+              contentHeight="auto"
+              locale={csLocale}
+              plugins={[resourceTimelineWeek]}
+              initialView="resourceTimelineWeek"
+              events={calendarEventData}
+              slotDuration={{ days: 1 }}
+              slotLabelFormat={{
+                weekday: "short",
+                day: "numeric",
+                month: "numeric",
+              }}
+              resources={calendarResources}
+              resourceAreaHeaderContent="Pokoje"
+              slotMinWidth={100}
+              resourceAreaWidth="101px"
+              eventContent={eventContentInjection}
+            />
           </div>
           <div className="flex flex-col md:mt-[33.5px] mt-0 gap-3">
-            <Controller control={control} name="from_date" rules={{ required: true }} render={({ field }) => (
-              <DatePicker label="Začátek rezervace" minDate={dayjs()} maxDate={dayjs(to_date).subtract(1, "day")} {...field} format="DD. MM. YYYY" />
-            )} />
-            <Controller control={control} name="to_date" rules={{ required: true }} render={({ field }) => (
-              <DatePicker label="Konec rezervace" {...field} minDate={dayjs(from_date).isValid() ? dayjs(from_date).add(1, "day") : dayjs()} format="DD. MM. YYYY" />
-            )} />
-            <Controller control={control} name="rooms" render={({ field }) => (
-              <FormControl>
-                <InputLabel id="rooms-label">Pokoje</InputLabel>
-                <Select {...field} multiple label="Label" id="rooms" labelId="rooms-label">
-                  {roomsEnum.list.map((room) => (
-                    <MenuItem key={room.id} value={room.id}>
-                      {room.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )} />
+            <Controller
+              control={control}
+              name="from_date"
+              rules={{ required: true }}
+              render={({ field }) => (
+                <DatePicker
+                  label="Začátek rezervace"
+                  minDate={dayjs()}
+                  maxDate={dayjs(to_date).subtract(1, "day")}
+                  {...field}
+                  format="DD. MM. YYYY"
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="to_date"
+              rules={{ required: true }}
+              render={({ field }) => (
+                <DatePicker
+                  label="Konec rezervace"
+                  {...field}
+                  minDate={
+                    dayjs(from_date).isValid()
+                      ? dayjs(from_date).add(1, "day")
+                      : dayjs()
+                  }
+                  format="DD. MM. YYYY"
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="rooms"
+              render={({ field }) => (
+                <FormControl>
+                  <InputLabel id="rooms-label">Pokoje</InputLabel>
+                  <Select
+                    {...field}
+                    multiple
+                    label="Label"
+                    id="rooms"
+                    labelId="rooms-label"
+                  >
+                    {Room.getAllRooms().map((room, i) => (
+                      <MenuItem key={i} value={room.name}>
+                        {room.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            />
             <div className="-my-3">
-              <FormControlLabel control={<Radio checked={rooms.length === 5} />} label="Všechny pokoje" onClick={() => setValue("rooms", [1, 2, 3, 4, 5])} />
-              <FormControlLabel control={<Radio checked={rooms.length === 0} />} label="Žádný pokoj" onClick={() => setValue("rooms", [])} />
+              <FormControlLabel
+                control={<Radio checked={rooms.length === 5} />}
+                label="Všechny pokoje"
+                onClick={() =>
+                  setValue(
+                    "rooms",
+                    Room.getAllRooms().map((room) => room.name)
+                  )
+                }
+              />
+              <FormControlLabel
+                control={<Radio checked={rooms.length === 0} />}
+                label="Žádný pokoj"
+                onClick={() => setValue("rooms", [])}
+              />
             </div>
             <Typography>Celkem vybráno lůžek {bedsCount}</Typography>
             <div>
-              <Button variant="contained" type="submit" className="!mr-2" disabled={!formState.isValid}>Uložit</Button>
-              <Button variant="contained" color="error" onClick={resetSection} disabled={!isValid && !formState.isDirty}>Smazat</Button>
+              <Button
+                variant="contained"
+                type="submit"
+                className="!mr-2"
+                disabled={!formState.isValid}
+              >
+                Uložit
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={resetSection}
+                disabled={!isValid && !formState.isDirty}
+              >
+                Smazat
+              </Button>
             </div>
           </div>
         </AccordionDetails>
       </Accordion>
-    </form >
+    </form>
   );
 }
