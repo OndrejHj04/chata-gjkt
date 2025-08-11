@@ -1359,16 +1359,15 @@ export const getReservationDetail = async ({
 
   const roomsRequest = await query({
     query: `
-      SELECT ro.id, ro.people
+      SELECT rr.room
       FROM reservations r
       LEFT JOIN reservations_rooms rr ON rr.reservationId = r.id
-      INNER JOIN rooms ro ON ro.id = rr.room
       WHERE r.id = ?
     `,
     values: [reservationId],
   });
 
-  const data = { ...dataRequest[0], rooms: roomsRequest };
+  const data = { ...dataRequest[0], rooms: roomsRequest.map(({room})=>room)};
 
   return { data };
 };

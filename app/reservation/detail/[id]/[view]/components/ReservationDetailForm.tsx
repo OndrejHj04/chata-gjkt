@@ -1,5 +1,6 @@
 "use client";
 
+import { Room } from "@/constants/room";
 import {
   editReservationDate,
   editReservationDetail,
@@ -13,7 +14,6 @@ import {
   Button,
   CardHeader,
   FormControl,
-  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -22,16 +22,8 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import React, { useMemo } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
-
-export const rooms = [
-  { id: 1, name: "Pokoj 1", people: 4 },
-  { id: 2, name: "Pokoj 2", people: 4 },
-  { id: 3, name: "Pokoj 3", people: 4 },
-  { id: 4, name: "Pokoj 4", people: 4 },
-  { id: 5, name: "Pokoj 5", people: 6 }
-];
 
 export default function ReservationDetailForm({
   reservationDetail,
@@ -42,7 +34,6 @@ export default function ReservationDetailForm({
 }) {
   const {
     handleSubmit,
-    watch,
     register,
     control,
     formState: { isValid, isDirty, dirtyFields },
@@ -58,16 +49,9 @@ export default function ReservationDetailForm({
       paymentSymbol: reservationDetail.payment_symbol || "",
       rejectReason: reservationDetail.reject_reason || "",
       successLink: reservationDetail.success_link || "",
-      rooms: reservationDetail.rooms.map((room: any) => room.id),
+      rooms: reservationDetail.rooms,
     },
   });
-
-  const watchRooms = watch("rooms");
-  const bedsCount = useMemo(() => {
-    return watchRooms.reduce((a: any, b: any) => {
-      return rooms[b - 1].people + a;
-    }, 0);
-  }, [watchRooms]);
 
   const onSubmit = (data: any) => {
     if (dirtyFields.from_date || dirtyFields.to_date) {
@@ -162,7 +146,7 @@ export default function ReservationDetailForm({
                     data={{ image: reservationDetail.leader_image }}
                     size={56}
                   />
-                }
+                }room
                 title={
                   <Typography variant="h5">
                     {reservationDetail.leader_name}
@@ -256,17 +240,13 @@ export default function ReservationDetailForm({
                 multiple
                 id="rooms"
                 label="Label"
-                renderValue={(selected) => {
-                  return selected.map((room: any) => `Pokoj ${room}`).join(",");
-                }}
               >
-                {rooms.map((room: any) => (
-                  <MenuItem key={room.id} value={room.id}>
-                    {room.name}, kapacita: {room.people} osoby
+                {Room.getAllRooms().map((room) => (
+                  <MenuItem key={room.id} value={room.name}>
+                    {room.name}; {room.capacity} osoby
                   </MenuItem>
                 ))}
               </Select>
-              <FormHelperText>Vybráno {bedsCount} lůžek</FormHelperText>
             </FormControl>
           )}
         />

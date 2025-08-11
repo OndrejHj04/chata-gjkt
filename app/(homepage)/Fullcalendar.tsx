@@ -10,40 +10,7 @@ import { NavigateBefore, NavigateNext } from "@mui/icons-material"
 
 import dayjs from 'dayjs'
 import { setBlockedDates } from '@/lib/api'
-
-const roomNumberToString = (roomNumber: number) => {
-  switch(roomNumber) {
-    case 1:
-      return "firstRoom"
-    case 2:
-      return "secondRoom"
-    case 3:
-      return "thirdRoom"
-    case 4:
-      return "fourthRoom"
-    case 5:
-      return "fifthRoom"
-    default:
-      return ""
-  }
-}
-
-const translateRoom = (room: string) => {
-  switch(room) {
-    case "firstRoom":
-      return "Pokoj 1";
-    case "secondRoom":
-      return "Pokoj 2";
-    case "thirdRoom":
-      return "Pokoj 3";
-    case "fourthRoom":
-      return "Pokoj 4";
-    case "fifthRoom":
-      return "Pokoj 5";
-    default:
-      return room;
-  }
-}
+import { Room, RoomId } from '@/constants/room'
 
 export default function FullcalendarComponent({ data, role }: { data: any, role: any }) {
   const searchParams = useSearchParams()
@@ -116,11 +83,11 @@ export default function FullcalendarComponent({ data, role }: { data: any, role:
     refresh()
   }
 
-  const handleFilterRoom = (room: number) => {
+  const handleFilterRoom = (roomId: RoomId) => {
     const params = new URLSearchParams(searchParams);
 
-    if(searchParams.has(roomNumberToString(room))) params.delete(roomNumberToString(room))
-    else params.set(roomNumberToString(room), "1")
+    if(searchParams.has(roomId)) params.delete(roomId)
+    else params.set(roomId, "1")
     replace(`${pathname}?${params.toString()}`);
   }
 
@@ -141,11 +108,11 @@ export default function FullcalendarComponent({ data, role }: { data: any, role:
           </ButtonGroup>
           <Button variant="outlined" size="small" onClick={() => mutateCalendar("today")}>Dnes</Button>
         </div>
-        {[1,2,3,4,5].map((room, i) => (
-          <Button key={i} onClick={() => handleFilterRoom(i+1)} size='small'>
+        {Room.getAllRooms().map((room) => (
+          <Button key={room.id} onClick={() => handleFilterRoom(room.id)} size='small'>
             <div className='normal-case text-white flex items-center'>
-              <Typography>{translateRoom(roomNumberToString(i+1))}</Typography>
-              <Checkbox disableRipple checked={searchParams.get(roomNumberToString(i+1)) === "1" ? true : false}/>
+              <Typography>{room.name}</Typography>
+              <Checkbox disableRipple checked={searchParams.get(room.id) === "1" ? true : false}/>
             </div>
           </Button>
         ))}
