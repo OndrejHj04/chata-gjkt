@@ -32,7 +32,7 @@ import resourceTimelineWeek from "@fullcalendar/resource-timeline";
 import csLocale from "@fullcalendar/core/locales/cs";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Room } from "@/app/constants/room";
+import { Room } from "@/constants/room";
 
 export default function ReservationDatesRender({
   reservations,

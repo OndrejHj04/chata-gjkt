@@ -12,7 +12,7 @@ import ReservationListItem from "../list/components/ReservationListItem";
 import React from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import SortableColumn from "../../libComponents/SortableColumn";
+import SortableColumn from "../../../ui-components/SortableColumn";
 
 export default async function ReservationList({
   searchParams,

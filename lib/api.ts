@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import { sign } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import { Room } from "@/app/constants/room";
+import { Room } from "@/constants/room";
 
 export const getImages = async () => {
   const cookieStore = await cookies();

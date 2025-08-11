@@ -15,7 +15,7 @@ import UserListItem from "./components/UserListItem";
 import TableListPagination from "@/ui-components/TableListPagination";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import SortableColumn from "@/app/libComponents/SortableColumn";
+import SortableColumn from "@/ui-components/SortableColumn";
 
 const columns = [
   "children",
