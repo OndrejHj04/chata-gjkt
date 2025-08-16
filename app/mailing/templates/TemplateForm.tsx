@@ -2,7 +2,7 @@
 import { Button, Paper, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { mailingTemplateEdit } from "@/lib/api";
-import CustomEditor from "../CustomEditor";
+import CustomEditor from "../../../ui-components/CustomEditor";
 import { withToast } from "@/utils/toast/withToast";
 
 export default function TemplateForm({ template }: { template: any }) {
@@ -14,15 +14,15 @@ export default function TemplateForm({ template }: { template: any }) {
     handleSubmit,
     formState: { isValid, isDirty },
     control,
-    reset
-  } = methods
+    reset,
+  } = methods;
 
   const onSubmit = (data: any) => {
     withToast(mailingTemplateEdit(data), {
-      message: "mailing.templates.edit"
-    })
+      message: "mailing.templates.edit",
+    });
 
-    reset()
+    reset();
   };
 
   return (
@@ -49,9 +49,18 @@ export default function TemplateForm({ template }: { template: any }) {
           className="w-full"
           label="Předmět"
         />
-        <Controller control={control} {...register("text")} render={({ field }) => (
-          <CustomEditor onEditorChange={field.onChange} value={field.value} variables={template.variables} initialValue={template.text}
-          />)} />
+        <Controller
+          control={control}
+          {...register("text")}
+          render={({ field }) => (
+            <CustomEditor
+              onEditorChange={field.onChange}
+              value={field.value}
+              variables={template.variables}
+              initialValue={template.text}
+            />
+          )}
+        />
       </Paper>
     </form>
   );
