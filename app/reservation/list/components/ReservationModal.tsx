@@ -14,6 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { reservationUpdateStatus } from "@/lib/api";
 import { dayjsExtended } from "@/lib/dayjsExtended";
 import { withToast } from "@/utils/toast/withToast";
+import { Status } from "@/constants/status";
 
 const style = {
   position: "absolute" as "absolute",
@@ -23,19 +24,13 @@ const style = {
   transform: "translate(-50%, -50%)",
 };
 
-export const statuses = [
-  { id: 2, color: "#FCD34D", displayName: "Čeká na potvrzení", icon: "running_with_errors" },
-  { id: 3, color: "#34D399", displayName: "Potvrzeno", icon: "done_all" },
-  { id: 4, color: "#ED9191", displayName: "Zamítnuto", icon: "gpp_bad" },
-]
-
 export default function ReservationModal({ reservation }: { reservation: any }) {
   const searchParams = useSearchParams();
   const nextSearchParams = new URLSearchParams(searchParams)
 
   const { register, handleSubmit, watch, control, formState: { dirtyFields } } = useForm({
     defaultValues: {
-      status: reservation.status_id,
+      status: reservation.status,
       reject_reason: reservation.reject_reason,
       success_link: reservation.success_link
     }
@@ -61,8 +56,8 @@ export default function ReservationModal({ reservation }: { reservation: any }) 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
           <Controller control={control} name="status" render={({ field }) => (
             <TextField {...field} label="Status" select className="mt-2" fullWidth>
-              {statuses.map((status) => (
-                <MenuItem key={status.id} value={status.id}>{status.displayName}</MenuItem>
+              {Status.getFilteredStatus(['čeká na potvrzení', 'potvrzeno', 'zamítnuto']).map((status) => (
+                <MenuItem key={status.name} value={status.name}>{status.name}</MenuItem>
               ))}
             </TextField>
           )} />

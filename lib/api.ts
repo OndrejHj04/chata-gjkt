@@ -9,6 +9,7 @@ import { sign } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { Room } from "@/constants/room";
+import { Status } from "@/constants/status";
 
 export const getImages = async () => {
   const cookieStore = await cookies();
@@ -183,14 +184,14 @@ LIMIT 10 OFFSET ?
 
 export const getReservationList = async ({
   page,
-  status,
+  status = 'Všechny',
   search,
   registration,
   sort,
   dir,
 }: {
   page: any;
-  status: any;
+  status: Status['name'] | 'Všechny';
   search: any;
   registration: any;
   sort: any;
@@ -209,7 +210,7 @@ export const getReservationList = async ({
     query({
       query: `  
         SELECT r.id, r.name, r.from_date, r.to_date, r.creation_date, CONCAT(u.first_name, ' ', u.last_name) as leader_name, u.image as leader_image, u.id as leader_id,
-                s.icon as status_icon, s.color as status_color, s.display_name as status_name, s.id as status_id, r.reject_reason, r.success_link,
+                s.icon as status_icon, s.color as status_color, s.display_name as status_name, r.status, r.reject_reason, r.success_link,
                (SELECT COUNT(*) FROM users_reservations ur WHERE ur.reservationId = r.id AND ur.verified = 1) AS users_count,
                (SELECT SUM(ro.people) 
                 FROM reservations_rooms rr 
@@ -226,7 +227,7 @@ export const getReservationList = async ({
         LEFT JOIN reservations_forms rf ON rf.reservation_id = r.id
         INNER JOIN status s ON s.id = r.status
         WHERE r.status <> 1
-              ${status > 0 ? `AND r.status = ${status}` : ""}
+              ${status === "Všechny" ? "" : `AND r.status = "${status}"`}
               ${search.length ? `AND r.name LIKE "%${search}%"` : ""}
               ${
                 registration > 0
@@ -248,7 +249,7 @@ export const getReservationList = async ({
     query({
       query: `SELECT COUNT(r.id) as count FROM reservations r
       WHERE r.status <> 1
-      ${status > 0 ? `AND r.status = ${status}` : ""}
+      ${status === "Všechny" ? "" : `AND r.status = "${status}"`}
       ${search.length ? `AND r.name LIKE "%${search}%"` : ""}
       `,
       values: [],
@@ -686,7 +687,7 @@ export const reservationUpdateStatus = async ({
   successLink = null,
 }: {
   id: any;
-  newStatus: any;
+  newStatus: Status['name'];
   rejectReason?: any;
   successLink?: any;
 }) => {
@@ -702,7 +703,7 @@ export const reservationUpdateStatus = async ({
 
   const payment_symbol = await generatePaymenetSymbol(id);
 
-  if (newStatus === 3) {
+  if (newStatus === 'potvrzeno') {
     successLink &&
       successLink.length &&
       (await query({
@@ -722,7 +723,7 @@ export const reservationUpdateStatus = async ({
     approveReservationSendMail({ reservationId: id });
   }
 
-  if (newStatus === 4) {
+  if (newStatus === 'zamítnuto') {
     rejectReason &&
       rejectReason.length &&
       (await query({

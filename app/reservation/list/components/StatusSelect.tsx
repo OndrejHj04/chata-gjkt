@@ -1,6 +1,6 @@
 "use client";
 
-import { DoDisturb, DoneAll, GppBad, RunningWithErrors } from "@mui/icons-material";
+import { Status } from "@/constants/status";
 import {
   FormControl,
   FormHelperText,
@@ -11,17 +11,9 @@ import {
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
-
-export const statuses = [
-  { id: 2, color: "#FCD34D", displayName: "Čeká na potvrzení", icon: <RunningWithErrors /> },
-  { id: 3, color: "#34D399", displayName: "Potvrzeno", icon: <DoneAll /> },
-  { id: 4, color: "#ED9191", displayName: "Zamítnuto", icon: <GppBad /> },
-  { id: 5, color: "#ED9191", displayName: "Blokováno správcem", icon: <DoDisturb /> },
-]
-
 export default function StatusSelect({ className }: { className?: any }) {
   const searchParams = useSearchParams();
-  const status = Number(searchParams.get("status")) || 0;
+  const status = searchParams.get("status") || 'Všechny'
   const { replace } = useRouter();
   const pathname = usePathname();
 
@@ -38,18 +30,14 @@ export default function StatusSelect({ className }: { className?: any }) {
         id="demo-simple-select"
         variant="standard"
         label="Status rezervace"
-        renderValue={(data) => {
-          const name = statuses.find((status: any) => status.id === data);
-          return <div>{name?.displayName || "Všechny"}</div>;
-        }}
         defaultValue={status}
         onChange={handleChange}
       >
-        <MenuItem value={0}>Všechny</MenuItem>
-        {statuses.map((status: any) => (
-          <MenuItem key={status.id} value={status.id} className="gap-2">
+        <MenuItem value={'Všechny'}>Všechny</MenuItem>
+        {Status.getAllStatus().map((status) => (
+          <MenuItem key={status.name} value={status.name} className="gap-2">
             <Icon sx={{ "&&": { color: status.color } }}>{status.icon}</Icon>
-            {status.displayName}
+            {status.name}
           </MenuItem>
         ))}
       </Select>

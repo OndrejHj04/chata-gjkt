@@ -14,22 +14,21 @@ import ReservationModal from "./ReservationModal";
 import { Cancel, CheckCircle } from "@mui/icons-material";
 import React, { useState } from "react";
 import { reservationDelete } from "@/lib/api";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { dayjsExtended } from "@/lib/dayjsExtended";
 import { withToast } from "@/utils/toast/withToast";
 
 export default function ReservationListItem({
   reservation,
-  searchParams,
   isAdmin,
   userId,
 }: {
   reservation: any;
-  searchParams: any;
   isAdmin: any;
   userId: any;
 }) {
-  const { reservation_id } = searchParams;
+  const searchParams = useSearchParams()
+  const reservation_id = searchParams.get('reservation_id')
   const { refresh } = useRouter();
   const blocation = reservation.status_id === 5;
   const [selectedReservation, setSelectedReservation] = useState<{ mouseX: number, mouseY: number, id: number } | null>(null)

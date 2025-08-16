@@ -22,15 +22,15 @@ export default async function ReservationList({
   const { user } = (await getServerSession(authOptions)) as any;
   const {
     page = 1,
-    status = 0,
+    status,
     search = "",
     registration = 0,
     sort = "",
     dir = "",
-  } = searchParams;
+  } = await searchParams;
   const { data, count } = (await getReservationList({
     page,
-    status: Number(status),
+    status,
     search,
     registration: Number(registration),
     sort,
@@ -63,7 +63,6 @@ export default async function ReservationList({
           {data.map((reservation: any) => {
             return (
               <ReservationListItem
-                searchParams={searchParams}
                 key={reservation.id}
                 reservation={reservation}
                 userId={user.id}
