@@ -11,6 +11,16 @@ import { createClient } from "@/utils/supabase/server";
 import { Room } from "@/constants/room";
 import { Status } from "@/constants/status";
 
+export const createAlbum = async () => {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  await supabase.storage.from('photogallery').upload(`/test/new_album_base`, new Blob([''], { type: 'text/plain' }), {
+    cacheControl: "3600",
+    upsert: false,
+  });
+}
+
 export const getImages = async () => {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
@@ -72,12 +82,6 @@ export const uploadImage = async (fileData) => {
       cacheControl: "3600",
       upsert: false,
     });
-
-  // create empty folder
-  //     .upload(`/xxxx/file/path`, new Blob([''], { type: 'text/plain' }), {
-  //   cacheControl: "3600",
-  //   upsert: false,
-  // });
 };
 
 export const getUserList = async ({

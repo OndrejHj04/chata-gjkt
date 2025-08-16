@@ -6,7 +6,7 @@ const sideMenu = [
   { name: "Aktivní registrace", icon: "assignment", href: ["/registration/list"], roles: [1, 2] },
   { name: "Archiv", icon: "bookmark", href: ["/archive/list"], roles: [1, 2] },
   { name: "Mailing", icon: "alternate_email", href: ["/mailing/send", "/mailing/templates", "/mailing/events"], roles: [1, 2] },
-  { name: "Galerie", icon: "panorama", href: ["/photogallery"], roles: [1, 2, 3] },
+  { name: "Galerie", icon: "panorama", href: ["/photogallery/my-photos", "/photogallery/albums", "/photogallery/photo-feed"], roles: [1, 2, 3] },
   { name: "Počasí", icon: "wb_sunny", href: ["/weather"], roles: [1, 2, 3] },
   { name: "Přehledné zobrazení", icon: "view_timeline", href: ["/data_overview"], roles: [1, 2] },
   { name: "Nastavení", icon: "settings", href: ["/settings"], roles: [1] },
