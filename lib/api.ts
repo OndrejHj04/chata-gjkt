@@ -10,16 +10,60 @@ import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { Room } from "@/constants/room";
 import { Status } from "@/constants/status";
+import { MessagePaths } from "@/utils/toast/types";
 
-export const createAlbum = async () => {
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+export const getUserAlbums = async () => {
+  const { user } = (await getServerSession(authOptions)) as any;
 
-  await supabase.storage.from('photogallery').upload(`/test/new_album_base`, new Blob([''], { type: 'text/plain' }), {
-    cacheControl: "3600",
-    upsert: false,
+  const albums = await query({
+    query: `SELECT pa.name, pa.created_at, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name, 'photo', u.image) as owner FROM photogallery_albums as pa
+    INNER JOIN users as u on u.id = pa.owner
+    WHERE pa.owner = ?`,
+    values: [user.id],
   });
-}
+
+  const data = albums.map((album) => ({
+    ...album,
+    owner: JSON.parse(album.owner),
+  }));
+
+  return { data };
+};
+
+export const createAlbum = async (albumName: string) => {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+    const { user } = (await getServerSession(authOptions)) as any;
+
+    await supabase.storage
+      .from("photogallery")
+      .upload(
+        `/${albumName}/new_album_base`,
+        new Blob([""], { type: "text/plain" }),
+        {
+          cacheControl: "3600",
+          upsert: false,
+        }
+      );
+
+    await query({
+      query: `INSERT INTO photogallery_albums (name, owner) VALUES (?,?)`,
+      values: [albumName, user.id],
+    });
+
+    return { success: true };
+  } catch (e) {
+    if (e.code === "ER_DUP_ENTRY") {
+      return {
+        success: false,
+        message: "photogallery.createAlbumDuplicate" as MessagePaths,
+      };
+    }
+
+    return { success: false };
+  }
+};
 
 export const getImages = async () => {
   const cookieStore = await cookies();
@@ -188,14 +232,14 @@ LIMIT 10 OFFSET ?
 
 export const getReservationList = async ({
   page,
-  status = 'Všechny',
+  status = "Všechny",
   search,
   registration,
   sort,
   dir,
 }: {
   page: any;
-  status: Status['name'] | 'Všechny';
+  status: Status["name"] | "Všechny";
   search: any;
   registration: any;
   sort: any;
@@ -691,7 +735,7 @@ export const reservationUpdateStatus = async ({
   successLink = null,
 }: {
   id: any;
-  newStatus: Status['name'];
+  newStatus: Status["name"];
   rejectReason?: any;
   successLink?: any;
 }) => {
@@ -707,7 +751,7 @@ export const reservationUpdateStatus = async ({
 
   const payment_symbol = await generatePaymenetSymbol(id);
 
-  if (newStatus === 'potvrzeno') {
+  if (newStatus === "potvrzeno") {
     successLink &&
       successLink.length &&
       (await query({
@@ -727,7 +771,7 @@ export const reservationUpdateStatus = async ({
     approveReservationSendMail({ reservationId: id });
   }
 
-  if (newStatus === 'zamítnuto') {
+  if (newStatus === "zamítnuto") {
     rejectReason &&
       rejectReason.length &&
       (await query({
@@ -1372,7 +1416,10 @@ export const getReservationDetail = async ({
     values: [reservationId],
   });
 
-  const data = { ...dataRequest[0], rooms: roomsRequest.map(({room})=>room)};
+  const data = {
+    ...dataRequest[0],
+    rooms: roomsRequest.map(({ room }) => room),
+  };
 
   return { data };
 };

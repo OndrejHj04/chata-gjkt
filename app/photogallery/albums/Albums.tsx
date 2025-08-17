@@ -1,5 +1,8 @@
-import { Typography } from "@mui/material";
+"use client";
 
-export default function Albums(){
-    return <Typography>Album</Typography>
+import { createAlbum } from "@/lib/api";
+
+export default function Albums() {
+
+  return <div>asfa</div>;
 }

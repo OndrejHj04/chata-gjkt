@@ -193,5 +193,15 @@
       "success": "Registrační email byl znovu odeslán",
       "error": "Něco se nepovedlo"
     }
+  },
+  "photogallery": {
+    "createAlbum":{
+      "success": "Album úspěšně vytvořeno",
+      "error": "Něco se nepovedlo"
+    },
+    "createAlbumDuplicate": {
+      "success": "",
+      "error": "Jméno alba musí být unikátní. Toto jméno už je použité."
+    }
   }
 }

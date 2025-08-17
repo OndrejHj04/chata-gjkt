@@ -2,9 +2,10 @@ import Albums from "../albums/Albums";
 import MyPhotos from "../my-photos/MyPhotos";
 import PhotoFeed from "../photo-feed/PhotoFeed";
 
-export default function Page({ params }: any) {
+export default async function Page({ params }: any) {
+  const { variant } = await params;
   let content;
-  switch (params.variant) {
+  switch (variant) {
     case "albums":
       content = <Albums />;
       break;

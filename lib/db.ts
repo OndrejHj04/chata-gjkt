@@ -24,6 +24,6 @@ export async function query({
     connection.end()
     return results;
   } catch (error: any) {
-    throw Error(error.message);
+    throw error
   }
 }
