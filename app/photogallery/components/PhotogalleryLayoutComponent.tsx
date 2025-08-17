@@ -1,7 +1,6 @@
 import SearchBar from "@/ui-components/SearchBar";
-import { Paper, Tab, Tabs } from "@mui/material";
+import { Button, Paper, Tab, Tabs } from "@mui/material";
 import Link from "next/link";
-import CreateAlbumButton from "./CreateAlbumButton";
 import AlbumVisibilityFilterSelect from "./AlbumVisibilityFilterSelect";
 
 export default function PhotogalleryLayoutComponent({
@@ -28,19 +27,17 @@ export default function PhotogalleryLayoutComponent({
             href="/photogallery/albums"
           />
         </Tabs>
-        {variant === "albums" && (
-          <SearchBar
-            variant="standard"
-            label="Hledat alba"
-            className="md:w-80 w-40"
-          />
-        )}
-        <div className="flex-1 flex justify-end items-center gap-2">
-          {variant === "albums" && <AlbumVisibilityFilterSelect />}
-          {variant === "albums" && <CreateAlbumButton />}
-        </div>
       </div>
-      <Paper className="w-full h-full p-2">{children}</Paper>
+      <div className="flex gap-2 h-full">
+        <Paper className="flex-1 h-full p-2">{children}</Paper>
+        <Paper className="flex flex-col p-2 w-60 gap-2">
+          <Link href={"/photogallery/albums/create"}>
+            <Button variant="contained">Vytvořit album a přidat fotky</Button>
+          </Link>
+          <SearchBar variant="standard" label="Hledat alba" />
+          <AlbumVisibilityFilterSelect />
+        </Paper>
+      </div>
     </div>
   );
 }

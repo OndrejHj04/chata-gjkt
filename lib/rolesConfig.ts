@@ -27,6 +27,7 @@ const sideMenu = [
     href: [
       "/photogallery/feed",
       "/photogallery/albums",
+      "/photogallery/albums/create",
     ],
     roles: [1, 2, 3],
   },
