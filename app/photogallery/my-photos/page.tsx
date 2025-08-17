@@ -9,13 +9,13 @@ import {
 } from "@mui/material";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import dayjs from "dayjs";
-import AlbumDetailButton from "./AlbumDetailButton";
+import AlbumDetailButton from "../components/AlbumDetailButton";
 import TableListPagination from "@/ui-components/TableListPagination";
 
-export default async function MyPhotos() {
-  const { data: albums, count } = await getUserAlbums();
+export default async function MyPhotos({ searchParams }: any) {
+  const { page, visibility, search } = await searchParams;
+  const { data: albums, count } = await getUserAlbums({ page, visibility, search });
 
-  console.log();
   return (
     <TableContainer>
       <Table size="small">
@@ -28,7 +28,7 @@ export default async function MyPhotos() {
             <TableCell>Počet fotek</TableCell>
             <TableCell>Přístupnost</TableCell>
             <TableCell padding="none">
-              <TableListPagination count={count} name={"albums"} rpp={10} />
+              <TableListPagination count={count} name={"page"} rpp={10} />
             </TableCell>
           </TableRow>
         </TableHead>
@@ -49,7 +49,7 @@ export default async function MyPhotos() {
                 {dayjs(album.updated_at).format("DD. MMMM YYYY hh:mm")}
               </TableCell>
               <TableCell>photo_count</TableCell>
-              <TableCell>{album.public ? "Veřejné" : "Soukromé"}</TableCell>
+              <TableCell>{album.visibility}</TableCell>
               <AlbumDetailButton name={album.name} />
             </TableRow>
           ))}

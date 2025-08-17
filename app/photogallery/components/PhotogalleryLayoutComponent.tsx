@@ -1,9 +1,16 @@
+import SearchBar from "@/ui-components/SearchBar";
 import { Paper, Tab, Tabs } from "@mui/material";
 import Link from "next/link";
-import CreateAlbumButton from "../filters/CreateAlbumButton";
+import CreateAlbumButton from "./CreateAlbumButton";
+import AlbumVisibilityFilterSelect from "./AlbumVisibilityFilterSelect";
 
-export default async function Layout({ params, children }: any) {
-  const { variant } = await params;
+export default function PhotogalleryLayoutComponent({
+  children,
+  variant,
+}: {
+  children: any;
+  variant: "albums" | "photo-feed" | "my-photos";
+}) {
   return (
     <div className="w-full h-full flex flex-col px-2">
       <div className="flex items-center">
@@ -27,11 +34,16 @@ export default async function Layout({ params, children }: any) {
             href="/photogallery/photo-feed"
           />
         </Tabs>
-        <div>
-          asdf
-        </div>
-        <div className="flex-1 flex justify-end">
-          <CreateAlbumButton />
+        {variant !== "photo-feed" && (
+          <SearchBar
+            variant="standard"
+            label="Hledat alba"
+            className="md:w-80 w-40"
+          />
+        )}
+        <div className="flex-1 flex justify-end items-center gap-2">
+          {variant === "my-photos" && <AlbumVisibilityFilterSelect />}
+          {variant === "my-photos" && <CreateAlbumButton />}
         </div>
       </div>
       <Paper className="w-full h-full p-2">{children}</Paper>

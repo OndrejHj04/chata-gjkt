@@ -12,24 +12,32 @@ import { Room } from "@/constants/room";
 import { Status } from "@/constants/status";
 import { MessagePaths } from "@/utils/toast/types";
 
-export const getUserAlbums = async () => {
+export const getUserAlbums = async (filters: any) => {
   const { user } = (await getServerSession(authOptions)) as any;
 
-  const [albums, count] = await Promise.all([
+  const { page = 1, visibility, search = "" } = filters;
+
+  const [albums, count] = (await Promise.all([
     query({
-      query: `SELECT pa.name, pa.created_at, pa.public, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name, 'photo', u.image) as owner FROM photogallery_albums as pa
+      query: `SELECT pa.name, pa.created_at, pa.visibility, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name, 'photo', u.image) as owner FROM photogallery_albums as pa
     INNER JOIN users as u on u.id = pa.owner
-    WHERE pa.owner = ?`,
-      values: [user.id],
+    WHERE pa.owner = ?
+    ${visibility ? `AND pa.visibility = "${visibility}"` : ""}
+    ${search.length ? `AND pa.name LIKE "%${search}%"` : ""}
+    LIMIT 10 OFFSET ?
+    `,
+      values: [user.id, Number(page) * 10 - 10],
     }),
     query({
       query: `SELECT COUNT(*) as count FROM photogallery_albums as pa
       WHERE pa.owner = ?
+      ${visibility ? `AND pa.visibility = "${visibility}"` : ""}
+      ${search.length ? `AND pa.name LIKE "%${search}%"` : ""}
       `,
       values: [user.id],
     }),
-  ]) as any
-  
+  ])) as any;
+
   const data = albums.map((album) => ({
     ...album,
     owner: JSON.parse(album.owner),
