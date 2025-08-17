@@ -9,32 +9,26 @@ export default function PhotogalleryLayoutComponent({
   variant,
 }: {
   children: any;
-  variant: "albums" | "photo-feed" | "my-photos";
+  variant: "albums" | "feed" | "my-albums";
 }) {
   return (
     <div className="w-full h-full flex flex-col px-2">
       <div className="flex items-center">
         <Tabs value={variant} variant="scrollable" className="flex-1">
           <Tab
-            value="my-photos"
-            label="Moje fotky"
+            value="feed"
+            label="Galerie"
             component={Link}
-            href="/photogallery/my-photos"
+            href="/photogallery/feed"
           />
           <Tab
             value="albums"
-            label="Veřejná alba"
+            label="Alba"
             component={Link}
             href="/photogallery/albums"
           />
-          <Tab
-            value="photo-feed"
-            label="Přehled fotek"
-            component={Link}
-            href="/photogallery/photo-feed"
-          />
         </Tabs>
-        {variant !== "photo-feed" && (
+        {variant === "albums" && (
           <SearchBar
             variant="standard"
             label="Hledat alba"
@@ -42,8 +36,8 @@ export default function PhotogalleryLayoutComponent({
           />
         )}
         <div className="flex-1 flex justify-end items-center gap-2">
-          {variant === "my-photos" && <AlbumVisibilityFilterSelect />}
-          {variant === "my-photos" && <CreateAlbumButton />}
+          {variant === "albums" && <AlbumVisibilityFilterSelect />}
+          {variant === "albums" && <CreateAlbumButton />}
         </div>
       </div>
       <Paper className="w-full h-full p-2">{children}</Paper>
