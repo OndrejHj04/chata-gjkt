@@ -2,7 +2,7 @@ import PhotogalleryLayoutComponent from "../components/PhotogalleryLayoutCompone
 
 export default function Layout({ children }: any) {
   return (
-    <PhotogalleryLayoutComponent variant="my-photos">
+    <PhotogalleryLayoutComponent variant="my-albums">
       {children}
     </PhotogalleryLayoutComponent>
   );
