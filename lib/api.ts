@@ -15,19 +15,27 @@ import { MessagePaths } from "@/utils/toast/types";
 export const getUserAlbums = async () => {
   const { user } = (await getServerSession(authOptions)) as any;
 
-  const albums = await query({
-    query: `SELECT pa.name, pa.created_at, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name, 'photo', u.image) as owner FROM photogallery_albums as pa
+  const [albums, count] = await Promise.all([
+    query({
+      query: `SELECT pa.name, pa.created_at, pa.public, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name, 'photo', u.image) as owner FROM photogallery_albums as pa
     INNER JOIN users as u on u.id = pa.owner
     WHERE pa.owner = ?`,
-    values: [user.id],
-  });
-
+      values: [user.id],
+    }),
+    query({
+      query: `SELECT COUNT(*) as count FROM photogallery_albums as pa
+      WHERE pa.owner = ?
+      `,
+      values: [user.id],
+    }),
+  ]) as any
+  
   const data = albums.map((album) => ({
     ...album,
     owner: JSON.parse(album.owner),
   }));
 
-  return { data };
+  return { data, count: count[0].count };
 };
 
 export const createAlbum = async (albumName: string) => {

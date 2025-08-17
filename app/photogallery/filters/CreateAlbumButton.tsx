@@ -11,9 +11,5 @@ export default function CreateAlbumButton() {
     });
   };
 
-  return (
-    <div>
-      <Button onClick={handleCreateAlbum}>test</Button>
-    </div>
-  );
+  return <Button variant="outlined" size="small" onClick={handleCreateAlbum}>Vytvořit nové album</Button>;
 }

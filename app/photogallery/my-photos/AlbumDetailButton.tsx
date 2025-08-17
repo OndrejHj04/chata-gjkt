@@ -1,0 +1,14 @@
+"use client"
+
+import { Button, TableCell } from "@mui/material";
+import Link from "next/link";
+
+export default function AlbumDetailButton(albumName: string) {
+  return (
+    <TableCell align="right" className="min-w-[150px]" onClick={(e) => e.stopPropagation()}>
+      <Button component={Link} href={``}>
+        detail
+      </Button>
+    </TableCell>
+  );
+}
