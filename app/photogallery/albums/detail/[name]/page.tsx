@@ -1,7 +1,9 @@
 import { getAlbumDetail } from "@/lib/api";
-import { Paper, Typography } from "@mui/material";
+import { Checkbox, Paper, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import Image from "next/image";
+import UploadAlbumPhoto from "./components/UploadAlbumPhoto";
+import RemoveAlbumPhotos from "./components/RemoveAlbumPhotos";
 
 export default async function Page({ params }: any) {
   const { name } = await params;
@@ -13,15 +15,23 @@ export default async function Page({ params }: any) {
       <Paper className="p-2">
         <Typography variant="h5">Název alba: {name}</Typography>
         <Typography>
-          Vytvořeno: {dayjs(album.creted_at).format("DD. MM. YYYY hh:mm")}
+          Vytvořeno: {dayjs(album.created_at).format("DD. MM. YYYY hh:mm")}
         </Typography>
         <Typography>
-          Naposledy upraveno: {dayjs(album.updated_at).format("DD. MM. YYYY hh:mm")}
+          Naposledy upraveno:{" "}
+          {dayjs(album.updated_at).format("DD. MM. YYYY hh:mm")}
         </Typography>
+        <div className="flex gap-2">
+          <UploadAlbumPhoto album={name} />
+          <RemoveAlbumPhotos album={name} />
+        </div>
       </Paper>
-      <Paper className="p-2">
-        {album.images.map((image, i)=>(
-          <Image key={i} src={image.publicUrl} width={100} height={100} alt="idk" />
+      <Paper className="p-2 flex flex-wrap">
+        {album.images.map((image, i) => (
+          <div className="relative" key={i}>
+            <Checkbox className="!absolute !p-0 top-0" />
+            <Image src={image.publicUrl} width={100} height={100} alt="idk" />
+          </div>
         ))}
       </Paper>
     </div>

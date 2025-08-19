@@ -8,6 +8,11 @@ const nextConfig = {
     ignoreBuildErrors: true
   },
   devIndicators: false,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "1GB"
+    }
+  },
   async headers() {
     return [
       {

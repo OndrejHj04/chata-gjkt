@@ -195,13 +195,23 @@
     }
   },
   "photogallery": {
-    "createAlbum":{
+    "createAlbum": {
       "success": "Album úspěšně vytvořeno",
       "error": "Něco se nepovedlo"
     },
     "createAlbumDuplicate": {
       "success": "",
       "error": "Jméno alba musí být unikátní. Toto jméno už je použité."
+    },
+    "album": {
+      "uploadPhoto": {
+        "success": "Album aktualizováno",
+        "error": "Něco se nepovedlo"
+      },
+      "deletePhoto": {
+        "success": "Album aktualizováno",
+        "error": "Něco se nepovedlo"
+      }
     }
   }
 }

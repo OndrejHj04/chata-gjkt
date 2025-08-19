@@ -12,9 +12,25 @@ import { Room } from "@/constants/room";
 import { Status } from "@/constants/status";
 import { MessagePaths } from "@/utils/toast/types";
 
-export const uploadPhotosToAlbum = async () => {
+export const deletePhotosFromAlbum = async () => {};
 
-}
+export const uploadPhotosToAlbum = async ({ album, photos }: any) => {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    photos.map(async (photo: any) => {
+      await supabase.storage
+        .from("photogallery")
+        .upload(`${album}/${photo.name}`, photo, {
+          cacheControl: "3600",
+        });
+    });
+    return { success: true };
+  } catch (e) {
+    return { success: false };
+  }
+};
 
 export const getAlbumDetail = async (name: string) => {
   const cookieStore = await cookies();
@@ -35,20 +51,19 @@ export const getAlbumDetail = async (name: string) => {
     .filter((image: any) => image.name !== "new_album_base")
     .map((image: any) => {
       const { publicUrl } = supabase.storage
-        .from("images")
-        .getPublicUrl(image.name).data;
+        .from("photogallery")
+        .getPublicUrl(`${name}/${image.name}`).data;
       return {
         name: image.name,
         publicUrl,
-        created_at: image.created_at
+        created_at: image.created_at,
       };
     });
-
 
   const data = {
     ...req[0],
     owner: JSON.parse(req[0].owner),
-    images: imagesWithUrl
+    images: imagesWithUrl,
   };
 
   return { data };
