@@ -11,21 +11,94 @@ import { createClient } from "@/utils/supabase/server";
 import { Room } from "@/constants/room";
 import { Status } from "@/constants/status";
 import { MessagePaths } from "@/utils/toast/types";
+import { Visibility } from "@/constants/visibility";
 
-export const deletePhotosFromAlbum = async () => {};
+export const deleteAlbum = async (albumName: any) => {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const [_, { data }] = (await Promise.all([
+      query({
+        query: `DELETE FROM photogallery_albums WHERE photogallery_albums.name = ?`,
+        values: [albumName],
+      }),
+      supabase.storage.from("photogallery").list(albumName),
+    ])) as any;
+
+    const filesToRemove = data.map((img: any) => `${albumName}/${img.name}`);
+
+    await supabase.storage.from("photogallery").remove(filesToRemove);
+
+    return { success: true };
+  } catch (e) {
+    return { success: false };
+  }
+};
+
+export const deletePhotoFromAlbum = async ({ album, photo }: any) => {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const id = `${album}/${photo}`;
+    await Promise.all([
+      supabase.storage.from("photogallery").remove([`${album}/${photo}`]),
+      query({
+        query: `DELETE FROM photogallery_albums_photos WHERE photogallery_albums_photos.id = ?`,
+        values: [id],
+      }),
+    ]);
+    return { success: true };
+  } catch (e) {
+    return { success: false };
+  }
+};
 
 export const uploadPhotosToAlbum = async ({ album, photos }: any) => {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
 
+    const reqs = [] as any;
+
     photos.map(async (photo: any) => {
-      await supabase.storage
-        .from("photogallery")
-        .upload(`${album}/${photo.name}`, photo, {
-          cacheControl: "3600",
-        });
-    });
+      reqs.push(
+        supabase.storage
+          .from("photogallery")
+          .upload(`${album}/${photo.name}`, photo, {
+            cacheControl: "3600",
+          })
+      );
+    }) as any;
+
+    await Promise.all(reqs);
+
+    const { data: allAlbumPhotos } = (await supabase.storage
+      .from("photogallery")
+      .list(album)) as any;
+
+    const data = allAlbumPhotos
+      .filter((file: any) => file.name !== "new_album_base")
+      .map((photo: any) => {
+        const id = `${album}/${photo.name}`;
+        const { publicUrl } = supabase.storage
+          .from("photogallery")
+          .getPublicUrl(id).data;
+
+        return [id, album, publicUrl];
+      });
+
+    await Promise.all([
+      query({
+        query: `INSERT IGNORE INTO photogallery_albums_photos (id, album, url) VALUES ?`,
+        values: [data],
+      }),
+      query({
+        query: `UPDATE photogallery_albums SET updated_at = CURRENT_TIMESTAMP() WHERE name = ?`,
+        values: [album],
+      }),
+    ]);
     return { success: true };
   } catch (e) {
     return { success: false };
@@ -103,7 +176,10 @@ export const getUserAlbums = async (filters: any) => {
   return { data, count: count[0].count };
 };
 
-export const createAlbum = async (albumName: string) => {
+export const createAlbum = async (
+  albumName: string,
+  visibility: Visibility["name"]
+) => {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
@@ -121,8 +197,8 @@ export const createAlbum = async (albumName: string) => {
       );
 
     await query({
-      query: `INSERT INTO photogallery_albums (name, owner) VALUES (?,?)`,
-      values: [albumName, user.id],
+      query: `INSERT INTO photogallery_albums (name, owner, visibility) VALUES (?,?,?)`,
+      values: [albumName, user.id, visibility],
     });
 
     return { success: true };

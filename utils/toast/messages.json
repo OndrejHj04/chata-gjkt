@@ -211,6 +211,10 @@
       "deletePhoto": {
         "success": "Album aktualizováno",
         "error": "Něco se nepovedlo"
+      },
+      "delete": {
+        "success": "Album úspěšně odstraněno",
+        "error": "Něco se nepovedlo"
       }
     }
   }

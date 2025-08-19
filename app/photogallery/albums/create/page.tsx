@@ -1,8 +1,17 @@
 "use client";
 
+import { Visibility } from "@/constants/visibility";
 import { createAlbum } from "@/lib/api";
 import { withToast } from "@/utils/toast/withToast";
-import { Button, Modal, Paper, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  FormControlLabel,
+  Modal,
+  Paper,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -18,11 +27,12 @@ export default function Page() {
   const { back, replace } = useRouter();
 
   const [name, setName] = useState("");
+  const [visibility, setVisibility] = useState<Visibility["name"]>("veřejné");
 
   const handleCreateAlbum = async () => {
-    await withToast(createAlbum(name), {
+    await withToast(createAlbum(name, visibility), {
       message: "photogallery.createAlbum",
-      onSuccess: () => replace("/photogallery/albums"),
+      onSuccess: () => replace("/photogallery/albums/list"),
     });
   };
 
@@ -37,6 +47,18 @@ export default function Page() {
           label="Jméno alba"
           onChange={(e) => setName(e.target.value)}
         />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={visibility === "veřejné"}
+              onChange={(e) =>
+                setVisibility(e.target.checked ? "veřejné" : "soukromé")
+              }
+            />
+          }
+          label="Veřejné album"
+        />
+
         <Button
           disabled={!name.length}
           variant="contained"

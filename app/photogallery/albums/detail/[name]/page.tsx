@@ -1,9 +1,9 @@
 import { getAlbumDetail } from "@/lib/api";
-import { Checkbox, Paper, Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import Image from "next/image";
 import UploadAlbumPhoto from "./components/UploadAlbumPhoto";
-import RemoveAlbumPhotos from "./components/RemoveAlbumPhotos";
+import ShowImage from "@/app/photogallery/albums/components/ShowPhoto";
+import DeleteAlbumButton from "./components/DeleteAlbumButton";
 
 export default async function Page({ params }: any) {
   const { name } = await params;
@@ -23,15 +23,17 @@ export default async function Page({ params }: any) {
         </Typography>
         <div className="flex gap-2">
           <UploadAlbumPhoto album={name} />
-          <RemoveAlbumPhotos album={name} />
+          <DeleteAlbumButton album={name} />
         </div>
       </Paper>
       <Paper className="p-2 flex flex-wrap">
         {album.images.map((image, i) => (
-          <div className="relative" key={i}>
-            <Checkbox className="!absolute !p-0 top-0" />
-            <Image src={image.publicUrl} width={100} height={100} alt="idk" />
-          </div>
+          <ShowImage
+            key={i}
+            photoUrl={image.publicUrl}
+            photoName={image.name}
+            albumName={name}
+          />
         ))}
       </Paper>
     </div>
