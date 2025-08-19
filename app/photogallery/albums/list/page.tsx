@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import dayjs from "dayjs";
-import AlbumDetailButton from "../components/AlbumDetailButton";
+import AlbumDetailButton from "../../components/AlbumDetailButton";
 import TableListPagination from "@/ui-components/TableListPagination";
 
 export default async function Page({ searchParams }: any) {

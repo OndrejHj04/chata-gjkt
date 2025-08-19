@@ -103,6 +103,10 @@ export default async function middleware(req: NextRequest) {
       return NextResponse.next()
     }
 
+    if (req.nextUrl.pathname.startsWith("/photogallery/albums/detail")) {
+      return NextResponse.next()
+    }
+    
     if ((req.nextUrl.pathname.startsWith("/mailing") || req.nextUrl.pathname.startsWith("/registration")) && token.user.role.id === 3) {
       return NextResponse.redirect(new URL("/", req.url));
     }

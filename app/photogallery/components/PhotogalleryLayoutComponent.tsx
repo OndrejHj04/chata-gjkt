@@ -24,7 +24,7 @@ export default function PhotogalleryLayoutComponent({
             value="albums"
             label="Alba"
             component={Link}
-            href="/photogallery/albums"
+            href="/photogallery/albums/list"
           />
         </Tabs>
       </div>

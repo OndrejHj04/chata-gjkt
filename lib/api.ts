@@ -12,6 +12,48 @@ import { Room } from "@/constants/room";
 import { Status } from "@/constants/status";
 import { MessagePaths } from "@/utils/toast/types";
 
+export const uploadPhotosToAlbum = async () => {
+
+}
+
+export const getAlbumDetail = async (name: string) => {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const [req, { data: images }] = (await Promise.all([
+    query({
+      query: `SELECT pa.name, pa.created_at, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'email', u.email, 'last_name', u.last_name, 'photo', u.image) as owner, pa.visibility FROM photogallery_albums as pa
+      INNER JOIN users u ON u.id = pa.owner
+      WHERE pa.name = ?
+      `,
+      values: [name],
+    }),
+    supabase.storage.from("photogallery").list(name),
+  ])) as any;
+
+  const imagesWithUrl = images
+    .filter((image: any) => image.name !== "new_album_base")
+    .map((image: any) => {
+      const { publicUrl } = supabase.storage
+        .from("images")
+        .getPublicUrl(image.name).data;
+      return {
+        name: image.name,
+        publicUrl,
+        created_at: image.created_at
+      };
+    });
+
+
+  const data = {
+    ...req[0],
+    owner: JSON.parse(req[0].owner),
+    images: imagesWithUrl
+  };
+
+  return { data };
+};
+
 export const getUserAlbums = async (filters: any) => {
   const { user } = (await getServerSession(authOptions)) as any;
 

@@ -26,7 +26,7 @@ const sideMenu = [
     icon: "panorama",
     href: [
       "/photogallery/feed",
-      "/photogallery/albums",
+      "/photogallery/albums/list",
       "/photogallery/albums/create",
     ],
     roles: [1, 2, 3],

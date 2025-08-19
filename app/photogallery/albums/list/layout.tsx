@@ -1,4 +1,4 @@
-import PhotogalleryLayoutComponent from "../components/PhotogalleryLayoutComponent";
+import PhotogalleryLayoutComponent from "../../components/PhotogalleryLayoutComponent";
 
 export default function Layout({ children }: any) {
   return (
