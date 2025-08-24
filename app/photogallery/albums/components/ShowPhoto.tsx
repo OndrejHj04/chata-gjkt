@@ -3,7 +3,6 @@
 import { deletePhotoFromAlbum } from "@/lib/api";
 import { withToast } from "@/utils/toast/withToast";
 import { Button, Modal } from "@mui/material";
-import Image from "next/image";
 import { useState } from "react";
 
 const style = {
@@ -22,7 +21,7 @@ export default function ShowPhoto({ photoUrl, photoName, albumName }: any) {
   const handleRemovePhoto = () => {
     withToast(deletePhotoFromAlbum({ album: albumName, photo: photoName }), {
       message: "photogallery.album.deletePhoto",
-      onSuccess: () => window.location.reload()
+      onSuccess: () => window.location.reload(),
     });
   };
 
@@ -44,12 +43,11 @@ export default function ShowPhoto({ photoUrl, photoName, albumName }: any) {
           </div>
         </div>
       </Modal>
-      <Image
+      <img
         onClick={() => setOpen(true)}
-        width={100}
-        height={100}
         src={photoUrl}
         alt=""
+        className="max-h-[200px]"
       />
     </>
   );

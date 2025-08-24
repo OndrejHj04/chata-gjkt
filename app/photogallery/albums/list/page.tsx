@@ -35,6 +35,7 @@ export default async function Page({ searchParams }: any) {
         <TableBody>
           {albums.map((album: any) => (
             <TableRow key={album.name}>
+              {console.log(album)}
               <TableCell>{album.name}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
@@ -48,7 +49,7 @@ export default async function Page({ searchParams }: any) {
               <TableCell>
                 {dayjs(album.updated_at).format("DD. MMMM YYYY hh:mm")}
               </TableCell>
-              <TableCell>photo_count</TableCell>
+              <TableCell>{album.photos_count}</TableCell>
               <TableCell>{album.visibility}</TableCell>
               <AlbumDetailButton name={album.name} />
             </TableRow>

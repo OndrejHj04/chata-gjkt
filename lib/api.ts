@@ -21,12 +21,14 @@ export const deleteAlbum = async (albumName: any) => {
     const [_, { data }] = (await Promise.all([
       query({
         query: `DELETE FROM photogallery_albums WHERE photogallery_albums.name = ?`,
-        values: [albumName],
+        values: [decodeURIComponent(albumName)],
       }),
-      supabase.storage.from("photogallery").list(albumName),
+      supabase.storage.from("photogallery").list(decodeURIComponent(albumName)),
     ])) as any;
 
-    const filesToRemove = data.map((img: any) => `${albumName}/${img.name}`);
+    const filesToRemove = data.map(
+      (img: any) => `${decodeURIComponent(albumName)}/${img.name}`
+    );
 
     await supabase.storage.from("photogallery").remove(filesToRemove);
 
@@ -41,12 +43,16 @@ export const deletePhotoFromAlbum = async ({ album, photo }: any) => {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
 
-    const id = `${album}/${photo}`;
+    const id = `${decodeURIComponent(album)}/${photo}`;
     await Promise.all([
-      supabase.storage.from("photogallery").remove([`${album}/${photo}`]),
+      supabase.storage.from("photogallery").remove([id]),
       query({
         query: `DELETE FROM photogallery_albums_photos WHERE photogallery_albums_photos.id = ?`,
         values: [id],
+      }),
+      query({
+        query: `UPDATE photogallery_albums SET updated_at = CURRENT_TIMESTAMP() WHERE name = ?`,
+        values: [decodeURIComponent(album)],
       }),
     ]);
     return { success: true };
@@ -115,9 +121,9 @@ export const getAlbumDetail = async (name: string) => {
       INNER JOIN users u ON u.id = pa.owner
       WHERE pa.name = ?
       `,
-      values: [name],
+      values: [decodeURIComponent(name)],
     }),
-    supabase.storage.from("photogallery").list(name),
+    supabase.storage.from("photogallery").list(decodeURIComponent(name)),
   ])) as any;
 
   const imagesWithUrl = images
@@ -125,7 +131,7 @@ export const getAlbumDetail = async (name: string) => {
     .map((image: any) => {
       const { publicUrl } = supabase.storage
         .from("photogallery")
-        .getPublicUrl(`${name}/${image.name}`).data;
+        .getPublicUrl(`${decodeURIComponent(name)}/${image.name}`).data;
       return {
         name: image.name,
         publicUrl,
@@ -149,12 +155,14 @@ export const getUserAlbums = async (filters: any) => {
 
   const [albums, count] = (await Promise.all([
     query({
-      query: `SELECT pa.name, pa.created_at, pa.visibility, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name, 'photo', u.image) as owner FROM photogallery_albums as pa
-    INNER JOIN users as u on u.id = pa.owner
-    WHERE pa.owner = ?
-    ${visibility ? `AND pa.visibility = "${visibility}"` : ""}
-    ${search.length ? `AND pa.name LIKE "%${search}%"` : ""}
-    LIMIT 10 OFFSET ?
+      query: `SELECT pa.name, pa.created_at, pa.visibility, COUNT(p.id) as photos_count, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name, 'photo', u.image) as owner FROM photogallery_albums as pa
+      INNER JOIN users as u on u.id = pa.owner
+      LEFT JOIN photogallery_albums_photos p ON p.album = pa.name
+      WHERE pa.owner = ?
+      ${visibility ? `AND pa.visibility = "${visibility}"` : ""}
+      ${search.length ? `AND pa.name LIKE "%${search}%"` : ""}
+      GROUP BY pa.name 
+      LIMIT 10 OFFSET ?
     `,
       values: [user.id, Number(page) * 10 - 10],
     }),

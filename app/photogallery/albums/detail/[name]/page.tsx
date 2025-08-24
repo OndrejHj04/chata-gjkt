@@ -13,7 +13,7 @@ export default async function Page({ params }: any) {
   return (
     <div className="flex flex-col gap-2">
       <Paper className="p-2">
-        <Typography variant="h5">Název alba: {name}</Typography>
+        <Typography variant="h5">Název alba: {album.name}</Typography>
         <Typography>
           Vytvořeno: {dayjs(album.created_at).format("DD. MM. YYYY hh:mm")}
         </Typography>
@@ -22,11 +22,11 @@ export default async function Page({ params }: any) {
           {dayjs(album.updated_at).format("DD. MM. YYYY hh:mm")}
         </Typography>
         <div className="flex gap-2">
-          <UploadAlbumPhoto album={name} />
-          <DeleteAlbumButton album={name} />
+          <UploadAlbumPhoto album={album.name} />
+          <DeleteAlbumButton album={album.name} />
         </div>
       </Paper>
-      <Paper className="p-2 flex flex-wrap">
+      <Paper className="p-2 flex flex-wrap gap-2">
         {album.images.map((image, i) => (
           <ShowImage
             key={i}
