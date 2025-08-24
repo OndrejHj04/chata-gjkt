@@ -35,7 +35,6 @@ export default async function Page({ searchParams }: any) {
         <TableBody>
           {albums.map((album: any) => (
             <TableRow key={album.name}>
-              {console.log(album)}
               <TableCell>{album.name}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">

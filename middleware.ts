@@ -104,9 +104,19 @@ export default async function middleware(req: NextRequest) {
     }
 
     if (req.nextUrl.pathname.startsWith("/photogallery/albums/detail")) {
+      const albumName = req.nextUrl.pathname.split("/")[4]
+      const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/albums/${albumName}/exists`, {
+        method: "POST",
+        body: JSON.stringify({user: token.user})
+      })
+      const { exists } = await request.json()
+
+      if (!exists) {
+        return NextResponse.redirect(new URL("/", req.url));
+      }
       return NextResponse.next()
     }
-    
+
     if ((req.nextUrl.pathname.startsWith("/mailing") || req.nextUrl.pathname.startsWith("/registration")) && token.user.role.id === 3) {
       return NextResponse.redirect(new URL("/", req.url));
     }
