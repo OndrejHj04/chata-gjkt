@@ -215,6 +215,10 @@
       "delete": {
         "success": "Album úspěšně odstraněno",
         "error": "Něco se nepovedlo"
+      },
+      "changeVisibility": {
+        "success": "Přístupnost alba úspěšně změněna",
+        "error": "Něco se nepovedlo"
       }
     }
   }

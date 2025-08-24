@@ -13,6 +13,45 @@ import { Status } from "@/constants/status";
 import { MessagePaths } from "@/utils/toast/types";
 import { Visibility } from "@/constants/visibility";
 
+export const changeAlbumVisibility = async ({
+  newVisibility,
+  album,
+}: {
+  newVisibility: Visibility["name"];
+  album: any;
+}) => {
+  try {
+    await query({
+      query: `UPDATE photogallery_albums SET visibility = ? WHERE name = ?`,
+      values: [newVisibility, album],
+    });
+
+    return { success: true };
+  } catch (e) {
+    return { success: false };
+  }
+};
+
+export const getGalleryFeed = async () => {
+  const req = (await query({
+    query: `SELECT 
+    DATE_FORMAT(pap.created_at, '%d.%m.%Y') as date,
+    GROUP_CONCAT(url ORDER BY pap.created_at SEPARATOR '||') as photos
+    FROM photogallery_albums_photos pap
+    INNER JOIN photogallery_albums pa ON pa.name = pap.album
+    WHERE pa.visibility = "veřejné"
+    GROUP BY DATE(pap.created_at)
+    ORDER BY DATE(pap.created_at) DESC;`,
+  })) as any;
+
+  const data = req.map((row) => ({
+    date: row.date,
+    photos: row.photos ? row.photos.split("||") : [],
+  }));
+
+  return { data };
+};
+
 export const deleteAlbum = async (albumName: any) => {
   try {
     const cookieStore = await cookies();
@@ -148,7 +187,7 @@ export const getAlbumDetail = async (name: string) => {
   return { data };
 };
 
-export const getUserAlbums = async (filters: any) => {
+export const getAlbumList = async (filters: any) => {
   const { user } = (await getServerSession(authOptions)) as any;
 
   const { page = 1, visibility, search = "" } = filters;
@@ -158,13 +197,12 @@ export const getUserAlbums = async (filters: any) => {
       query: `SELECT pa.name, pa.created_at, pa.visibility, COUNT(p.id) as photos_count, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name, 'photo', u.image) as owner FROM photogallery_albums as pa
       INNER JOIN users as u on u.id = pa.owner
       LEFT JOIN photogallery_albums_photos p ON p.album = pa.name
-      WHERE pa.owner = ?
       ${visibility ? `AND pa.visibility = "${visibility}"` : ""}
       ${search.length ? `AND pa.name LIKE "%${search}%"` : ""}
       GROUP BY pa.name 
       LIMIT 10 OFFSET ?
     `,
-      values: [user.id, Number(page) * 10 - 10],
+      values: [Number(page) * 10 - 10],
     }),
     query({
       query: `SELECT COUNT(*) as count FROM photogallery_albums as pa

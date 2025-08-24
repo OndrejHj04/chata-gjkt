@@ -15,7 +15,7 @@ const style = {
   maxHeight: "90vh",
 };
 
-export default function ShowPhoto({ photoUrl, photoName, albumName }: any) {
+export default function ShowAlbumPhoto({ photoUrl, photoName, albumName }: any) {
   const [open, setOpen] = useState(false);
 
   const handleRemovePhoto = () => {
@@ -47,7 +47,7 @@ export default function ShowPhoto({ photoUrl, photoName, albumName }: any) {
         onClick={() => setOpen(true)}
         src={photoUrl}
         alt=""
-        className="max-h-[200px]"
+        className="max-h-[200px] cursor-pointer"
       />
     </>
   );

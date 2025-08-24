@@ -1,4 +1,4 @@
-import { getUserAlbums } from "@/lib/api";
+import { getAlbumList } from "@/lib/api";
 import {
   TableContainer,
   Table,
@@ -14,7 +14,7 @@ import TableListPagination from "@/ui-components/TableListPagination";
 
 export default async function Page({ searchParams }: any) {
   const { page, visibility, search } = await searchParams;
-  const { data: albums, count } = await getUserAlbums({ page, visibility, search });
+  const { data: albums, count } = await getAlbumList({ page, visibility, search });
 
   return (
     <TableContainer>

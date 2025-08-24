@@ -1,9 +1,11 @@
 import { getAlbumDetail } from "@/lib/api";
-import { Paper, Typography } from "@mui/material";
+import { CardHeader, Paper, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import UploadAlbumPhoto from "./components/UploadAlbumPhoto";
-import ShowImage from "@/app/photogallery/albums/components/ShowPhoto";
 import DeleteAlbumButton from "./components/DeleteAlbumButton";
+import ShowAlbumPhoto from "./components/ShowAlbumPhoto";
+import AvatarWrapper from "@/ui-components/AvatarWrapper";
+import ChangeAlbumPublicity from "./components/ChangeAlbumPublicity";
 
 export default async function Page({ params }: any) {
   const { name } = await params;
@@ -14,6 +16,18 @@ export default async function Page({ params }: any) {
     <div className="flex flex-col gap-2">
       <Paper className="p-2">
         <Typography variant="h5">Název alba: {album.name}</Typography>
+        <Typography variant="h6">Majitel alba</Typography>
+        <CardHeader
+          className="!p-0"
+          avatar={
+            <AvatarWrapper data={{ image: album.owner.photo }} size={56} />
+          }
+          title={
+            <Typography variant="h5">
+              {album.owner.first_name} {album.owner.last_name}
+            </Typography>
+          }
+        />
         <Typography>
           Vytvořeno: {dayjs(album.created_at).format("DD. MM. YYYY hh:mm")}
         </Typography>
@@ -24,12 +38,13 @@ export default async function Page({ params }: any) {
         <div className="flex gap-2">
           <UploadAlbumPhoto album={album.name} />
           <DeleteAlbumButton album={album.name} />
+          <ChangeAlbumPublicity album={album} />
         </div>
       </Paper>
-      <Paper className="p-2 flex flex-wrap gap-2">
-        {album.images.map((image, i) => (
-          <ShowImage
-            key={i}
+      <Paper className="p-2">
+        {album.images.map((image: any) => (
+          <ShowAlbumPhoto
+            key={image.publicUrl}
             photoUrl={image.publicUrl}
             photoName={image.name}
             albumName={name}
