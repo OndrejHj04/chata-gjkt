@@ -10,7 +10,7 @@ import ChangeAlbumPublicity from "./components/ChangeAlbumPublicity";
 export default async function Page({ params }: any) {
   const { name } = await params;
 
-  const { data: album } = await getAlbumDetail(name);
+  const { data: album } = await getAlbumDetail(decodeURIComponent(name));
 
   return (
     <div className="flex flex-col gap-2">
@@ -47,7 +47,7 @@ export default async function Page({ params }: any) {
             key={image.publicUrl}
             photoUrl={image.publicUrl}
             photoName={image.name}
-            albumName={name}
+            albumName={decodeURIComponent(name)}
           />
         ))}
       </Paper>

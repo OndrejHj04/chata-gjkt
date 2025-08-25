@@ -1,6 +1,5 @@
 "use client";
 
-import { Visibility } from "@/constants/visibility";
 import { createAlbum } from "@/lib/api";
 import { withToast } from "@/utils/toast/withToast";
 import {
@@ -13,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 const style = {
   position: "absolute" as "absolute",
@@ -23,14 +22,29 @@ const style = {
   transform: "translate(-50%, -50%)",
 };
 
+type FormData = {
+  name: string;
+  visibility: "veřejné" | "soukromé";
+};
+
 export default function Page() {
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      visibility: "veřejné",
+    },
+  });
+
   const { back, replace } = useRouter();
 
-  const [name, setName] = useState("");
-  const [visibility, setVisibility] = useState<Visibility["name"]>("veřejné");
-
-  const handleCreateAlbum = async () => {
-    await withToast(createAlbum(name, visibility), {
+  const onSubmit = async (data: FormData) => {
+    await withToast(createAlbum(data.name, data.visibility), {
       message: "photogallery.createAlbum",
       onSuccess: () => replace("/photogallery/albums/list"),
     });
@@ -43,27 +57,40 @@ export default function Page() {
           Vytvořit album
         </Typography>
         <TextField
-          value={name}
+          {...register("name", { 
+            required: "Jméno alba je povinné",
+            pattern: {
+              value: /^[a-zA-Z0-9\s]+$/,
+              message: "Pouze písmena (a-z), čísla a mezery jsou povoleny"
+            }
+          })}
           label="Jméno alba"
-          onChange={(e) => setName(e.target.value)}
+          error={!!errors.name}
+          helperText={errors.name?.message || "Žádné speciální znaky nejsou povoleny"}
         />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={visibility === "veřejné"}
-              onChange={(e) =>
-                setVisibility(e.target.checked ? "veřejné" : "soukromé")
+        <Controller
+          name="visibility"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={field.value === "veřejné"}
+                  onChange={(e) =>
+                    field.onChange(e.target.checked ? "veřejné" : "soukromé")
+                  }
+                />
               }
+              label="Veřejné album"
             />
-          }
-          label="Veřejné album"
+          )}
         />
 
         <Button
-          disabled={!name.length}
+          disabled={!isValid}
           variant="contained"
           size="small"
-          onClick={handleCreateAlbum}
+          onClick={handleSubmit(onSubmit)}
         >
           Vytvořit
         </Button>

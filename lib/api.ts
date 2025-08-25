@@ -21,10 +21,16 @@ export const changeAlbumVisibility = async ({
   album: any;
 }) => {
   try {
-    await query({
-      query: `UPDATE photogallery_albums SET visibility = ? WHERE name = ?`,
-      values: [newVisibility, album],
-    });
+    await Promise.all([
+      query({
+        query: `UPDATE photogallery_albums SET updated_at = CURRENT_TIMESTAMP() WHERE name = ?`,
+        values: [decodeURIComponent(album)],
+      }),
+      query({
+        query: `UPDATE photogallery_albums SET visibility = ? WHERE name = ?`,
+        values: [newVisibility, album],
+      }),
+    ]);
 
     return { success: true };
   } catch (e) {
@@ -36,12 +42,12 @@ export const getGalleryFeed = async () => {
   const req = (await query({
     query: `SELECT 
     DATE_FORMAT(pap.created_at, '%d.%m.%Y') as date,
-    GROUP_CONCAT(url ORDER BY pap.created_at SEPARATOR '||') as photos
+    GROUP_CONCAT(url ORDER BY pap.id SEPARATOR '||') as photos
     FROM photogallery_albums_photos pap
     INNER JOIN photogallery_albums pa ON pa.name = pap.album
     WHERE pa.visibility = "veřejné"
     GROUP BY DATE(pap.created_at)
-    ORDER BY DATE(pap.created_at) DESC;`,
+    ORDER BY DATE(pap.created_at) DESC`,
   })) as any;
 
   const data = req.map((row) => ({
@@ -56,17 +62,18 @@ export const deleteAlbum = async (albumName: any) => {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
+    const sanitizedAlbumName = albumName.replace(/\s+/g, '_');
 
     const [_, { data }] = (await Promise.all([
       query({
         query: `DELETE FROM photogallery_albums WHERE photogallery_albums.name = ?`,
-        values: [decodeURIComponent(albumName)],
+        values: [albumName],
       }),
-      supabase.storage.from("photogallery").list(decodeURIComponent(albumName)),
+      supabase.storage.from("photogallery").list(sanitizedAlbumName),
     ])) as any;
 
     const filesToRemove = data.map(
-      (img: any) => `${decodeURIComponent(albumName)}/${img.name}`
+      (img: any) => `${albumName}/${img.name}`
     );
 
     await supabase.storage.from("photogallery").remove(filesToRemove);
@@ -81,8 +88,9 @@ export const deletePhotoFromAlbum = async ({ album, photo }: any) => {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
+    const sanitizedAlbumName = album.replace(/\s+/g, '_');
 
-    const id = `${decodeURIComponent(album)}/${photo}`;
+    const id = `${sanitizedAlbumName}/${photo}`;
     await Promise.all([
       supabase.storage.from("photogallery").remove([id]),
       query({
@@ -91,7 +99,7 @@ export const deletePhotoFromAlbum = async ({ album, photo }: any) => {
       }),
       query({
         query: `UPDATE photogallery_albums SET updated_at = CURRENT_TIMESTAMP() WHERE name = ?`,
-        values: [decodeURIComponent(album)],
+        values: [album],
       }),
     ]);
     return { success: true };
@@ -104,6 +112,7 @@ export const uploadPhotosToAlbum = async ({ album, photos }: any) => {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
+    const sanitizedAlbumName = album.replace(/\s+/g, '_');
 
     const reqs = [] as any;
 
@@ -111,7 +120,7 @@ export const uploadPhotosToAlbum = async ({ album, photos }: any) => {
       reqs.push(
         supabase.storage
           .from("photogallery")
-          .upload(`${album}/${photo.name}`, photo, {
+          .upload(`${sanitizedAlbumName}/${photo.name}`, photo, {
             cacheControl: "3600",
           })
       );
@@ -121,12 +130,12 @@ export const uploadPhotosToAlbum = async ({ album, photos }: any) => {
 
     const { data: allAlbumPhotos } = (await supabase.storage
       .from("photogallery")
-      .list(album)) as any;
+      .list(sanitizedAlbumName)) as any;
 
     const data = allAlbumPhotos
       .filter((file: any) => file.name !== "new_album_base")
       .map((photo: any) => {
-        const id = `${album}/${photo.name}`;
+        const id = `${sanitizedAlbumName}/${photo.name}`;
         const { publicUrl } = supabase.storage
           .from("photogallery")
           .getPublicUrl(id).data;
@@ -153,6 +162,7 @@ export const uploadPhotosToAlbum = async ({ album, photos }: any) => {
 export const getAlbumDetail = async (name: string) => {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
+  const sanitizedAlbumName = name.replace(/\s+/g, '_');
 
   const [req, { data: images }] = (await Promise.all([
     query({
@@ -160,9 +170,9 @@ export const getAlbumDetail = async (name: string) => {
       INNER JOIN users u ON u.id = pa.owner
       WHERE pa.name = ?
       `,
-      values: [decodeURIComponent(name)],
+      values: [name],
     }),
-    supabase.storage.from("photogallery").list(decodeURIComponent(name)),
+    supabase.storage.from("photogallery").list(sanitizedAlbumName),
   ])) as any;
 
   const imagesWithUrl = images
@@ -170,7 +180,7 @@ export const getAlbumDetail = async (name: string) => {
     .map((image: any) => {
       const { publicUrl } = supabase.storage
         .from("photogallery")
-        .getPublicUrl(`${decodeURIComponent(name)}/${image.name}`).data;
+        .getPublicUrl(`${sanitizedAlbumName}/${image.name}`).data;
       return {
         name: image.name,
         publicUrl,
@@ -194,7 +204,7 @@ export const getAlbumList = async (filters: any) => {
 
   const [albums, count] = (await Promise.all([
     query({
-      query: `SELECT pa.name, pa.created_at, pa.visibility, COUNT(p.id) as photos_count, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name, 'photo', u.image) as owner FROM photogallery_albums as pa
+      query: `SELECT pa.name, pa.created_at, pa.visibility, COUNT(p.id) as photos_count, pa.updated_at, JSON_OBJECT('id', u.id, 'first_name', u.first_name, 'last_name', u.last_name, 'role', u.role, 'photo', u.image) as owner FROM photogallery_albums as pa
       INNER JOIN users as u on u.id = pa.owner
       LEFT JOIN photogallery_albums_photos p ON p.album = pa.name
       ${visibility ? `AND pa.visibility = "${visibility}"` : ""}
@@ -225,16 +235,18 @@ export const getAlbumList = async (filters: any) => {
 export const createAlbum = async (
   albumName: string,
   visibility: Visibility["name"]
-) => {
+): Promise<{ success: boolean; message?: MessagePaths }> => {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     const { user } = (await getServerSession(authOptions)) as any;
+    
+    const sanitizedAlbumName = albumName.replace(/\s+/g, '_');
 
     await supabase.storage
       .from("photogallery")
       .upload(
-        `/${albumName}/new_album_base`,
+        `/${sanitizedAlbumName}/new_album_base`,
         new Blob([""], { type: "text/plain" }),
         {
           cacheControl: "3600",
@@ -248,7 +260,7 @@ export const createAlbum = async (
     });
 
     return { success: true };
-  } catch (e) {
+  } catch (e: any) {
     if (e.code === "ER_DUP_ENTRY") {
       return {
         success: false,
@@ -258,26 +270,6 @@ export const createAlbum = async (
 
     return { success: false };
   }
-};
-
-export const getImages = async () => {
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
-
-  const { data: images } = await supabase.storage.from("images").list();
-  const imageUrls = images?.map((item) => {
-    const { publicUrl } = supabase.storage
-      .from("images")
-      .getPublicUrl(item.name).data;
-    return {
-      id: item.created_at,
-      name: item.name,
-      created_at: item.created_at,
-      publicUrl,
-    };
-  });
-
-  return imageUrls;
 };
 
 export const uploadProfilePicture = async (image: any, userId: number) => {
