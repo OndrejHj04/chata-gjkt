@@ -19,13 +19,7 @@ export default async function ArchivePage({ searchParams }: { searchParams: any 
             <TableCell>Konec</TableCell>
             <TableCell>Počet účastníků</TableCell>
             <TableCell>Vedoucí</TableCell>
-            <TableCell padding="none">
-              <TableListPagination
-                count={count}
-                name="page"
-                rpp={10}
-              />
-            </TableCell>
+            <TableListPagination count={count} />
           </TableRow>
         </TableHead>
         <TableBody>

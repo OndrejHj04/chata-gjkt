@@ -17,9 +17,7 @@ export default async function ReservationUsersTable({ id, page = 1, editable }: 
             <TableCell>Role</TableCell>
             <TableCell>Organizace</TableCell>
             <TableCell>Ověření</TableCell>
-            <TableCell padding="none">
-              <TableListPagination count={count} name="page" rpp={10} />
-            </TableCell>
+            <TableListPagination count={count} />
           </TableRow>
         </TableHead>
         <TableBody>

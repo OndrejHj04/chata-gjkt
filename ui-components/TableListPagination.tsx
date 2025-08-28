@@ -1,15 +1,15 @@
 "use client";
-import { TablePagination } from "@mui/material";
+import { TableCell, TablePagination } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function TableListPagination({
   count,
-  name,
-  rpp,
+  name = "page",
+  rpp = 10,
 }: {
   count: number;
-  name: any;
-  rpp: any;
+  name?: string;
+  rpp?: number;
 }) {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get(name)) || 1;
@@ -23,16 +23,18 @@ export default function TableListPagination({
   };
 
   return (
-    <TablePagination
-      className="[&_.MuiToolbar-root]:!min-h-[40px]"
-      component="div"
-      count={count}
-      page={page - 1}
-      labelRowsPerPage={"dat"}
-      onPageChange={pageChange}
-      rowsPerPage={rpp}
-      rowsPerPageOptions={[]}
-      onRowsPerPageChange={() => { }}
-    />
+    <TableCell padding="none">
+      <TablePagination
+        className="[&_.MuiToolbar-root]:!min-h-[40px]"
+        component="div"
+        count={count}
+        page={page - 1}
+        labelRowsPerPage={"dat"}
+        onPageChange={pageChange}
+        rowsPerPage={rpp}
+        rowsPerPageOptions={[]}
+        onRowsPerPageChange={() => { }}
+      />
+    </TableCell>
   );
 }

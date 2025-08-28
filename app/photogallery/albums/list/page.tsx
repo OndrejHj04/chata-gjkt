@@ -34,9 +34,7 @@ export default async function Page({ searchParams }: any) {
             <TableCell>Naposledy upraveno</TableCell>
             <TableCell>Počet fotek</TableCell>
             <TableCell>Přístupnost</TableCell>
-            <TableCell padding="none">
-              <TableListPagination count={count} name={"page"} rpp={10} />
-            </TableCell>
+            <TableListPagination count={count} />
           </TableRow>
         </TableHead>
         <TableBody>

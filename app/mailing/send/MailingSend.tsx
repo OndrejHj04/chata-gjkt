@@ -15,9 +15,7 @@ export default async function MailingSend({ page }: any) {
               <TableCell>Datum odeslání</TableCell>
               <TableCell>Předmět</TableCell>
               <TableCell>Obsah</TableCell>
-              <TableCell padding="none">
-                <TableListPagination count={count} name={"page"} rpp={10} />
-              </TableCell>
+              <TableListPagination count={count}/>
             </TableRow>
           </TableHead>
           <TableBody>

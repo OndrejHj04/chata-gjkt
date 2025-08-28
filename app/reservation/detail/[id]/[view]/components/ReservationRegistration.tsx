@@ -64,13 +64,7 @@ export default async function ReservationRegistration({
               <TableCell>Adresa</TableCell>
               <TableCell>Datum narození</TableCell>
               <TableCell>Číslo OP</TableCell>
-              <TableCell padding="none">
-                <TableListPagination
-                  count={registeredUsersCount}
-                  name={"page"}
-                  rpp={10}
-                />
-              </TableCell>
+              <TableListPagination count={registeredUsersCount} />
             </TableRow>
           </TableHead>
           <TableBody>

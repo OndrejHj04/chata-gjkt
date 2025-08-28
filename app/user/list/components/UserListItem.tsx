@@ -174,7 +174,7 @@ export default function UserListItem({
           </TableCell>
         )}
 
-        <TableCell align="right" className="min-w-[150px]">
+        <TableCell align="right">
           {!!user.detail && (
             <Link
               href={`/user/detail/${user.id}/info`}

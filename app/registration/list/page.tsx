@@ -19,9 +19,9 @@ export default async function RegistrationList({
 }: {
   searchParams: any;
 }) {
-  const { registrations } = searchParams;
+  const { page } = searchParams;
   const { data, count } = await getRegistrationList({
-    page: Number(registrations) || 1,
+    page: Number(page) || 1,
   });
 
   return (
@@ -33,13 +33,7 @@ export default async function RegistrationList({
             <TableCell>Autor</TableCell>
             <TableCell>Počet nevyřízených registrací</TableCell>
             <TableCell>Začátek rezervace</TableCell>
-            <TableCell padding="none">
-              <TableListPagination
-                name={"registrations"}
-                count={count}
-                rpp={10}
-              />
-            </TableCell>
+            <TableListPagination count={count} />
           </TableRow>
         </TableHead>
         <TableBody>

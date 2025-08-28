@@ -18,9 +18,7 @@ export default async function GroupReservationsTable({ id, page = 1 }: { id: any
             <TableCell>Počet účastníků</TableCell>
             <TableCell>Vedoucí</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell padding="none">
-              <TableListPagination count={count} name="page" rpp={10} />
-            </TableCell>
+            <TableListPagination count={count} />
           </TableRow>
         </TableHead>
         <TableBody>
