@@ -374,9 +374,9 @@ ${
     ? `AND CONCAT(u.first_name, ' ', u.last_name) LIKE "%${search}%"`
     : ""
 }
-${role > 0 ? `AND u.role = ${role}` : ""}
-${organization > 0 ? `AND u.organization = ${organization}` : ""}
-${verified > 0 ? `AND u.verified = ${verified === 2 ? 0 : verified}` : ""}
+${role ? `AND u.role = "${role}"` : ""}
+${organization ? `AND u.organization = "${organization}"` : ""}
+${verified ? `AND u.verified = ${verified}` : ""}
 
 GROUP BY u.id
         ${
@@ -399,9 +399,9 @@ LIMIT 10 OFFSET ?
           ? `AND CONCAT(u.first_name, ' ', u.last_name) LIKE "%${search}%"`
           : ""
       }
-      ${role > 0 ? `AND u.role = ${role}` : ""}
-      ${organization > 0 ? `AND u.organization = ${organization}` : ""}
-      ${verified > 0 ? `AND u.verified = ${verified === 2 ? 0 : verified}` : ""}
+      ${role ? `AND u.role = "${role}"` : ""}
+      ${organization ? `AND u.organization = "${organization}"` : ""}
+      ${verified ? `AND u.verified = ${verified}` : ""}
       `,
       values: [],
     }),
@@ -419,14 +419,14 @@ LIMIT 10 OFFSET ?
 
 export const getReservationList = async ({
   page,
-  status = "Všechny",
+  status,
   search,
   registration,
   sort,
   dir,
 }: {
   page: any;
-  status: Status["name"] | "Všechny";
+  status: any,
   search: any;
   registration: any;
   sort: any;
@@ -441,6 +441,7 @@ export const getReservationList = async ({
   ];
   const { user } = (await getServerSession(authOptions)) as any;
 
+  console.log(status, 'asdfasdf')
   const [dataRequest, countRequest] = (await Promise.all([
     query({
       query: `  
@@ -462,12 +463,12 @@ export const getReservationList = async ({
         LEFT JOIN reservations_forms rf ON rf.reservation_id = r.id
         INNER JOIN status s ON s.id = r.status
         WHERE r.status <> 1
-              ${status === "Všechny" ? "" : `AND r.status = "${status}"`}
+              ${status ? `AND r.status = "${status}"` : ""}
               ${search.length ? `AND r.name LIKE "%${search}%"` : ""}
               ${
-                registration > 0
+                registration
                   ? `AND ${
-                      registration === 2 ? "NOT" : ""
+                      registration === "0" ? "NOT" : ""
                     } EXISTS (SELECT 1 FROM reservations_forms rf WHERE rf.reservation_id = r.id)`
                   : ""
               }
@@ -484,13 +485,19 @@ export const getReservationList = async ({
     query({
       query: `SELECT COUNT(r.id) as count FROM reservations r
       WHERE r.status <> 1
-      ${status === "Všechny" ? "" : `AND r.status = "${status}"`}
+      ${status ? `AND r.status = "${status}"` : ""}
       ${search.length ? `AND r.name LIKE "%${search}%"` : ""}
+      ${
+        registration
+          ? `AND ${
+              registration === "0" ? "NOT" : ""
+            } EXISTS (SELECT 1 FROM reservations_forms rf WHERE rf.reservation_id = r.id)`
+          : ""
+        }
       `,
       values: [],
     }),
   ])) as any;
-
   return { data: dataRequest, count: countRequest[0].count };
 };
 

@@ -24,7 +24,7 @@ export default async function ReservationList({
     page = 1,
     status,
     search = "",
-    registration = 0,
+    registration,
     sort = "",
     dir = "",
   } = await searchParams;
@@ -32,7 +32,7 @@ export default async function ReservationList({
     page,
     status,
     search,
-    registration: Number(registration),
+    registration,
     sort,
     dir,
   })) as any;

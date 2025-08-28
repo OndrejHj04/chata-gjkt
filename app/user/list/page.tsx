@@ -47,9 +47,9 @@ export default async function UserListConfig({
   const { data, count } = await getUserList({
     page: page || 1,
     search: search || "",
-    role: Number(role) || 0,
-    organization: Number(organization) || 0,
-    verified: Number(verified) || 0,
+    role: role,
+    organization: organization,
+    verified: verified,
     sort,
     dir,
   });

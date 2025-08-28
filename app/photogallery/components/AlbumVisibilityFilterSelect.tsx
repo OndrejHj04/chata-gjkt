@@ -5,11 +5,7 @@ import { FormControl, FormHelperText, MenuItem, Select } from "@mui/material";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
-export default function AlbumVisibilityFilterSelect({
-  className,
-}: {
-  className?: any;
-}) {
+export default function AlbumVisibilityFilterSelect() {
   const searchParams = useSearchParams();
   const status = searchParams.get("status") || "Všechny";
   const { replace } = useRouter();
@@ -23,15 +19,15 @@ export default function AlbumVisibilityFilterSelect({
     } else {
       params.set("visibility", e.target.value);
     }
+    
+    params.delete("page");
     replace(`${pathname}?${params.toString()}`);
   };
 
   return (
-    <FormControl className={className}>
+    <FormControl>
       <Select
         size="small"
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
         variant="standard"
         label="Přístupnost alba"
         defaultValue={status}

@@ -9,40 +9,41 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export const options = [
-  { id: 1, displayName: "Běží" },
-  { id: 2, displayName: "Nespuštěná" },
+  { name: "Běží", value: 1 },
+  { name: "Nespuštěná", value: 0 },
 ];
 
-export default function RegistrationState({ className }: { className?: any }) {
+export default function RegistrationState() {
   const searchParams = useSearchParams();
-  const status = Number(searchParams.get("registration")) || 0;
+  const status = searchParams.get("registration") || "All";
   const { replace } = useRouter();
   const pathname = usePathname();
 
   const handleChange = (e: any) => {
     const params = new URLSearchParams(searchParams);
-    params.set("registration", e.target.value);
+
+    if (e.target.value === "All") {
+      params.delete("registration");
+    } else {
+      params.set("registration", e.target.value);
+    }
+
+    params.delete("page");
     replace(`${pathname}?${params.toString()}`);
   };
 
   return (
-    <FormControl className={className}>
+    <FormControl>
       <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
         variant="standard"
         label="Status rezervace"
-        renderValue={(data) => {
-          const name = options.find((status: any) => status.id === data);
-          return <div>{name?.displayName || "Vše"}</div>;
-        }}
         defaultValue={status}
         onChange={handleChange}
       >
-        <MenuItem value={0}>Vše</MenuItem>
-        {options.map((status: any) => (
-          <MenuItem key={status.id} value={status.id}>
-            {status.displayName}
+        <MenuItem value={'All'}>Vše</MenuItem>
+        {options.map((option) => (
+          <MenuItem key={option.name} value={option.value}>
+            {option.name}
           </MenuItem>
         ))}
       </Select>

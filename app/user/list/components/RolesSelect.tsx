@@ -1,25 +1,25 @@
 "use client";
+import { Role } from "@/constants/role";
 import { FormControl, FormHelperText, MenuItem, Select } from "@mui/material";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
-const roles = [
-  { id: 1, name: "Admin" },
-  { id: 2, name: "Správce" },
-  { id: 3, name: "Uživatel" },
-  { id: 4, name: "Veřejnost" }
-]
-
 export default function RolesSelect() {
   const searchParams = useSearchParams();
-  const status = Number(searchParams.get("role")) || 0;
+  const status = searchParams.get("role") || "All";
   const { replace } = useRouter();
   const pathname = usePathname();
 
   const handleChange = (e: any) => {
     const params = new URLSearchParams(searchParams);
+
+    if (e.target.value === "All") {
+      params.delete("role");
+    } else {
+      params.set("role", e.target.value);
+    }
+
     params.delete("page");
-    params.set("role", e.target.value);
     replace(`${pathname}?${params.toString()}`);
   };
 
@@ -27,19 +27,13 @@ export default function RolesSelect() {
     <FormControl>
       <Select
         variant="standard"
-        label="Role"
-        renderValue={(data) => {
-          const name = roles.find((status: any) => status.id === data);
-          return <div>{name?.name || "Všechny"}</div>;
-        }}
+        label="role"
         defaultValue={status}
         onChange={handleChange}
       >
-        <MenuItem value={0}>Všechny</MenuItem>
-        {roles.map((status: any) => (
-          <MenuItem key={status.id} value={status.id} className="gap-2">
-            {status.name}
-          </MenuItem>
+        <MenuItem value={'All'}>Všechny</MenuItem>
+        {Role.getAllRoles().map((role) => (
+          <MenuItem key={role.name} value={role.name}>{role.name}</MenuItem>
         ))}
       </Select>
       <FormHelperText>Role</FormHelperText>
