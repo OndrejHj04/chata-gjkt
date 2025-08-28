@@ -332,6 +332,8 @@ export const getUserList = async ({
   sort: any;
   dir: any;
 }) => {
+
+  console.log(verified)
   const allowedSort = [
     "u.name",
     "u.email",

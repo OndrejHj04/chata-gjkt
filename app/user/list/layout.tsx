@@ -1,28 +1,48 @@
-import SearchBar from "@/ui-components/SearchBar"
-import { Paper } from "@mui/material"
-import React from "react"
-import RolesSelect from "./components/RolesSelect"
-import OrganizationSelect from "./components/OrganizationSelect"
-import ExportButton from "@/ui-components/ExportButton"
-import VerifiedSelect from "./components/VerifiedSelect"
+import SearchBar from "@/ui-components/SearchBar";
+import { Paper } from "@mui/material";
+import React from "react";
+import ExportButton from "@/ui-components/ExportButton";
+import TableFilterSelect from "@/ui-components/TableFilterSelect";
+import { Role } from "@/constants/role";
+import { Organization } from "@/constants/organization";
 
-export default function UserListLayout({ children }: { children: React.ReactNode }) {
-
+export default function UserListLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <React.Fragment>
       <div className="flex">
         <div className="flex-1 md:flex hidden" />
-        <SearchBar variant="standard" className="md:w-80 w-32" label="Hledat uživatele" />
+        <SearchBar
+          variant="standard"
+          className="md:w-80 w-32"
+          label="Hledat uživatele"
+        />
         <div className="flex-1 flex justify-end gap-2 items-center">
-          <VerifiedSelect />
-          <RolesSelect />
-          <OrganizationSelect />
+          <TableFilterSelect
+            name="verified"
+            label="Ověření"
+            options={[
+              { name: "Pouze ověření", value: 1 },
+              { name: "Pouze neověření", value: 0 },
+            ]}
+          />
+          <TableFilterSelect
+            name="role"
+            label="Role"
+            options={Role.getAllRoles().map(role => ({ name: role.name }))}
+          />
+          <TableFilterSelect
+            name="organization"
+            label="Organizace"
+            options={Organization.getAllOrganizations().map(org => ({ name: org.name }))}
+          />
           <ExportButton prop="users" translate="Uživatelé" size="small" />
         </div>
       </div>
-      <Paper>
-        {children}
-      </Paper>
+      <Paper>{children}</Paper>
     </React.Fragment>
-  )
+  );
 }
