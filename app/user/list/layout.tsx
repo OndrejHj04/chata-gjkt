@@ -15,11 +15,7 @@ export default function UserListLayout({
     <React.Fragment>
       <div className="flex">
         <div className="flex-1 md:flex hidden" />
-        <SearchBar
-          variant="standard"
-          className="md:w-80 w-32"
-          label="Hledat uživatele"
-        />
+        <SearchBar label="Hledat uživatele" />
         <div className="flex-1 flex justify-end gap-2 items-center">
           <TableFilterSelect
             name="verified"
@@ -32,12 +28,14 @@ export default function UserListLayout({
           <TableFilterSelect
             name="role"
             label="Role"
-            options={Role.getAllRoles().map(role => ({ name: role.name }))}
+            options={Role.getAllRoles().map((role) => ({ name: role.name }))}
           />
           <TableFilterSelect
             name="organization"
             label="Organizace"
-            options={Organization.getAllOrganizations().map(org => ({ name: org.name }))}
+            options={Organization.getAllOrganizations().map((org) => ({
+              name: org.name,
+            }))}
           />
           <ExportButton entity="users" />
         </div>

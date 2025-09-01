@@ -1,5 +1,4 @@
 import {
-  getUserList,
   getUsersAvaliableGroups,
   getUsersAvaliableReservations,
 } from "@/lib/api";
@@ -16,18 +15,9 @@ import TableListPagination from "@/ui-components/TableListPagination";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import SortableColumn from "@/ui-components/SortableColumn";
+import { getUserList } from "@/api/users/index";
 
-const columns = [
-  "children",
-  "name",
-  "email",
-  "role",
-  "organization",
-  "verified",
-  "detail",
-];
-
-export default async function UserListConfig({
+export default async function UserList({
   searchParams,
 }: {
   searchParams: any;
@@ -45,8 +35,8 @@ export default async function UserListConfig({
   const isAdmin = currentUser.role.id !== 3;
 
   const { data, count } = await getUserList({
-    page: page || 1,
-    search: search || "",
+    page,
+    search,
     role,
     organization,
     verified,

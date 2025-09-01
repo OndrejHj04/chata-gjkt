@@ -14,11 +14,7 @@ export default function ReservationListLayout({
     <React.Fragment>
       <div className="flex">
         <div className="flex-1 md:flex hidden" />
-        <SearchBar
-          variant="standard"
-          className="md:w-80 w-40"
-          label="Hledat rezervace"
-        />
+        <SearchBar label="Hledat rezervace" />
         <div className="flex-1 flex items-center gap-2 justify-end">
           <TableFilterSelect
             name="registration"

@@ -28,7 +28,7 @@ export default function Layout({ children }: any) {
           <Link href={"/photogallery/albums/create"}>
             <Button variant="contained">Vytvořit album a přidat fotky</Button>
           </Link>
-          <SearchBar variant="standard" label="Hledat alba" />
+          <SearchBar label="Hledat alba" />
           <AlbumVisibilityFilterSelect />
         </Paper>
       </div>

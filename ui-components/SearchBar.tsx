@@ -2,29 +2,30 @@
 import { TextField } from "@mui/material";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
 
-export default function SearchBar(props: any) {
-  const input = useRef(null) as any;
+export default function SearchBar({ label }: { label: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const search = searchParams.get("search") || "";
 
-  const makeSearch = (value: any) => {
+  const makeSearch = (e: any) => {
     const params = new URLSearchParams(searchParams);
-    params.delete("page");
-    if (value) params.set("search", value);
+
+    if (e.target.value.length) params.set("search", e.target.value);
     else params.delete("search");
+
+    params.delete("page");
     replace(`${pathname}?${params.toString()}`);
   };
 
   return (
     <TextField
-      ref={input}
+      variant="standard"
+      className="md:w-80 w-32"
+      label={label}
       defaultValue={search}
-      onChange={(e) => makeSearch(e.target.value)}
-      {...props}
+      onChange={makeSearch}
     />
   );
 }
