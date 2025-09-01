@@ -16,21 +16,18 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import SortableColumn from "@/ui-components/SortableColumn";
 import { getUserList } from "@/api/users/index";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 
-export default async function UserList({
-  searchParams,
-}: {
-  searchParams: any;
-}) {
+export default async function UserList(props: ServerSideComponentProp) {
   const {
     page,
     search,
     role,
     organization,
     verified,
-    sort = "",
-    dir = "",
-  } = searchParams;
+    sort,
+    dir
+  } = await props.searchParams;
   const { user: currentUser } = (await getServerSession(authOptions)) as any;
   const isAdmin = currentUser.role.id !== 3;
 

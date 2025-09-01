@@ -1,24 +1,21 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { query } from "@/lib/db";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import { getServerSession } from "next-auth";
 
-export const getUserList = async ({
-  page = 1,
-  search,
-  role,
-  organization,
-  verified,
-  sort = "",
-  dir = "",
-}: {
-  page: any;
-  search: any;
-  role: any;
-  organization: any;
-  verified: any;
-  sort: any;
-  dir: any;
-}) => {
+export const getUserList = async (
+  searchParams: Awaited<ServerSideComponentProp["searchParams"]>
+) => {
+  const {
+    page,
+    search,
+    role,
+    organization,
+    verified,
+    sort = "",
+    dir = "",
+  } = searchParams;
+
   const allowedSort = [
     "u.name",
     "u.email",
@@ -56,11 +53,7 @@ LEFT JOIN users u_child ON u.email = u_child.email AND u_child.children = 1
 LEFT JOIN roles child_r ON child_r.id = u_child.role
 LEFT JOIN organization child_o ON child_o.id = u_child.organization
 WHERE u.children = 0
-${
-  search
-    ? `AND CONCAT(u.first_name, ' ', u.last_name) LIKE "%${search}%"`
-    : ""
-}
+${search ? `AND CONCAT(u.first_name, ' ', u.last_name) LIKE "%${search}%"` : ""}
 ${role ? `AND u.role = "${role}"` : ""}
 ${organization ? `AND u.organization = "${organization}"` : ""}
 ${verified ? `AND u.verified = ${verified}` : ""}
@@ -74,7 +67,7 @@ GROUP BY u.id
 LIMIT 10 OFFSET ?
         
       `,
-      values: [page * 10 - 10],
+      values: [Number(page) * 10 - 10],
     }),
     query({
       query: `SELECT COUNT(*) as count FROM users u
