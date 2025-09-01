@@ -1,41 +1,36 @@
 "use client";
-import * as XLSX from "xlsx";
 import handleExport from "@/lib/handleExport";
 import { Button } from "@mui/material";
 import { useSession } from "next-auth/react";
+import { exportReservationList, exportUserList } from "@/lib/api";
 
-function s2ab(s: any) {
-  const buf = new ArrayBuffer(s.length);
-  const view = new Uint8Array(buf);
-  for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
-  return buf;
+const exportEntities = {
+  users: {
+    name: 'Uživatelé',
+    method: exportUserList
+  },
+  reservations: {
+    name: 'Rezervace',
+    method: exportReservationList
+  }
 }
 
 export default function ExportButton({
-  prop,
-  translate,
-  ...rest
-}: any) {
+  entity,
+}: {
+  entity: 'users' | 'reservations'
+}) {
   const { data } = useSession()
   const roleId = data?.user.role.id
 
   const makeExport = async () => {
-    const req = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/${prop}/export`
-    );
-    const { data } = await req.json();
+    const blob = await exportEntities[entity].method()
 
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(data);
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
-    const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
-
-    handleExport(blob, translate + ".xlsx");
+    handleExport(blob, exportEntities[entity].name + ".xlsx");
   };
 
   return (
-    <Button variant="outlined" onClick={makeExport} disabled={roleId === 3} {...rest}>
+    <Button variant="outlined" size="small" onClick={makeExport} disabled={roleId === 3}>
       Export
     </Button>
   );

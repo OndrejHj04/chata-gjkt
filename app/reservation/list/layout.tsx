@@ -33,11 +33,7 @@ export default function ReservationListLayout({
             label="Status"
             options={Status.getAllStatus().map((org) => ({ name: org.name }))}
           />
-          <ExportButton
-            translate="Rezervace"
-            prop="reservations"
-            size="small"
-          />
+          <ExportButton entity="reservations" />
         </div>
       </div>
       <Paper>{children}</Paper>

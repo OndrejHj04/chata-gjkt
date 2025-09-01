@@ -12,6 +12,54 @@ import { Room } from "@/constants/room";
 import { Status } from "@/constants/status";
 import { MessagePaths } from "@/utils/toast/types";
 import { Visibility } from "@/constants/visibility";
+import * as XLSX from "xlsx";
+
+function s2ab(s: any) {
+  const buf = new ArrayBuffer(s.length);
+  const view = new Uint8Array(buf);
+  for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+  return buf;
+}
+
+export const exportReservationList = async () => {
+  const reservations = (await query({
+    query: `SELECT reservations.id, from_date, to_date, CONCAT(users.first_name, ' ', users.last_name) as leader,
+      reservations.name, purpouse, instructions, status.display_name as status, creation_date 
+      FROM reservations INNER JOIN status ON reservations.status = status.id
+      INNER JOIN users ON users.id = leader
+      `,
+  })) as any;
+
+  const data = reservations.map((res: any) => ({
+    ...res,
+    from_date: dayjs(res.from_date).format("DD.MM.YYYY"),
+    to_date: dayjs(res.to_date).format("DD.MM.YYYY"),
+    creation_date: dayjs(res.creation_date).format("DD.MM.YYYY"),
+  }));
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(data);
+  XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+  const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+
+  return blob;
+};
+
+export const exportUserList = async () => {
+  const data = (await query({
+    query: `SELECT users.id, CONCAT (first_name, ' ', last_name) as name, roles.name as role, email, verified, adress, birth_date, ID_code, theme FROM users 
+    INNER JOIN roles ON roles.id = users.role`,
+  })) as any;
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(data);
+  XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+  const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+
+  return blob;
+};
 
 export const changeAlbumVisibility = async ({
   newVisibility,
@@ -62,7 +110,7 @@ export const deleteAlbum = async (albumName: any) => {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
-    const sanitizedAlbumName = albumName.replace(/\s+/g, '_');
+    const sanitizedAlbumName = albumName.replace(/\s+/g, "_");
 
     const [_, { data }] = (await Promise.all([
       query({
@@ -72,9 +120,7 @@ export const deleteAlbum = async (albumName: any) => {
       supabase.storage.from("photogallery").list(sanitizedAlbumName),
     ])) as any;
 
-    const filesToRemove = data.map(
-      (img: any) => `${albumName}/${img.name}`
-    );
+    const filesToRemove = data.map((img: any) => `${albumName}/${img.name}`);
 
     await supabase.storage.from("photogallery").remove(filesToRemove);
 
@@ -88,7 +134,7 @@ export const deletePhotoFromAlbum = async ({ album, photo }: any) => {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
-    const sanitizedAlbumName = album.replace(/\s+/g, '_');
+    const sanitizedAlbumName = album.replace(/\s+/g, "_");
 
     const id = `${sanitizedAlbumName}/${photo}`;
     await Promise.all([
@@ -112,7 +158,7 @@ export const uploadPhotosToAlbum = async ({ album, photos }: any) => {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
-    const sanitizedAlbumName = album.replace(/\s+/g, '_');
+    const sanitizedAlbumName = album.replace(/\s+/g, "_");
 
     const reqs = [] as any;
 
@@ -162,7 +208,7 @@ export const uploadPhotosToAlbum = async ({ album, photos }: any) => {
 export const getAlbumDetail = async (name: string) => {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
-  const sanitizedAlbumName = name.replace(/\s+/g, '_');
+  const sanitizedAlbumName = name.replace(/\s+/g, "_");
 
   const [req, { data: images }] = (await Promise.all([
     query({
@@ -240,8 +286,8 @@ export const createAlbum = async (
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     const { user } = (await getServerSession(authOptions)) as any;
-    
-    const sanitizedAlbumName = albumName.replace(/\s+/g, '_');
+
+    const sanitizedAlbumName = albumName.replace(/\s+/g, "_");
 
     await supabase.storage
       .from("photogallery")
@@ -332,8 +378,7 @@ export const getUserList = async ({
   sort: any;
   dir: any;
 }) => {
-
-  console.log(verified)
+  console.log(verified);
   const allowedSort = [
     "u.name",
     "u.email",
@@ -428,7 +473,7 @@ export const getReservationList = async ({
   dir,
 }: {
   page: any;
-  status: any,
+  status: any;
   search: any;
   registration: any;
   sort: any;
@@ -443,7 +488,6 @@ export const getReservationList = async ({
   ];
   const { user } = (await getServerSession(authOptions)) as any;
 
-  console.log(status, 'asdfasdf')
   const [dataRequest, countRequest] = (await Promise.all([
     query({
       query: `  
@@ -495,7 +539,7 @@ export const getReservationList = async ({
               registration === "0" ? "NOT" : ""
             } EXISTS (SELECT 1 FROM reservations_forms rf WHERE rf.reservation_id = r.id)`
           : ""
-        }
+      }
       `,
       values: [],
     }),

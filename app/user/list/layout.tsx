@@ -39,7 +39,7 @@ export default function UserListLayout({
             label="Organizace"
             options={Organization.getAllOrganizations().map(org => ({ name: org.name }))}
           />
-          <ExportButton prop="users" translate="Uživatelé" size="small" />
+          <ExportButton entity="users" />
         </div>
       </div>
       <Paper>{children}</Paper>
