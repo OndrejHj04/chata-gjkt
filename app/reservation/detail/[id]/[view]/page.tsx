@@ -15,7 +15,7 @@ export default async function ReservationDetailPage({ params, searchParams }: { 
   const { view, id } = params
   const { user } = await getServerSession(authOptions) as any
   const { data } = await getReservationDetail({ reservationId: id })
-  const isAdmin = user.role.id !== 3
+  const isAdmin = user.role !== 'veřejnost'
   const isLeader = data.leader_id === user.id
   const editable = data.status_id !== 1 && (isAdmin || isLeader)
 

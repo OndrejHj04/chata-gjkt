@@ -11,7 +11,7 @@ import { getUserTheme } from "@/lib/api";
 import ToggleFullscreen from "./ToggleFullscreen";
 
 export default async function TopBar() {
-  const data = (await getServerSession(authOptions)) as any;
+  const data = (await getServerSession(authOptions))
   const { theme } = await getUserTheme()
 
   return (

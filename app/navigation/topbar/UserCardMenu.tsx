@@ -13,7 +13,7 @@ export default async function TopBarUserCard({ user }: { user: any }) {
             {user.first_name} {user.last_name}
           </Typography>
           <div className="flex gap-1 items-center">
-            <Typography variant="body2">{user.role.name}</Typography>
+            <Typography variant="body2">{user.role}</Typography>
           </div>
         </div>
         <AvatarWrapper data={user} />

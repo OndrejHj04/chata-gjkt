@@ -30,7 +30,7 @@ export default function ReservationDetailRender({ user, options }: { user: any, 
     defaultValues: { name: "", purpouse: "", instructions: "", leader: options.find((item: any) => item.id === user.id) }
   });
 
-  const isAdmin = user.role.id !== 3
+  const isAdmin = user.role !== 'veřejnost'
   const onSubmit = (data: any) => {
     setCreateReservation({
       ...createReservation,

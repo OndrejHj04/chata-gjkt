@@ -116,14 +116,14 @@ export default function FullcalendarComponent({ data, role }: { data: any, role:
             </div>
           </Button>
         ))}
-        {role.id === 1 && <Tooltip title="Kliknutím nebo potažením mezi jednotlivými dny vyberete období k blokaci">
+        {role === "admin" && <Tooltip title="Kliknutím nebo potažením mezi jednotlivými dny vyberete období k blokaci">
           <span>
             <Button variant='contained' fullWidth disabled={!selectedDays.length} onClick={handleBlocation} size="small">Blokovat</Button>
           </span>
         </Tooltip>
         }</div>
       <div className='flex-1' style={{ minHeight: 450 }}>
-        <FullCalendar selectable={role.id === 1} ref={calendarRef} height="100%" locale={csLocale} headerToolbar={{ right: "", left: "" }} plugins={[dayGridPlugin, interactionPlugin]} initialView="dayGridMonth" events={calendarEventData} eventContent={eventContentInjection} select={(date) => setSelectedDays([date.start, date.end])} unselect={() => setSelectedDays([])} unselectCancel='.MuiButtonBase-root' defaultAllDay />
+        <FullCalendar selectable={role === 'admin'} ref={calendarRef} height="100%" locale={csLocale} headerToolbar={{ right: "", left: "" }} plugins={[dayGridPlugin, interactionPlugin]} initialView="dayGridMonth" events={calendarEventData} eventContent={eventContentInjection} select={(date) => setSelectedDays([date.start, date.end])} unselect={() => setSelectedDays([])} unselectCancel='.MuiButtonBase-root' defaultAllDay />
       </div>
     </Paper >
   )

@@ -37,13 +37,13 @@ SELECT
     r.id as role_id,
     u.image, 
     o.name AS organization_name,
-    CASE WHEN ${user.role.id} IN (1, 2) OR u.id = ${
+    CASE WHEN "${user.role}" IN ('admin', 'uživatel') OR u.id = ${
         user.id
       } THEN TRUE ELSE FALSE END AS detail,
     CASE WHEN u_child.id IS NULL THEN NULL
-    ELSE GROUP_CONCAT(JSON_OBJECT('id', u_child.id, 'name', CONCAT(u_child.first_name, ' ', u_child.last_name), 'role', child_r.name, 'organization', child_o.name, 'role_id', child_r.id, 'detail', CASE WHEN ${
-      user.role.id
-    } IN (1, 2) OR u.id = ${
+    ELSE GROUP_CONCAT(JSON_OBJECT('id', u_child.id, 'name', CONCAT(u_child.first_name, ' ', u_child.last_name), 'role', child_r.name, 'organization', child_o.name, 'role_id', child_r.id, 'detail', CASE WHEN "${
+      user.role
+    }" IN ('admin', 'uživatel') OR u.id = ${
         user.id
       } THEN TRUE ELSE FALSE END) separator '|||') END as children
 FROM users u

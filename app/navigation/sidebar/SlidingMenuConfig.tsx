@@ -5,14 +5,15 @@ import { sideMenu } from "@/lib/rolesConfig";
 
 
 export default async function SlidingMenuConfig() {
-  const user = (await getServerSession(authOptions)) as any;
-
+  const user = (await getServerSession(authOptions))
+  
   if (!user) return null
   const filterMenu = sideMenu.filter((item) => {
     if (item.roles?.length) {
-      return item.roles.includes(user.user.role.id)
+      return item.roles.includes(user.user.role)
     }
     return item
   })
+
   return <SlidingMenu menuConfig={filterMenu} user={user} />;
 }

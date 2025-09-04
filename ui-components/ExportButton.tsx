@@ -21,7 +21,7 @@ export default function ExportButton({
   entity: 'users' | 'reservations'
 }) {
   const { data } = useSession()
-  const roleId = data?.user.role.id
+  const roleId = data?.user.role
 
   const makeExport = async () => {
     const blob = await exportEntities[entity].method()
@@ -30,7 +30,7 @@ export default function ExportButton({
   };
 
   return (
-    <Button variant="outlined" size="small" onClick={makeExport} disabled={roleId === 3}>
+    <Button variant="outlined" size="small" onClick={makeExport} disabled={roleId === 'veřejnost'}>
       Export
     </Button>
   );

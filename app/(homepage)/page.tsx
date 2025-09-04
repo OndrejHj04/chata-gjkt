@@ -10,7 +10,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
   const roomsFilter = [Boolean(firstRoom), Boolean(secondRoom), Boolean(thirdRoom), Boolean(fourthRoom), Boolean(fifthRoom)].filter(Boolean)
 
   const data = await getReservationCalendarData({ rooms: roomsFilter });
-  const user = (await getServerSession(authOptions)) as any;
+  const user = (await getServerSession(authOptions))
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -19,7 +19,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
           <RegistrationWidget />
           <ReservationsWidget />
         </div>
-        <FullcalendarComponent data={data} role={user?.user.role} />
+        <FullcalendarComponent data={data} role={user.user.role} />
       </div>
     </div>
   );

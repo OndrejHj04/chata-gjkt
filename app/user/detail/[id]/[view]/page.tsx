@@ -5,14 +5,15 @@ import UserDetailDisplay from "./components/UserDetailDisplay"
 import UserDetailForm from "./components/UserDetailForm"
 import UserGroupsTable from "./components/UserGroupsTable"
 import UserReservationsTable from "./components/UserReservationsTable"
+import { getAuthServerSession } from "@/lib/authServerSession"
 
 export default async function UserDetailPage({ params, searchParams }: { params: any, searchParams: any }) {
   const { page } = searchParams
   const { view, id } = params
-  const { user } = await getServerSession(authOptions) as any
   const { data } = await getUserDetail({ userId: id })
+  const user = await getAuthServerSession()
 
-  const editable = user.role.id !== 3 || data.parent_id === user.id || user.id === data.id
+  const editable = user.role !== 'veřejnost' || data.parent_id === user.id || user.id === data.id
 
   if (view === "info") {
     if (editable) {

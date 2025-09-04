@@ -36,7 +36,7 @@ export default async function ReservationList({
     sort,
     dir,
   })) as any;
-  const isAdmin = user.role.id !== 3;
+  const isAdmin = user.role !== 'veřejnost'
 
   return (
     <TableContainer>

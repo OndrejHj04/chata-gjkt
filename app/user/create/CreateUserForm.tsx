@@ -4,14 +4,9 @@ import { Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { withToast } from "@/utils/toast/withToast";
 import { useRouter } from "next/navigation";
+import { Role } from "@/constants/role";
 
-const roles = [
-  { id: 1, label: "Admin" },
-  { id: 2, label: "Správce" },
-  { id: 3, label: "Uživatel" },
-];
-
-export default function CreateUserForm({ role }: { role: any }) {
+export default function CreateUserForm({ role }: { role: Role["name"] }) {
   const {
     register,
     handleSubmit,
@@ -65,13 +60,13 @@ export default function CreateUserForm({ role }: { role: any }) {
             select
             label="Role"
           >
-            {roles.map((urole) => (
+            {Role.getAllRoles().map(({ name }) => (
               <MenuItem
-                key={urole.id}
-                disabled={urole.id < role}
-                value={urole.id}
+                key={name}
+                disabled={role === "uživatel" && name === "admin"}
+                value={name}
               >
-                {urole.label}
+                {name}
               </MenuItem>
             ))}
           </TextField>

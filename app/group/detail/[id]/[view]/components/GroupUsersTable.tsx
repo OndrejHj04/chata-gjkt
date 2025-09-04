@@ -9,7 +9,7 @@ import GroupUsersRemoveButton from "./GroupUsersRemoveButton"
 export default async function GroupUsersTable({ id, page = 1 }: { id: any, page: any }) {
   const { data, count } = await getGroupUsers({ groupId: id, page: page })
   const { user } = await getServerSession(authOptions) as any
-  const isAdmin = user.role.id !== 3
+  const isAdmin = user.role !== 'veřejnost'
 
   return (
     <TableContainer>

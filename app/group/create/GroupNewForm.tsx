@@ -31,7 +31,7 @@ export default function GroupNewForm({
       owner: options.find((item: any) => item.id === user.id),
     },
   });
-  const isAdmin = user.role.id !== 3;
+  const isAdmin = user.role !== 'veřejnost';
   const { push, refresh } = useRouter();
 
   const onSubmit = async (data: any) => {

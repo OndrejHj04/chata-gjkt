@@ -13,7 +13,7 @@ export default async function GroupDetailPage({ params, searchParams }: { params
   const { data } = await getGroupDetail({ groupId: id })
 
   if (view === "info") {
-    if (user.role.id === 3) {
+    if (user.role === 'veřejnost') {
       return <GroupDetailDisplay groupDetail={data} />
     }
     return <GroupDetailForm groupDetail={data} />

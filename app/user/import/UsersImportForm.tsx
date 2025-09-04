@@ -19,6 +19,7 @@ import Link from "next/link";
 import { importNewUsers, validateImport } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { withToast } from "@/utils/toast/withToast";
+import { Role } from "@/constants/role";
 
 const importUsersValidFormat = [
   { value: "first_name", name: "Jméno" },
@@ -27,14 +28,14 @@ const importUsersValidFormat = [
   { value: "role", name: "Role" },
 ];
 
-export default function UsersImportForm({ roles }: { roles: any }) {
+export default function UsersImportForm() {
   const [loading, setLoading] = useState(false);
   const inputRef = useRef(null);
   const [data, setData] = useState([]);
   const [file, setFile] = useState<any>(null);
   const [message, setMessage] = useState("");
 
-  const { refresh, push } = useRouter()
+  const { refresh, push } = useRouter();
   const handleSubmit = (e: any) => {
     setLoading(true);
     e.preventDefault();
@@ -48,9 +49,9 @@ export default function UsersImportForm({ roles }: { roles: any }) {
         newData.push(obj);
       }
     });
-    withToast(importNewUsers({ users: newData }), {message: "user.import"})
-    refresh()
-    push("/user/list")
+    withToast(importNewUsers({ users: newData }), { message: "user.import" });
+    refresh();
+    push("/user/list");
   };
 
   const clearFile = () => {
@@ -139,8 +140,8 @@ export default function UsersImportForm({ roles }: { roles: any }) {
                         <TableCell>{item[2]}</TableCell>
                         <TableCell>
                           {
-                            roles.find(
-                              (role: any) => role.id === Number(item[3])
+                            Role.getAllRoles().find(
+                              (role) => role === item
                             )?.name
                           }
                         </TableCell>
@@ -175,7 +176,12 @@ export default function UsersImportForm({ roles }: { roles: any }) {
         </TableContainer>
 
         <div className="flex gap-2">
-          <Button variant="contained" component="label" className="text-center" size="small">
+          <Button
+            variant="contained"
+            component="label"
+            className="text-center"
+            size="small"
+          >
             Vybrat soubor .csv
             <input
               type="file"
@@ -185,7 +191,14 @@ export default function UsersImportForm({ roles }: { roles: any }) {
               onChange={(e: any) => setFile(e.target.files[0])}
             />
           </Button>
-          <Button variant="contained" component={Link} href="/vzorovy_soubor.csv" size="small">Stáhnout vzorový soubor</Button>
+          <Button
+            variant="contained"
+            component={Link}
+            href="/vzorovy_soubor.csv"
+            size="small"
+          >
+            Stáhnout vzorový soubor
+          </Button>
           <Button
             variant="contained"
             size="small"
@@ -196,7 +209,7 @@ export default function UsersImportForm({ roles }: { roles: any }) {
             Odstranit soubor
           </Button>
         </div>
-      </Paper >
-    </form >
+      </Paper>
+    </form>
   );
 }

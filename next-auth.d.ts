@@ -1,13 +1,11 @@
 import { DefaultSession, DefaultUser } from "next-auth";
 import { DefaultJWT } from "next-auth/jwt";
+import { Role } from "./constants/role";
 
 declare module "next-auth" {
   interface Session {
     user: {
-      role: {
-        id: number;
-        name: string;
-      };
+      role: Role["name"];
       id: number;
       image: string;
       verified: boolean;
@@ -20,14 +18,11 @@ declare module "next-auth" {
       active: boolean;
       children: number[];
       parent: number;
-    } & DefaultSession['user'];
+    } & DefaultSession["user"];
   }
 
   interface User extends DefaultUser {
-    role: {
-      id: number;
-      name: string;
-    };
+    role: Role["name"];
     id: number;
     image: string;
     verified: boolean;
@@ -54,10 +49,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
-    role: {
-      id: number;
-      name: string;
-    };
+    role: Role['name']
     id: number;
     image: string;
     verified: boolean;

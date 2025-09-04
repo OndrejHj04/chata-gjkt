@@ -8,11 +8,9 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { actionMenu } from "@/lib/rolesConfig";
 
 export default async function SpeedComponent() {
-  const user = await getServerSession(authOptions) as any
+  const user = await getServerSession(authOptions)
 
-  if (!user) {
-    return null
-  }
+  if (!user) return null
 
   return (
     <SpeedDial
@@ -21,7 +19,7 @@ export default async function SpeedComponent() {
       icon={<SpeedDialIcon />}
     >
       {actionMenu.map((action: any) => {
-        if (action.roles.includes(user.user.role.id)) {
+        if (action.roles.includes(user.user.role)) {
           return (
             <SpeedDialAction
               key={action.name}

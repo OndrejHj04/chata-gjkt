@@ -55,7 +55,7 @@ export default async function Page({ searchParams }: any) {
               </TableCell>
               <TableCell>{album.photos_count}</TableCell>
               <TableCell>{album.visibility}</TableCell>
-              {user.user.role.id !== 3 || user.user.id === album.owner.id ? (
+              {user.user.role !== 'veřejnost' || user.user.id === album.owner.id ? (
                 <AlbumDetailButton name={album.name} />
               ) : (
                 <TableCell />

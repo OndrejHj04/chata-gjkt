@@ -37,7 +37,7 @@ export default async function ReservationRegistration({
     await getReservationRegisteredUsers({ reservationId: id, page });
 
   const isLeader = data.leader === user.id;
-  const isAdmin = user.role.id !== 3;
+  const isAdmin = user.role !== 'veřejnost';
   const deprecated = data.status_id === 1;
 
   const disabled = deprecated || (!isAdmin && !isLeader);

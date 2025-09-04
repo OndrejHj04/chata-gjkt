@@ -12,24 +12,17 @@ import {
 } from "@mui/material";
 import UserListItem from "./components/UserListItem";
 import TableListPagination from "@/ui-components/TableListPagination";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import SortableColumn from "@/ui-components/SortableColumn";
 import { getUserList } from "@/api/users/index";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
+import { getAuthServerSession } from "@/lib/authServerSession";
 
 export default async function UserList(props: ServerSideComponentProp) {
-  const {
-    page,
-    search,
-    role,
-    organization,
-    verified,
-    sort,
-    dir
-  } = await props.searchParams;
-  const { user: currentUser } = (await getServerSession(authOptions)) as any;
-  const isAdmin = currentUser.role.id !== 3;
+  const { page, search, role, organization, verified, sort, dir } =
+    await props.searchParams;
+
+  const user = await getAuthServerSession();
+  const isAdmin = user.role !== "veřejnost";
 
   const { data, count } = await getUserList({
     page,
@@ -41,11 +34,9 @@ export default async function UserList(props: ServerSideComponentProp) {
     dir,
   });
 
-  const { groups: avaliableGroups } = await getUsersAvaliableGroups(
-    currentUser.id
-  );
+  const { groups: avaliableGroups } = await getUsersAvaliableGroups(user.id);
   const { reservations: avaliableReservations } =
-    await getUsersAvaliableReservations(currentUser.id);
+    await getUsersAvaliableReservations(user.id);
 
   return (
     <TableContainer>

@@ -396,7 +396,7 @@ export const getReservationList = async ({
                 LEFT JOIN rooms ro ON ro.id = rr.room 
                 WHERE rr.reservationId = r.id) AS beds_count,
                 (SELECT EXISTS (SELECT rf.user_id FROM reservations_forms rf WHERE rf.reservation_id = r.id)) as active_registration,
-                CASE WHEN ${user.role.id} IN (1, 2) OR r.leader = ${user.id}
+                CASE WHEN "${user.role}" IN ("admin", "veřejnost") OR r.leader = ${user.id}
                 OR EXISTS (SELECT 1 FROM users_reservations ur WHERE ur.reservationId = r.id AND ur.userId = ${
                   user.id
                 })
@@ -672,7 +672,7 @@ export const importNewUsers = async ({ users }: { users: any }) => {
 export const userGoogleLogin = async ({ account }: { account: any }) => {
   const [data] = (await Promise.all([
     query({
-      query: `SELECT users.id, users.first_name, users.last_name, users.email, users.image, users.theme, users.verified, JSON_OBJECT('id', roles.id, 'name', roles.name) as role, users.adress FROM users INNER JOIN roles ON roles.id = users.role WHERE email = ? AND role <> 4`,
+      query: `SELECT users.id, users.first_name, users.last_name, users.email, users.image, users.theme, users.verified, users.adress, users.role FROM users WHERE email = ? AND role <> 'veřejnost'`,
       values: [account.email],
     }),
   ])) as any;
@@ -681,7 +681,6 @@ export const userGoogleLogin = async ({ account }: { account: any }) => {
 
   return {
     ...data[0],
-    role: JSON.parse(data[0].role),
   };
 };
 
@@ -693,7 +692,7 @@ export const userLogin = async ({
   password: string;
 }) => {
   const data = (await query({
-    query: `SELECT users.id, users.image, users.first_name, users.last_name, users.email, users.image, users.theme, users.verified, JSON_OBJECT('id', roles.id, 'name', roles.name) as role, users.adress FROM users INNER JOIN roles ON roles.id = users.role WHERE email = ? AND password = MD5(?) AND role <> 4`,
+    query: `SELECT users.id, users.image, users.first_name, users.last_name, users.email, users.image, users.theme, users.verified, users.role, users.adress FROM users WHERE email = ? AND password = MD5(?) AND role <> 'veřejnost'`,
     values: [email, password],
   })) as any;
 
@@ -701,7 +700,6 @@ export const userLogin = async ({
 
   return {
     ...data[0],
-    role: JSON.parse(data[0].role),
   };
 };
 
@@ -768,15 +766,6 @@ export const validateImport = async ({ data }: { data: any }) => {
   return {
     data: validData.map((valid: any) => [...valid, !set.has(valid[2])]),
   };
-};
-
-export const getRolesList = async () => {
-  const data = await query({
-    query: `SELECT * FROM roles `,
-    values: [],
-  });
-
-  return { data };
 };
 
 export const resetUserPassword = async ({
@@ -951,9 +940,8 @@ export const getGroupList = async ({
   rpp?: any;
 }) => {
   const {
-    user: { role, id },
+    user: { id },
   } = (await getServerSession(authOptions)) as any;
-  const isLimited = role.id > 2;
 
   const [groups, reservations, users, count] = (await Promise.all([
     query({
@@ -968,7 +956,7 @@ export const getGroupList = async ({
         LEFT JOIN reservations ON reservations.id = reservations_groups.groupId
         WHERE 1=1
         ${search ? `AND groups.name LIKE "%${search}%"` : ""}
-        ${limit && isLimited ? `AND groups.owner = ${id}` : ""}
+        ${limit ? `AND groups.owner = ${id}` : ""}
         GROUP BY 
             groups.id
         ${page ? `LIMIT ${rpp} OFFSET ${page * rpp - rpp}` : ""}

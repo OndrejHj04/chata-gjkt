@@ -12,7 +12,7 @@ export default async function GroupList({
 }) {
   const { data, count } = await getGroupList({ page: page || 1, search: search || "" })
   const { user } = await getServerSession(authOptions) as any
-  const isAdmin = user.role.id !== 3
+  const isAdmin = user.role !== 'veřejnost'
 
   return (
     <TableContainer>

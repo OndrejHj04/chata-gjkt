@@ -1,25 +1,27 @@
-const sideMenu = [
-  { name: "Přehled", icon: "home", href: ["/"], roles: [1, 2, 3] },
-  { name: "Uživatelé", icon: "person", href: ["/user/list"], roles: [1, 2, 3] },
-  { name: "Skupiny", icon: "group", href: ["/group/list"], roles: [1, 2, 3] },
+import { Role } from "@/constants/role";
+
+const sideMenu: {name:string, icon:string, href: string[], roles: Role['name'][]}[] = [
+  { name: "Přehled", icon: "home", href: ["/"], roles: ['admin', 'uživatel', 'veřejnost'] },
+  { name: "Uživatelé", icon: "person", href: ["/user/list"], roles: ['admin', 'uživatel', 'veřejnost'] },
+  { name: "Skupiny", icon: "group", href: ["/group/list"], roles: ['admin', 'uživatel', 'veřejnost'] },
   {
     name: "Rezervace",
     icon: "calendar_month",
     href: ["/reservation/list"],
-    roles: [1, 2, 3],
+    roles: ['admin', 'uživatel', 'veřejnost'],
   },
   {
     name: "Aktivní registrace",
     icon: "assignment",
     href: ["/registration/list"],
-    roles: [1, 2],
+    roles: ['admin', 'uživatel'],
   },
-  { name: "Archiv", icon: "bookmark", href: ["/archive/list"], roles: [1, 2] },
+  { name: "Archiv", icon: "bookmark", href: ["/archive/list"], roles: ['admin', 'uživatel'] },
   {
     name: "Mailing",
     icon: "alternate_email",
     href: ["/mailing/send", "/mailing/templates", "/mailing/events"],
-    roles: [1, 2],
+    roles: ['admin', 'uživatel'],
   },
   {
     name: "Galerie",
@@ -29,14 +31,14 @@ const sideMenu = [
       "/photogallery/albums/list",
       "/photogallery/albums/create",
     ],
-    roles: [1, 2, 3],
+    roles: ['admin', 'uživatel', 'veřejnost'],
   },
-  { name: "Počasí", icon: "wb_sunny", href: ["/weather"], roles: [1, 2, 3] },
+  { name: "Počasí", icon: "wb_sunny", href: ["/weather"], roles: ['admin', 'uživatel', 'veřejnost'] },
   {
     name: "Přehledné zobrazení",
     icon: "view_timeline",
     href: ["/data_overview"],
-    roles: [1, 2],
+    roles: ['admin', 'uživatel'],
   },
   { name: "Nastavení", icon: "settings", href: ["/settings"], roles: [1] },
 ];
@@ -46,31 +48,31 @@ const actionMenu = [
     href: "/reservation/create",
     name: "Vytvořit rezervaci",
     icon: "edit_calendar",
-    roles: [1, 2, 3],
+    roles: ['admin', 'uživatel', 'veřejnost'],
   },
   {
     href: "/group/create",
     name: "Vytvořit skupinu",
     icon: "group_add",
-    roles: [1, 2, 3],
+    roles: ['admin', 'uživatel', 'veřejnost'],
   },
   {
     href: "/user/import",
     name: "Importovat uživatele",
     icon: "import_export",
-    roles: [1, 2],
+    roles: ['admin', 'uživatel'],
   },
   {
     href: "/user/create",
     name: "Vytvořit uživatele",
     icon: "person_add",
-    roles: [1, 2, 3],
+    roles: ['admin', 'uživatel', 'veřejnost'],
   },
   {
     href: "/user/family",
     name: "Přidat rodinný účet",
     icon: "child_friendly",
-    roles: [1, 2, 3],
+    roles: ['admin', 'uživatel', 'veřejnost'],
   },
 ];
 
