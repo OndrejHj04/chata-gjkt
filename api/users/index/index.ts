@@ -1,13 +1,12 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { getAuthServerSession } from "@/lib/authServerSession";
 import { query } from "@/lib/db";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
-import { getServerSession } from "next-auth";
 
 export const getUserList = async (
   searchParams: Awaited<ServerSideComponentProp["searchParams"]>
 ) => {
   const {
-    page,
+    page = "1",
     search,
     role,
     organization,
@@ -23,7 +22,8 @@ export const getUserList = async (
     "u.organization",
     "u.verified",
   ];
-  const { user } = (await getServerSession(authOptions)) as any;
+
+  const user = await getAuthServerSession()
 
   const [users, count] = (await Promise.all([
     query({
