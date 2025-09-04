@@ -677,15 +677,11 @@ export const userGoogleLogin = async ({ account }: { account: any }) => {
     }),
   ])) as any;
 
-  if (!data.length) {
-    return { user: null };
-  }
+  if (!data.length) null;
 
   return {
-    user: {
-      ...data[0],
-      role: JSON.parse(data[0].role),
-    },
+    ...data[0],
+    role: JSON.parse(data[0].role),
   };
 };
 
@@ -693,19 +689,20 @@ export const userLogin = async ({
   email,
   password,
 }: {
-  email: any;
-  password: any;
+  email: string;
+  password: string;
 }) => {
   const data = (await query({
     query: `SELECT users.id, users.image, users.first_name, users.last_name, users.email, users.image, users.theme, users.verified, JSON_OBJECT('id', roles.id, 'name', roles.name) as role, users.adress FROM users INNER JOIN roles ON roles.id = users.role WHERE email = ? AND password = MD5(?) AND role <> 4`,
     values: [email, password],
   })) as any;
 
-  if (!data.length) {
-    return { user: null };
-  }
+  if (!data.length) null;
 
-  return { user: { ...data[0], role: JSON.parse(data[0].role) } };
+  return {
+    ...data[0],
+    role: JSON.parse(data[0].role),
+  };
 };
 
 export const createUserAccount = async ({

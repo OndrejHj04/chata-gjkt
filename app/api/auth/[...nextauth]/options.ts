@@ -9,9 +9,9 @@ export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       async profile(profile) {
-        const { user } = await userGoogleLogin({ account: profile })
-        if (!user) return { ...profile, id: profile.sub, forbidden: true }
-        return user
+        const user = await userGoogleLogin({ account: profile });
+        if (!user) return { ...profile, id: profile.sub, forbidden: true };
+        return user;
       },
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
@@ -19,39 +19,34 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: {
-          label: "Email",
-          type: "text",
-          placeholder: "enter name",
-        },
-        password: {
-          label: "Password",
-          type: "password",
-          placeholder: "enter password",
-        },
+        email: {},
+        password: {},
       },
-      async authorize(credentials: any) {
-        const { email, password } = credentials;
-        const { user } = await userLogin({ email, password });
-        return { ...user }
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return;
+        const user = await userLogin({
+          email: credentials.email,
+          password: credentials.password,
+        });
+        return user
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user }) {
       if (user) {
         token.user = user;
       }
       return token;
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       session.user = token.user;
-      return session
+      return session;
     },
-    async signIn({ user }: any) {
-      if (user.forbidden || !user.id) return false
+    async signIn({ user }) {
+      if (user.forbidden || !user.id) return false;
 
-      return true
+      return true;
     },
   },
   pages: {
@@ -60,6 +55,6 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     maxAge: 60 * 60 * 24,
-    strategy: "jwt"
+    strategy: "jwt",
   },
 };

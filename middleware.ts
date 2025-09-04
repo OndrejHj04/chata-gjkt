@@ -5,8 +5,7 @@ import dayjs from "dayjs";
 import { actionMenu, otherRoutes, sideMenu } from "./lib/rolesConfig";
 
 export default async function middleware(req: NextRequest) {
-  const token = await getToken({ req }) as any
-
+  const token = await getToken({ req })
   // disallow navigation when not loged in
   if (!token && req.nextUrl.pathname !== "/" && !req.nextUrl.pathname.startsWith("/password-reset")) {
     return NextResponse.redirect(new URL("/", req.url));
