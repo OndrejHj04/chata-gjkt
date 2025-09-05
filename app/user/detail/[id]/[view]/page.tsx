@@ -1,16 +1,16 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options"
-import { getUserDetail } from "@/lib/api"
-import { getServerSession } from "next-auth"
+import { getUserDetail } from "@/api/users/show"
 import UserDetailDisplay from "./components/UserDetailDisplay"
 import UserDetailForm from "./components/UserDetailForm"
 import UserGroupsTable from "./components/UserGroupsTable"
 import UserReservationsTable from "./components/UserReservationsTable"
 import { getAuthServerSession } from "@/lib/authServerSession"
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps"
 
-export default async function UserDetailPage({ params, searchParams }: { params: any, searchParams: any }) {
-  const { page } = searchParams
-  const { view, id } = params
-  const { data } = await getUserDetail({ userId: id })
+export default async function UserDetailPage(props: ServerSideComponentProp) {
+  const { page } = await props.searchParams
+  const { view, id } = await props.params
+  
+  const data = await getUserDetail(id)
   const user = await getAuthServerSession()
 
   const editable = user.role !== 'veřejnost' || data.parent_id === user.id || user.id === data.id

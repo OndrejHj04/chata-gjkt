@@ -33,15 +33,10 @@ export default async function middleware(req: NextRequest) {
     }
 
     if (req.nextUrl.pathname.startsWith("/user/detail")) {
-      const [, , , userId, tab, ...rest] = req.nextUrl.pathname.split("/")
-      const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/exists`, {
-        method: "POST",
-        body: JSON.stringify({user: token.user})
-      })
-      const { exists } = await request.json()
+      const [, , , , tab, ...rest] = req.nextUrl.pathname.split("/")
       const avaliableTabs = ['info', 'groups', 'reservations']
 
-      if (!exists || avaliableTabs.indexOf(tab) < 0 || rest.length) {
+      if (avaliableTabs.indexOf(tab) < 0 || rest.length) {
         return NextResponse.redirect(new URL("/", req.url));
       }
 
@@ -116,15 +111,15 @@ export default async function middleware(req: NextRequest) {
       return NextResponse.next()
     }
 
-    // if ((req.nextUrl.pathname.startsWith("/mailing") || req.nextUrl.pathname.startsWith("/registration")) && token.user.role === "veřejnost") {
-    //   return NextResponse.redirect(new URL("/", req.url));
-    // }
+    if ((req.nextUrl.pathname.startsWith("/mailing") || req.nextUrl.pathname.startsWith("/registration")) && token.user.role === "veřejnost") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
 
-    // const routes = [...sideMenu.flatMap((item) => item.roles.includes(token.user.role) ? item.href : []), ...actionMenu.flatMap((item) => item.roles.includes(token.user.role) ? item.href : []), ...otherRoutes]
+    const routes = [...sideMenu.flatMap((item) => item.roles.includes(token.user.role) ? item.href : []), ...actionMenu.flatMap((item) => item.roles.includes(token.user.role) ? item.href : []), ...otherRoutes]
 
-    // if (!routes.includes(req.nextUrl.pathname)) {
-    //   return NextResponse.redirect(new URL("/", req.url));
-    // }
+    if (!routes.includes(req.nextUrl.pathname)) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
   }
 }
 
