@@ -1883,30 +1883,6 @@ export const getReservationsByWeekCalendar = async () => {
   return { data: dataRequest };
 };
 
-export const getReservationsArchive = async ({ page }: { page: any }) => {
-  const [dataRequest, countRequest] = (await Promise.all([
-    query({
-      query: `SELECT r.id, r.name, r.from_date, r.to_date, r.creation_date, COUNT(ur.userId) as users_count, u.image as leader_image,
-      CONCAT(u.first_name, ' ', u.last_name) as leader_name
-      FROM reservations r 
-      LEFT JOIN users_reservations ur ON ur.reservationId = r.id
-      LEFT JOIN users u ON u.id = r.leader
-      WHERE r.status = 1
-      GROUP BY r.id
-      ORDER BY r.from_date desc
-      LIMIT 10 OFFSET ? 
-      `,
-      values: [page * 10 - 10],
-    }),
-    query({
-      query: `SELECT COUNT(r.id) as count FROM reservations r WHERE status = 1`,
-      values: [],
-    }),
-  ])) as any;
-
-  return { data: dataRequest, count: countRequest[0].count };
-};
-
 export const createFamilyAccount = async ({
   birth_date,
   first_name,

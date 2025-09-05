@@ -39,7 +39,7 @@ export const getReservationList = async (
         LEFT JOIN users u ON u.id = r.leader
         LEFT JOIN reservations_forms rf ON rf.reservation_id = r.id
         INNER JOIN status s ON s.id = r.status
-        WHERE r.status <> 1
+        WHERE 1=1
               ${status ? `AND r.status = "${status}"` : ""}
               ${search ? `AND r.name LIKE "%${search}%"` : ""}
               ${
@@ -61,7 +61,7 @@ export const getReservationList = async (
     }),
     query({
       query: `SELECT COUNT(r.id) as count FROM reservations r
-      WHERE r.status <> 1
+      WHERE 1=1
       ${status ? `AND r.status = "${status}"` : ""}
       ${search ? `AND r.name LIKE "%${search}%"` : ""}
       ${

@@ -1,23 +1,43 @@
-import { getReservationsArchive } from "@/lib/api";
+import { getReservationList } from "@/api/reservations/index";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
+import SortableColumn from "@/ui-components/SortableColumn";
 import TableListPagination from "@/ui-components/TableListPagination";
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import dayjs from "dayjs";
 
-export default async function ArchivePage({ searchParams }: { searchParams: any }) {
-  const { page = 1 } = searchParams
-  const { data, count } = await getReservationsArchive({ page })
+export default async function ArchivePage(props: ServerSideComponentProp) {
+  const { page, search, registration, sort, dir } = await props.searchParams;
+
+  const { data, count } = await getReservationList({
+    page,
+    status: "archiv",
+    search,
+    registration,
+    sort,
+    dir,
+  });
 
   return (
     <TableContainer>
       <Table size="small">
         <TableHead>
           <TableRow className="[&_.MuiTableCell-root]:font-semibold [&_.MuiTableCell-root]:text-lg">
-            <TableCell>Název</TableCell>
-            <TableCell>Datum vytvoření</TableCell>
-            <TableCell>Začátek</TableCell>
-            <TableCell>Konec</TableCell>
-            <TableCell>Počet účastníků</TableCell>
+            <SortableColumn id="r.name">Název</SortableColumn>
+            <SortableColumn id="r.creation_date">
+              Datum vytvoření
+            </SortableColumn>
+            <SortableColumn id="r.from_date">Začátek</SortableColumn>
+            <SortableColumn id="r.to_date">Konec</SortableColumn>
+            <SortableColumn id="users_count">Účastníci</SortableColumn>
             <TableCell>Vedoucí</TableCell>
             <TableListPagination count={count} />
           </TableRow>
@@ -26,9 +46,15 @@ export default async function ArchivePage({ searchParams }: { searchParams: any 
           {data.map((reservation: any) => (
             <TableRow key={reservation.id}>
               <TableCell>{reservation.name}</TableCell>
-              <TableCell>{dayjs(reservation.creation_date).format("DD. MM. YYYY")}</TableCell>
-              <TableCell>{dayjs(reservation.from_date).format("DD. MM. YYYY")}</TableCell>
-              <TableCell>{dayjs(reservation.to_date).format("DD. MM. YYYY")}</TableCell>
+              <TableCell>
+                {dayjs(reservation.creation_date).format("DD. MM. YYYY")}
+              </TableCell>
+              <TableCell>
+                {dayjs(reservation.from_date).format("DD. MM. YYYY")}
+              </TableCell>
+              <TableCell>
+                {dayjs(reservation.to_date).format("DD. MM. YYYY")}
+              </TableCell>
               <TableCell>{reservation.users_count}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
@@ -37,12 +63,14 @@ export default async function ArchivePage({ searchParams }: { searchParams: any 
                 </div>
               </TableCell>
               <TableCell align="right">
-                <Button href={`/reservation/detail/${reservation.id}/info`}>Detail</Button>
+                <Button href={`/reservation/detail/${reservation.id}/info`}>
+                  Detail
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-  )
+  );
 }

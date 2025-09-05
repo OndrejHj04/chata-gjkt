@@ -36,8 +36,10 @@ import { Room } from "@/constants/room";
 
 export default function ReservationDatesRender({
   reservations,
+  user
 }: {
   reservations: any[];
+  user:any
 }) {
   const { createReservation, setCreateReservation } =
     useContext(ReservationContext);
@@ -52,6 +54,8 @@ export default function ReservationDatesRender({
       rooms: Room.getAllRooms().map((room) => room.name),
     },
   });
+
+  const isAdmin = user.role === "admin"
 
   const { from_date, to_date, rooms } = watch();
 
@@ -239,7 +243,7 @@ export default function ReservationDatesRender({
               render={({ field }) => (
                 <DatePicker
                   label="Začátek rezervace"
-                  minDate={dayjs()}
+                  minDate={isAdmin ? undefined : dayjs()}
                   maxDate={dayjs(to_date).subtract(1, "day")}
                   {...field}
                   format="DD. MM. YYYY"

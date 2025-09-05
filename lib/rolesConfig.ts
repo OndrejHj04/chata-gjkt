@@ -40,7 +40,7 @@ const sideMenu: {name:string, icon:string, href: string[], roles: Role['name'][]
     href: ["/data_overview"],
     roles: ['admin', 'uživatel'],
   },
-  { name: "Nastavení", icon: "settings", href: ["/settings"], roles: [1] },
+  { name: "Nastavení", icon: "settings", href: ["/settings"], roles: ["admin"] },
 ];
 
 const actionMenu = [
