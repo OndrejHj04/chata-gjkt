@@ -8,7 +8,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 
-export default function GroupListItem({ group, allowMenu }: { group: any, allowMenu: any }) {
+export default function GroupListItem({ group, allowMenu }: { group: any, allowMenu: boolean }) {
   const { refresh } = useRouter()
   const [selectedGroup, setSelectedGroup] = useState<{ id: number, mouseX: number, mouseY: number } | null>(null)
 
@@ -36,9 +36,11 @@ export default function GroupListItem({ group, allowMenu }: { group: any, allowM
       <TableRow selected={isSelected} onClick={setMenuPosition}>
         <TableCell>{group.name}</TableCell>
         <TableCell>{group.description}</TableCell>
-        <TableCell className="!flex !items-center !gap-2">
-          <AvatarWrapper data={group.owner} />
-          {group.owner.first_name} {group.owner.last_name}
+        <TableCell>
+          <div className="flex items-center gap-2">
+            <AvatarWrapper data={group.owner} />
+            {group.owner.first_name} {group.owner.last_name}
+          </div>
         </TableCell>
         <TableCell>
           {group.users.length}

@@ -1,18 +1,26 @@
 import TableListPagination from "@/ui-components/TableListPagination";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { getGroupList } from "@/lib/api";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import GroupListItem from "./GroupListItem";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
+import { getGroupList } from "@/api/group/index";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 
-export default async function GroupList({
-  searchParams: { page, search }
-}: {
-  searchParams: any;
-}) {
-  const { data, count } = await getGroupList({ page: page || 1, search: search || "" })
-  const { user } = await getServerSession(authOptions) as any
-  const isAdmin = user.role !== 'veřejnost'
+export default async function GroupList(props: ServerSideComponentProp) {
+  const { page, search } = await props.searchParams;
+  const { user } = (await getServerSession(authOptions)) as any;
+  const isAdmin = user.role !== "veřejnost";
+  const { data, count } = await getGroupList({
+    page,
+    search,
+  });
 
   return (
     <TableContainer>
@@ -27,9 +35,15 @@ export default async function GroupList({
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((group: any) => {
-            const allowMenu = isAdmin || group.owner.id === user.id
-            return <GroupListItem key={group.id} group={group} allowMenu={allowMenu} />
+          {data.map((group) => {
+            const allowMenu = isAdmin || group.owner.id === user.id;
+            return (
+              <GroupListItem
+                key={group.id}
+                group={group}
+                allowMenu={allowMenu}
+              />
+            );
           })}
         </TableBody>
       </Table>
