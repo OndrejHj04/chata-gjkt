@@ -7,27 +7,19 @@ import {
   TableRow,
 } from "@mui/material";
 import TableListPagination from "@/ui-components/TableListPagination";
-import { getReservationList } from "@/lib/api";
 import ReservationListItem from "../list/components/ReservationListItem";
 import React from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import SortableColumn from "../../../ui-components/SortableColumn";
+import { getReservationList } from "@/api/reservations/index";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 
-export default async function ReservationList({
-  searchParams,
-}: {
-  searchParams: any;
-}) {
+export default async function ReservationList(props: ServerSideComponentProp) {
   const { user } = (await getServerSession(authOptions)) as any;
-  const {
-    page = 1,
-    status,
-    search = "",
-    registration,
-    sort = "",
-    dir = "",
-  } = await searchParams;
+  const { page, status, search, registration, sort, dir } =
+    await props.searchParams;
+
   const { data, count } = (await getReservationList({
     page,
     status,
@@ -36,7 +28,7 @@ export default async function ReservationList({
     sort,
     dir,
   })) as any;
-  const isAdmin = user.role !== 'veřejnost'
+  const isAdmin = user.role !== "veřejnost";
 
   return (
     <TableContainer>
