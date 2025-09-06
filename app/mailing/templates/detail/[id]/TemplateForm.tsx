@@ -2,7 +2,7 @@
 import { Button, Paper, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { mailingTemplateEdit } from "@/lib/api";
-import CustomEditor from "../../../ui-components/CustomEditor";
+import CustomEditor from "../../../../../ui-components/CustomEditor";
 import { withToast } from "@/utils/toast/withToast";
 
 export default function TemplateForm({ template }: { template: any }) {

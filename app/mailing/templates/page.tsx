@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
-export default async function MailingTemplates() {
+export default async function Page() {
   const templates = await malingTemplatesList()
 
   return (

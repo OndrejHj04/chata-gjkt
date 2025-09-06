@@ -1,34 +1,29 @@
 import { Tab, Tabs } from "@mui/material";
 import Link from "next/link";
-import MailingToggle from "./mailingToggle";
 import { getEmailSettings } from "@/lib/api";
+import MailingToggle from "../components/mailingToggle";
 
-enum navigation {
-  "send", "templates", "events"
-}
-
-
-export default async function Layout({
-  params, children
-}: any) {
-  const { type } = params
-  const { allowEmails } = await getEmailSettings()
+export default async function Layout({ children }: any) {
+  const { allowEmails } = await getEmailSettings();
 
   return (
     <div>
       <div className="flex justify-between items">
-        <Tabs value={navigation[type]} variant="scrollable">
+        <Tabs value={"templates"} variant="scrollable">
           <Tab
+            value="send"
             label="Odesláno"
             component={Link}
             href="/mailing/send"
           />
           <Tab
+            value="templates"
             label="Šablony"
             component={Link}
             href="/mailing/templates"
           />
           <Tab
+            value="events"
             label="Události"
             component={Link}
             href="/mailing/events"
