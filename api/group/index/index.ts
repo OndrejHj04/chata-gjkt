@@ -4,7 +4,7 @@ import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 export const getGroupList = async (
   searchParams: Awaited<ServerSideComponentProp["searchParams"]>
 ) => {
-  const { page = "1", search, user } = searchParams;
+  const { page = "1", search, user, reservation } = searchParams;
 
   const [groups, count] = (await Promise.all([
     query({
@@ -20,6 +20,7 @@ export const getGroupList = async (
         WHERE 1=1
         ${search ? `AND groups.name LIKE "%${search}%"` : ""}
         ${user ? `AND users_groups.userId = ${user}` : ''}
+        ${reservation ? `AND reservations_groups.reservationId = ${reservation}` : ''}
         GROUP BY groups.id
         LIMIT 10 OFFSET ${Number(page) * 10 - 10}
       `,
@@ -29,9 +30,11 @@ export const getGroupList = async (
       query: `
         SELECT COUNT(*) as count FROM groups
         ${user ? `INNER JOIN users_groups ug ON ug.groupId = groups.id` : ''}
+        ${reservation ? `INNER JOIN reservations_groups rg ON rg.groupId = groups.id ` : ''}
         WHERE 1=1
         ${search ? `AND groups.name LIKE "%${search}%"` : ""}
         ${user ? `AND ug.userId = ${user}` : ''}
+        ${reservation ? `AND rg.reservationId = ${reservation}` : ''}
       `,
       values: [],
     }),

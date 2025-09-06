@@ -1202,39 +1202,6 @@ export const editUserDetail = async ({
   return { success: req.affectedRows === 1 };
 };
 
-export const getReservationDetail = async ({
-  reservationId,
-}: {
-  reservationId: any;
-}) => {
-  const dataRequest = (await query({
-    query: `SELECT r.id, r.name, r.from_date, r.to_date, r.purpouse, u.image as leader_image, CONCAT(u.first_name, ' ', u.last_name) as leader_name,
-    u.email as leader_email, s.display_name as status_name, s.icon as status_icon, s.color as status_color, r.success_link, r.payment_symbol, r.reject_reason, s.id as status_id, r.instructions, u.id as leader_id
-    FROM reservations r
-    LEFT JOIN users u ON u.id = r.leader
-    LEFT JOIN status s ON s.id = r.status
-    WHERE r.id = ?`,
-    values: [reservationId],
-  })) as any;
-
-  const roomsRequest = await query({
-    query: `
-      SELECT rr.room
-      FROM reservations r
-      LEFT JOIN reservations_rooms rr ON rr.reservationId = r.id
-      WHERE r.id = ?
-    `,
-    values: [reservationId],
-  });
-
-  const data = {
-    ...dataRequest[0],
-    rooms: roomsRequest.map(({ room }) => room),
-  };
-
-  return { data };
-};
-
 export const editReservationDate = async ({
   reservationId,
   from_date,
@@ -1340,66 +1307,6 @@ export const editReservationDetail = async ({
   })) as any;
 
   return { success: req.affectedRows === 1 };
-};
-
-export const getReservationUsers = async ({
-  reservationId,
-  page,
-}: {
-  reservationId: any;
-  page: any;
-}) => {
-  const [dataRequest, countRequest] = (await Promise.all([
-    query({
-      query: `SELECT CONCAT(u.first_name, ' ', u.last_name) as name, u.id, u.email, u.image, ro.name as role_name, o.name as organization_name, u.verified
-      FROM reservations r 
-      INNER JOIN users_reservations ur ON ur.reservationId = r.id AND ur.verified = 1
-      INNER JOIN users u ON u.id = ur.userId
-      INNER JOIN roles ro ON ro.id = u.role
-      LEFT JOIN organization o ON o.id = u.organization
-      WHERE r.id = ?
-      LIMIT 10 OFFSET ?
-      `,
-      values: [reservationId, page * 10 - 10],
-    }),
-    query({
-      query: `SELECT COUNT(ur.userId) as count FROM reservations r
-      INNER JOIN users_reservations ur ON ur.reservationId = r.id AND ur.verified = 1
-      WHERE r.id = ?`,
-      values: [reservationId],
-    }),
-  ])) as any;
-
-  return { data: dataRequest, count: countRequest[0].count };
-};
-
-export const getReservationGroups = async ({
-  reservationId,
-  page,
-}: {
-  reservationId: any;
-  page: any;
-}) => {
-  const [dataRequest, countRequest] = (await Promise.all([
-    query({
-      query: `SELECT g.id, g.name, g.description, CONCAT(u.first_name, ' ', u.last_name) as owner_name, u.email as owner_email, u.image as owner_image FROM reservations r 
-      INNER JOIN reservations_groups rg ON rg.reservationId = r.id
-      INNER JOIN groups g ON g.id = rg.groupId
-      INNER JOIN users u ON u.id = g.owner 
-      WHERE r.id = ?
-      LIMIT 10 OFFSET ?
-      `,
-      values: [reservationId, page * 10 - 10],
-    }),
-    query({
-      query: `SELECT COUNT(rg.groupId) as count FROM reservations r
-      INNER JOIN reservations_groups rg ON rg.reservationId = r.id
-      WHERE r.id = ?`,
-      values: [reservationId],
-    }),
-  ])) as any;
-
-  return { data: dataRequest, count: countRequest[0].count };
 };
 
 export const getUserGroupsWidgetData = async ({ userId }: { userId: any }) => {

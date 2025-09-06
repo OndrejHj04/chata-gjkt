@@ -12,6 +12,7 @@ export const getUserList = async (
     organization,
     verified,
     group,
+    reservation,
     sort = "",
     dir = "",
   } = searchParams;
@@ -54,12 +55,14 @@ LEFT JOIN users u_child ON u.email = u_child.email AND u_child.children = 1
 LEFT JOIN roles child_r ON child_r.id = u_child.role
 LEFT JOIN organization child_o ON child_o.id = u_child.organization
 ${group ? `INNER JOIN users_groups ug ON ug.userId = u.id` : ""}
+${reservation ? `INNER JOIN users_reservations ur ON ur.userId = u.id` : ""}
 WHERE u.children = 0
 ${search ? `AND CONCAT(u.first_name, ' ', u.last_name) LIKE "%${search}%"` : ""}
 ${role ? `AND u.role = "${role}"` : ""}
 ${organization ? `AND u.organization = "${organization}"` : ""}
 ${verified ? `AND u.verified = ${verified}` : ""}
 ${group ? `AND ug.groupId = ${group}` : ""}
+${reservation ? `AND ur.reservationId = ${reservation}` : ""}
 
 GROUP BY u.id
         ${
@@ -77,6 +80,7 @@ LIMIT 10 OFFSET ?
       INNER JOIN roles r ON r.id = u.role
       LEFT JOIN organization o ON o.id = u.organization
       ${group ? `INNER JOIN users_groups ug ON ug.userId = u.id` : ""}
+      ${reservation ? `INNER JOIN users_reservations ur ON ur.userId = u.id` : ""}
       WHERE u.children = 0
       ${
         search
@@ -87,6 +91,7 @@ LIMIT 10 OFFSET ?
       ${organization ? `AND u.organization = "${organization}"` : ""}
       ${verified ? `AND u.verified = ${verified}` : ""}
       ${group ? `AND ug.groupId = ${group}` : ""}
+      ${reservation ? `AND ur.reservationId = ${reservation}` : ""}
       `,
       values: [],
     }),

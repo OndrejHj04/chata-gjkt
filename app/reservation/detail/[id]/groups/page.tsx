@@ -1,10 +1,23 @@
-import { getReservationGroups } from "@/lib/api";
+import { getGroupList } from "@/api/group/index";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
-export default async function ReservationGroupsTable({ id, page = 1 }: { id: any, page: any }) {
-  const { data, count } = await getReservationGroups({ reservationId: id, page })
+export default async function ReservationGroupsTable(
+  props: ServerSideComponentProp
+) {
+  const { page } = await props.searchParams;
+  const { id } = await props.params;
+
+  const { data, count } = await getGroupList({ page, reservation: id });
 
   return (
     <TableContainer>
@@ -14,7 +27,7 @@ export default async function ReservationGroupsTable({ id, page = 1 }: { id: any
             <TableCell>Název</TableCell>
             <TableCell>Popis</TableCell>
             <TableCell>Majitel</TableCell>
-            <TableListPagination count={count}/>
+            <TableListPagination count={count} />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -24,8 +37,8 @@ export default async function ReservationGroupsTable({ id, page = 1 }: { id: any
               <TableCell>{group.description}</TableCell>
               <TableCell>
                 <div className="flex gap-2 items-center">
-                  <AvatarWrapper data={{ image: group.owner_image }} />
-                  {group.owner_name}
+                  <AvatarWrapper data={{ image: group.owner.image }} />
+                  {group.owner.first_name} {group.owner.last_name}
                 </div>
               </TableCell>
               <TableCell />
@@ -34,5 +47,5 @@ export default async function ReservationGroupsTable({ id, page = 1 }: { id: any
         </TableBody>
       </Table>
     </TableContainer>
-  )
+  );
 }

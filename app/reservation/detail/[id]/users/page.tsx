@@ -1,12 +1,31 @@
-import { getReservationUsers } from "@/lib/api";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import ReservationUsersRemoveButton from "./ReservationUsersRemoveButton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import ReservationUsersRemoveButton from "../components/ReservationUsersRemoveButton";
+import { getAuthServerSession } from "@/lib/authServerSession";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
+import { getUserList } from "@/api/users/index";
 
-export default async function ReservationUsersTable({ id, page = 1, editable }: { id: any, page: any, editable: any }) {
-  const { data, count } = await getReservationUsers({ reservationId: id, page })
+export default async function ReservationUsersTable(
+  props: ServerSideComponentProp
+) {
+  const { page } = await props.searchParams;
+  const { id } = await props.params;
 
+  const { data, count } = await getUserList({
+    reservation: id,
+    page,
+  });
+
+  const user = await getAuthServerSession();
+  const isAdmin = user.role !== "veřejnost";
   return (
     <TableContainer>
       <Table size="small">
@@ -34,12 +53,17 @@ export default async function ReservationUsersTable({ id, page = 1, editable }: 
               <TableCell>{user.organization_name}</TableCell>
               <TableCell>{user.verified}</TableCell>
               <TableCell align="right">
-                {editable && <ReservationUsersRemoveButton reservationId={id} userId={user.id} />}
+                {isAdmin && (
+                  <ReservationUsersRemoveButton
+                    reservationId={id}
+                    userId={user.id}
+                  />
+                )}
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-  )
+  );
 }

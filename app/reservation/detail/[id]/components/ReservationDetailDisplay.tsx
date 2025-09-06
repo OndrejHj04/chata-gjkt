@@ -5,10 +5,6 @@ import React from "react"
 
 export default function ReservationDetailDisplay({ reservationDetail }: { reservationDetail: any }) {
 
-  const bedsCount = reservationDetail.rooms.reduce((a: any, b: any) => {
-    return a + b.people
-  }, 0)
-
   return (
     <React.Fragment>
       {reservationDetail.leader_name ? <React.Fragment>
@@ -37,7 +33,7 @@ export default function ReservationDetailDisplay({ reservationDetail }: { reserv
           <ListItemText>Konec: {dayjsExtended(reservationDetail.to_date).format("DD. MMMM YYYY")}</ListItemText>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemText>{reservationDetail.rooms.length} pokoje; {bedsCount} lůžek</ListItemText>
+          <ListItemText>{reservationDetail.rooms.length} pokoje; [TODO] lůžek</ListItemText>
         </ListItem>
         <ListItem disablePadding>
           <ListItemText>Důvod: {reservationDetail.purpouse}</ListItemText>
