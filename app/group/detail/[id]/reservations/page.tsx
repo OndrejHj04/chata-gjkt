@@ -1,11 +1,15 @@
-import { getGroupReservations } from "@/lib/api";
+import { getReservationList } from "@/api/reservations/index";
 import { dayjsExtended } from "@/lib/dayjsExtended";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
 import { Icon, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 
-export default async function GroupReservationsTable({ id, page = 1 }: { id: any, page: any }) {
-  const { data, count } = await getGroupReservations({ groupId: id, page })
+export default async function GroupReservationsTable(props: ServerSideComponentProp) {
+  const { id } = await props.params;
+  const { page } = await props.searchParams;
+
+  const { data, count } = await getReservationList({ group: id, page })
 
   return (
     <TableContainer>

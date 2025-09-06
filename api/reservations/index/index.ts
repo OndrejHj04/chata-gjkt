@@ -5,7 +5,7 @@ import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 export const getReservationList = async (
   searchParams: Awaited<ServerSideComponentProp["searchParams"]>
 ) => {
-  const { page = "1", status, search, registration, user, sort = "", dir = "" } = searchParams;
+  const { page = "1", status, search, registration, user, group, sort = "", dir = "" } = searchParams;
 
   const allowedSort = [
     "r.name",
@@ -40,6 +40,7 @@ export const getReservationList = async (
         LEFT JOIN reservations_forms rf ON rf.reservation_id = r.id
         INNER JOIN status s ON s.id = r.status
         ${user ? `INNER JOIN users_reservations ur ON ur.reservationId = r.id` : ''}
+        ${group ? `INNER JOIN reservations_groups rg ON rg.reservationId = r.id` : ''}
         WHERE 1=1
               ${status ? `AND r.status = "${status}"` : ""}
               ${search ? `AND r.name LIKE "%${search}%"` : ""}
@@ -51,6 +52,7 @@ export const getReservationList = async (
                   : ""
               }
               ${user ? `AND ur.userId = ${user}` : ''}
+        ${group ? `AND rg.groupId = ${group}` : ''}
         GROUP BY r.id
         ${
           dir !== "" && allowedSort.includes(sort)
@@ -64,6 +66,7 @@ export const getReservationList = async (
     query({
       query: `SELECT COUNT(r.id) as count FROM reservations r
       ${user ? `INNER JOIN users_reservations ur ON ur.reservationId = r.id` : ''}
+      ${group ? `INNER JOIN reservations_groups rg ON rg.reservationId = r.id` : ''}
       WHERE 1=1
       ${status ? `AND r.status = "${status}"` : ""}
       ${search ? `AND r.name LIKE "%${search}%"` : ""}
@@ -75,6 +78,7 @@ export const getReservationList = async (
           : ""
       }
       ${user ? `AND ur.userId = ${user}` : ''}
+      ${group ? `AND rg.groupId = ${group}` : ''}
       `,
       values: [],
     }),

@@ -11,6 +11,7 @@ export const getUserList = async (
     role,
     organization,
     verified,
+    group,
     sort = "",
     dir = "",
   } = searchParams;
@@ -23,7 +24,7 @@ export const getUserList = async (
     "u.verified",
   ];
 
-  const user = await getAuthServerSession()
+  const user = await getAuthServerSession();
 
   const [users, count] = (await Promise.all([
     query({
@@ -52,11 +53,13 @@ LEFT JOIN organization o ON o.id = u.organization
 LEFT JOIN users u_child ON u.email = u_child.email AND u_child.children = 1
 LEFT JOIN roles child_r ON child_r.id = u_child.role
 LEFT JOIN organization child_o ON child_o.id = u_child.organization
+${group ? `INNER JOIN users_groups ug ON ug.userId = u.id` : ""}
 WHERE u.children = 0
 ${search ? `AND CONCAT(u.first_name, ' ', u.last_name) LIKE "%${search}%"` : ""}
 ${role ? `AND u.role = "${role}"` : ""}
 ${organization ? `AND u.organization = "${organization}"` : ""}
 ${verified ? `AND u.verified = ${verified}` : ""}
+${group ? `AND ug.groupId = ${group}` : ""}
 
 GROUP BY u.id
         ${
@@ -73,6 +76,7 @@ LIMIT 10 OFFSET ?
       query: `SELECT COUNT(*) as count FROM users u
       INNER JOIN roles r ON r.id = u.role
       LEFT JOIN organization o ON o.id = u.organization
+      ${group ? `INNER JOIN users_groups ug ON ug.userId = u.id` : ""}
       WHERE u.children = 0
       ${
         search
@@ -82,6 +86,7 @@ LIMIT 10 OFFSET ?
       ${role ? `AND u.role = "${role}"` : ""}
       ${organization ? `AND u.organization = "${organization}"` : ""}
       ${verified ? `AND u.verified = ${verified}` : ""}
+      ${group ? `AND ug.groupId = ${group}` : ""}
       `,
       values: [],
     }),

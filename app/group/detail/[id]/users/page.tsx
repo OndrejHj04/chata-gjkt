@@ -1,15 +1,26 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options"
-import { getGroupUsers } from "@/lib/api"
-import AvatarWrapper from "@/ui-components/AvatarWrapper"
-import TableListPagination from "@/ui-components/TableListPagination"
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
-import { getServerSession } from "next-auth"
-import GroupUsersRemoveButton from "./GroupUsersRemoveButton"
+import AvatarWrapper from "@/ui-components/AvatarWrapper";
+import TableListPagination from "@/ui-components/TableListPagination";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import GroupUsersRemoveButton from "../components/GroupUsersRemoveButton";
+import { getUserList } from "@/api/users/index";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
+import { getAuthServerSession } from "@/lib/authServerSession";
 
-export default async function GroupUsersTable({ id, page = 1 }: { id: any, page: any }) {
-  const { data, count } = await getGroupUsers({ groupId: id, page: page })
-  const { user } = await getServerSession(authOptions) as any
-  const isAdmin = user.role !== 'veřejnost'
+export default async function GroupUsersTable(props: ServerSideComponentProp) {
+  const { id } = await props.params;
+  const { page } = await props.searchParams;
+
+  const { data, count } = await getUserList({ group: id, page });
+
+  const user = await getAuthServerSession()
+  const isAdmin = user.role !== "veřejnost";
 
   return (
     <TableContainer>
@@ -34,16 +45,18 @@ export default async function GroupUsersTable({ id, page = 1 }: { id: any, page:
                 </div>
               </TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell>{user.role}</TableCell>
-              <TableCell>{user.organization}</TableCell>
+              <TableCell>{user.role_name}</TableCell>
+              <TableCell>{user.organization_name}</TableCell>
               <TableCell>{user.verified}</TableCell>
               <TableCell align="right">
-                {isAdmin && <GroupUsersRemoveButton userId={user.id} groupId={id} />}
+                {isAdmin && (
+                  <GroupUsersRemoveButton userId={user.id} groupId={id} />
+                )}
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-  )
+  );
 }
