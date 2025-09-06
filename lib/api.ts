@@ -1277,69 +1277,6 @@ export const editUserDetail = async ({
   return { success: req.affectedRows === 1 };
 };
 
-export const getUserGroups = async ({
-  userId,
-  page,
-}: {
-  userId: any;
-  page: any;
-}) => {
-  const [dataRequest, countRequest] = (await Promise.all([
-    query({
-      query: `SELECT g.id, g.name, g.description, CONCAT(o.first_name, ' ', o.last_name) as owner_name,o.image as owner_image
-    FROM users u
-    INNER JOIN users_groups ug ON ug.userId = u.id
-    INNER JOIN groups g ON ug.groupId = g.id
-    INNER JOIN users o ON o.id = g.owner
-    WHERE u.id = ?
-    LIMIT 10 OFFSET ?      
-    `,
-      values: [userId, page * 10 - 10],
-    }),
-    query({
-      query: `SELECT COUNT(ug.groupId) as count FROM users u 
-    INNER JOIN users_groups ug ON ug.userId = u.id
-    WHERE u.id = ?`,
-      values: [userId],
-    }),
-  ])) as any;
-
-  return { data: dataRequest, count: countRequest[0].count };
-};
-
-export const getUserReservations = async ({
-  userId,
-  page,
-}: {
-  userId: any;
-  page: any;
-}) => {
-  const [dataRequest, countRequest] = (await Promise.all([
-    query({
-      query: `SELECT r.id, r.name, r.from_date, r.to_date, CONCAT(l.first_name, ' ', l.last_name) as leader_name, l.image as leader_image, COUNT(ur2.userId) as users_count, s.color as status_color, s.icon as status_icon, s.display_name as status_name
-        FROM users u
-        INNER JOIN users_reservations ur ON ur.userId = u.id 
-        INNER JOIN reservations r ON r.id = ur.reservationId
-        INNER JOIN users l ON l.id = r.leader
-        INNER JOIN users_reservations ur2 ON ur2.reservationId = r.id  AND ur2.verified = 1
-        INNER JOIN status s ON s.id = r.status
-        WHERE u.id = ?
-        GROUP BY r.id
-        LIMIT 10 OFFSET ?
-      `,
-      values: [userId, page * 10 - 10],
-    }),
-    query({
-      query: `SELECT COUNT(ur.userId) as count FROM users u
-      INNER JOIN users_reservations ur ON ur.userId = u.id
-      WHERE u.id = ?`,
-      values: [userId],
-    }),
-  ])) as any;
-
-  return { data: dataRequest, count: countRequest[0].count };
-};
-
 export const getReservationDetail = async ({
   reservationId,
 }: {

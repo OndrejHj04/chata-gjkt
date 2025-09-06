@@ -1,12 +1,16 @@
-import { getUserReservations } from "@/lib/api"
+import { getReservationList } from "@/api/reservations/index"
 import { dayjsExtended } from "@/lib/dayjsExtended"
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps"
 import AvatarWrapper from "@/ui-components/AvatarWrapper"
 import TableListPagination from "@/ui-components/TableListPagination"
 import { Icon, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 
-export default async function UserReservationsTable({ id, page = 1 }: { id: any, page: any }) {
-  const { data, count } = await getUserReservations({ userId: id, page })
+export default async function UserReservationsTable(props: ServerSideComponentProp) {
+  const { page } = await props.searchParams;
+  const { id } = await props.params;
 
+  const {data, count} = await getReservationList({page, user: id})
+  
   return (
     <TableContainer>
       <Table size="small">

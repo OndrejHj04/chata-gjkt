@@ -16,11 +16,11 @@ const style = {
 export default function ChangeProfilePictureModal({open, setOpen, userId}: {open:boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, userId: number}) {
   const { refresh } = useRouter()
   const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const imageReady = image && imageUrl;
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: any) => {
     const file = e.target.files[0];
     if (file) {
       setImage(file);

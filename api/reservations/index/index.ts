@@ -5,7 +5,7 @@ import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 export const getReservationList = async (
   searchParams: Awaited<ServerSideComponentProp["searchParams"]>
 ) => {
-  const { page = "1", status, search, registration, sort = "", dir = "" } = searchParams;
+  const { page = "1", status, search, registration, user, sort = "", dir = "" } = searchParams;
 
   const allowedSort = [
     "r.name",
@@ -15,7 +15,7 @@ export const getReservationList = async (
     "users_count",
   ];
 
-  const user = await getAuthServerSession();
+  const currentUser = await getAuthServerSession();
 
   const [dataRequest, countRequest] = (await Promise.all([
     query({
@@ -29,16 +29,17 @@ export const getReservationList = async (
                 WHERE rr.reservationId = r.id) AS beds_count,
                 (SELECT EXISTS (SELECT rf.user_id FROM reservations_forms rf WHERE rf.reservation_id = r.id)) as active_registration,
                 CASE WHEN "${
-                  user.role
-                }" IN ("admin", "veřejnost") OR r.leader = ${user.id}
+                  currentUser.role
+                }" IN ("admin", "veřejnost") OR r.leader = ${currentUser.id}
                 OR EXISTS (SELECT 1 FROM users_reservations ur WHERE ur.reservationId = r.id AND ur.userId = ${
-                  user.id
+                  currentUser.id
                 })
                 THEN TRUE ELSE FALSE END AS detail
         FROM reservations r
         LEFT JOIN users u ON u.id = r.leader
         LEFT JOIN reservations_forms rf ON rf.reservation_id = r.id
         INNER JOIN status s ON s.id = r.status
+        ${user ? `INNER JOIN users_reservations ur ON ur.reservationId = r.id` : ''}
         WHERE 1=1
               ${status ? `AND r.status = "${status}"` : ""}
               ${search ? `AND r.name LIKE "%${search}%"` : ""}
@@ -49,6 +50,7 @@ export const getReservationList = async (
                     } EXISTS (SELECT 1 FROM reservations_forms rf WHERE rf.reservation_id = r.id)`
                   : ""
               }
+              ${user ? `AND ur.userId = ${user}` : ''}
         GROUP BY r.id
         ${
           dir !== "" && allowedSort.includes(sort)
@@ -61,6 +63,7 @@ export const getReservationList = async (
     }),
     query({
       query: `SELECT COUNT(r.id) as count FROM reservations r
+      ${user ? `INNER JOIN users_reservations ur ON ur.reservationId = r.id` : ''}
       WHERE 1=1
       ${status ? `AND r.status = "${status}"` : ""}
       ${search ? `AND r.name LIKE "%${search}%"` : ""}
@@ -71,6 +74,7 @@ export const getReservationList = async (
             } EXISTS (SELECT 1 FROM reservations_forms rf WHERE rf.reservation_id = r.id)`
           : ""
       }
+      ${user ? `AND ur.userId = ${user}` : ''}
       `,
       values: [],
     }),

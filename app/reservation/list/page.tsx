@@ -9,14 +9,13 @@ import {
 import TableListPagination from "@/ui-components/TableListPagination";
 import ReservationListItem from "../list/components/ReservationListItem";
 import React from "react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import SortableColumn from "../../../ui-components/SortableColumn";
 import { getReservationList } from "@/api/reservations/index";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
+import { getAuthServerSession } from "@/lib/authServerSession";
 
 export default async function ReservationList(props: ServerSideComponentProp) {
-  const { user } = (await getServerSession(authOptions)) as any;
+  const currentUser = await getAuthServerSession()
   const { page, status, search, registration, sort, dir } =
     await props.searchParams;
 
@@ -28,7 +27,7 @@ export default async function ReservationList(props: ServerSideComponentProp) {
     sort,
     dir,
   })) as any;
-  const isAdmin = user.role !== "veřejnost";
+  const isAdmin = currentUser.role !== "veřejnost";
 
   return (
     <TableContainer>
@@ -55,7 +54,7 @@ export default async function ReservationList(props: ServerSideComponentProp) {
               <ReservationListItem
                 key={reservation.id}
                 reservation={reservation}
-                userId={user.id}
+                userId={currentUser.id}
                 isAdmin={isAdmin}
               />
             );

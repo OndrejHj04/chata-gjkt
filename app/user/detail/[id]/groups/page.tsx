@@ -1,10 +1,21 @@
-import { getUserGroups } from "@/lib/api";
+import { getGroupList } from "@/api/group/index";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
-export default async function UserGroupsTable({ id, page = 1 }: { id: any, page: any }) {
-  const { data, count } = await getUserGroups({ userId: id, page: page })
+export default async function UserGroupsTable(props: ServerSideComponentProp) {
+  const { id } = await props.params;
+  const { page } = await props.searchParams;
+
+  const { data, count } = await getGroupList({ page, user: id });
 
   return (
     <TableContainer>
@@ -24,8 +35,8 @@ export default async function UserGroupsTable({ id, page = 1 }: { id: any, page:
               <TableCell>{group.description}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <AvatarWrapper data={{ image: group.owner_image }} />
-                  {group.owner_name}
+                  <AvatarWrapper data={{ image: group.owner.image }} />
+                  {group.owner.first_name} {group.owner.last_name}
                 </div>
               </TableCell>
               <TableCell />
@@ -34,6 +45,5 @@ export default async function UserGroupsTable({ id, page = 1 }: { id: any, page:
         </TableBody>
       </Table>
     </TableContainer>
-  )
-
+  );
 }

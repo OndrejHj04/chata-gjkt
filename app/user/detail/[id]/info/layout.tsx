@@ -3,11 +3,11 @@ import Link from "next/link";
 import React from "react";
 
 export default function UserDetailLayout({ params, children }: { params: any, children: any }) {
-  const { id, view } = params
+  const { id } = params
 
   return (
     <React.Fragment>
-      <Tabs value={view} variant="scrollable">
+      <Tabs value={"info"} variant="scrollable">
         <Tab value="info" label="Základní informace" component={Link} href={`/user/detail/${id}/info`} />
         <Tab value="groups" label="Skupiny" component={Link} href={`/user/detail/${id}/groups`} />
         <Tab value="reservations" label="Rezervace" component={Link} href={`/user/detail/${id}/reservations`} />

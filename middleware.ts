@@ -33,17 +33,11 @@ export default async function middleware(req: NextRequest) {
     }
 
     if (req.nextUrl.pathname.startsWith("/user/detail")) {
-      const [, , , , tab, ...rest] = req.nextUrl.pathname.split("/")
-      const avaliableTabs = ['info', 'groups', 'reservations']
-
-      if (avaliableTabs.indexOf(tab) < 0 || rest.length) {
-        return NextResponse.redirect(new URL("/", req.url));
-      }
-
       return NextResponse.next()
     }
 
     if (req.nextUrl.pathname.startsWith("/reservation/detail")) {
+      return NextResponse.next()
       const [, , , reservationId, tab, ...rest] = req.nextUrl.pathname.split("/")
       const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reservations/${reservationId}/exists`, {
         method: "POST",
@@ -61,6 +55,7 @@ export default async function middleware(req: NextRequest) {
     }
 
     if (req.nextUrl.pathname.startsWith("/group/detail")) {
+      return NextResponse.next()
       const [, , , groupId, tab, ...rest] = req.nextUrl.pathname.split("/")
       const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/group/${groupId}/exists`)
       const { exists } = await request.json()
