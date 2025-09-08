@@ -2,12 +2,13 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import ClientProvider from "./clientProvider";
-import TopBar from "@/app/navigation/topbar/TopBar";
-import SpeedComponent from "@/app/navigation/speed/SpeedComponent";
+import TopBar from "@/ui-components/TopBar";
+import SpeedComponent from "@/ui-components/SpeedComponent";
 const inter = Inter({ subsets: ["latin"] });
-import SlidingMenuConfig from "./navigation/sidebar/SlidingMenuConfig";
-import { getUserTheme } from "@/lib/api";
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import SlidingMenu from "../ui-components/SlidingMenu";
+import { getServerSession } from "next-auth";
+import { getUserTheme } from "@/api/theme/show";
 
 export const metadata: Metadata = {
   title: "Chata GJKT",
@@ -19,7 +20,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { theme } = await getUserTheme();
+  const user = await getServerSession();
+  const theme = await getUserTheme();
 
   return (
     <html lang="en">
@@ -29,7 +31,7 @@ export default async function RootLayout({
           <div className="flex flex-col" style={{ height: "100dvh" }}>
             <ClientProvider theme={theme}>
               <TopBar />
-              <SlidingMenuConfig />
+              <SlidingMenu userRole={"admin"} />
               <SpeedComponent />
               <div className="py-2 overflow-auto flex-grow">{children}</div>
             </ClientProvider>

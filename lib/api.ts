@@ -13,6 +13,7 @@ import { Status } from "@/constants/status";
 import { MessagePaths } from "@/utils/toast/types";
 import { Visibility } from "@/constants/visibility";
 import * as XLSX from "xlsx";
+import { getAuthServerSession } from "./authServerSession";
 
 function s2ab(s: any) {
   const buf = new ArrayBuffer(s.length);
@@ -542,18 +543,6 @@ export const userAddReservations = async ({
   return { success: affectedRows === 1 };
 };
 
-export const getUserTheme = async () => {
-  const user = (await getServerSession(authOptions)) as any;
-  if (!user) return { theme: 1 };
-
-  const [{ theme }] = (await query({
-    query: `SELECT theme FROM users WHERE id = ?`,
-    values: [user.user.id],
-  })) as any;
-
-  return { theme };
-};
-
 export const importNewUsers = async ({ users }: { users: any }) => {
   const template = (await mailEventDetail({ id: 1 })) as any;
 
@@ -938,13 +927,6 @@ export const verifyUser = async ({
   return { success: affectedRows === 1, email: user[0].email };
 };
 
-export const setTheme = async (theme: any, id: any) => {
-  const req = (await query({
-    query: `UPDATE users SET theme = ? WHERE id = ?`,
-    values: [!theme, id],
-  })) as any;
-};
-
 export const getSendMails = async ({ page = 1, rpp = 10 }: any) => {
   const [data, count] = (await Promise.all([
     query({
@@ -1280,7 +1262,7 @@ GROUP BY r.id, r.name;
     values: [userId, userId],
   })) as any;
 
-  return dataRequest
+  return dataRequest;
 };
 
 export const editReservationRooms = async ({

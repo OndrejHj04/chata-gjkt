@@ -2,7 +2,6 @@ import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import { decode } from "jsonwebtoken";
 import dayjs from "dayjs";
-import { actionMenu, otherRoutes, sideMenu } from "./lib/rolesConfig";
 
 export default async function middleware(req: NextRequest) {
   const token = await getToken({ req })
@@ -110,11 +109,11 @@ export default async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/", req.url));
     }
 
-    const routes = [...sideMenu.flatMap((item) => item.roles.includes(token.user.role) ? item.href : []), ...actionMenu.flatMap((item) => item.roles.includes(token.user.role) ? item.href : []), ...otherRoutes]
+    // const routes = [...sideMenu.flatMap((item) => item.roles.includes(token.user.role) ? item.href : []), ...actionMenu.flatMap((item) => item.roles.includes(token.user.role) ? item.href : [])]
 
-    if (!routes.includes(req.nextUrl.pathname)) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
+    // if (!routes.includes(req.nextUrl.pathname)) {
+    //   return NextResponse.redirect(new URL("/", req.url));
+    // }
   }
 }
 
