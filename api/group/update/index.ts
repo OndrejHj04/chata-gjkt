@@ -1,3 +1,5 @@
+"use server";
+
 import { query } from "@/lib/db";
 
 export const editGroupDetail = async ({
