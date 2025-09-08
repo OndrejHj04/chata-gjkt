@@ -1339,7 +1339,7 @@ GROUP BY r.id, r.name;
     values: [userId, userId],
   })) as any;
 
-  return { data: dataRequest };
+  return dataRequest
 };
 
 export const getUserReservationsWidgetData = async ({
@@ -1355,7 +1355,7 @@ export const getUserReservationsWidgetData = async ({
     values: [userId],
   })) as any;
 
-  return { data: dataRequest };
+  return dataRequest
 };
 
 export const editReservationRooms = async ({

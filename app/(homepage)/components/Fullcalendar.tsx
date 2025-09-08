@@ -11,8 +11,9 @@ import { NavigateBefore, NavigateNext } from "@mui/icons-material"
 import dayjs from 'dayjs'
 import { setBlockedDates } from '@/lib/api'
 import { Room, RoomId } from '@/constants/room'
+import { Role } from '@/constants/role'
 
-export default function FullcalendarComponent({ data, role }: { data: any, role: any }) {
+export default function FullcalendarComponent({ data, role }: { data: any, role: Role['name'] }) {
   const searchParams = useSearchParams()
   const { replace } = useRouter();
   const pathname = usePathname()

@@ -1,11 +1,11 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/options";
 import React from "react";
-import WelcomeComponent from "./welcome/WelcomeComponent";
-import VerifyUser from "./VerifyUser";
+import WelcomeComponent from "./components/WelcomeComponent";
+import VerifyUser from "./components/VerifyUser";
 
 export default async function Layout({ children }: { children: any }) {
-  const user = await getServerSession(authOptions) as any
+  const user = (await getServerSession(authOptions)) as any;
 
   if (!user) {
     return <WelcomeComponent />;
@@ -24,5 +24,5 @@ export default async function Layout({ children }: { children: any }) {
     );
   }
 
-  return children
+  return children;
 }
