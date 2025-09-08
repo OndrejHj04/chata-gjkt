@@ -1,15 +1,14 @@
-import { getServerSession } from "next-auth";
 import ReservationMembersRender from "./ReservationMembersRender";
-import { getUserFamily, getUserGroupsWhereOwner } from "@/lib/api";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { getUserFamily } from "@/lib/api";
+import { getGroupList } from "@/api/group/index";
+import { getAuthServerSession } from "@/lib/authServerSession";
 
 export default async function ReservationMembers() {
-  const { user } = await getServerSession(authOptions) as any
-  const { data } = await getUserGroupsWhereOwner({
-    userId: user.id,
-  })
-  const { data: family } = await getUserFamily({ userId: user.id })
-
+  const user = await getAuthServerSession();
+  const { data } = await getGroupList({
+    owner: user.id.toString(),
+  });
+  const { data: family } = await getUserFamily({ userId: user.id });
 
   return <ReservationMembersRender groups={data} family={family} />;
 }

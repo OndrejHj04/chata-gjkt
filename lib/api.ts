@@ -824,27 +824,6 @@ export const reservationUpdateStatus = async ({
   return { success: req.affectedRows === 1 };
 };
 
-export const createNewGroup = async ({
-  name,
-  description,
-  owner,
-}: {
-  name: any;
-  description: any;
-  owner: any;
-}) => {
-  const { insertId, affectedRows } = (await query({
-    query: `INSERT INTO groups (name, description, owner) VALUES (?,?,?)`,
-    values: [name, description, owner],
-  })) as any;
-
-  await query({
-    query: `INSERT INTO users_groups (userId, groupId) VALUES ("${owner}", "${insertId}")`,
-  });
-
-  return { success: affectedRows === 1, id: insertId };
-};
-
 export const mailingTemplateEdit = async ({
   name,
   text,
@@ -1125,15 +1104,6 @@ export const getRegistrationList = async ({ page }: { page: any }) => {
   };
 };
 
-export const getReservationLeader = async ({ id }: { id: any }) => {
-  const data = await query({
-    query: `SELECT leader FROM reservations WHERE id = ?`,
-    values: [id],
-  });
-
-  return { data };
-};
-
 export const getUsersAvaliableGroups = async (id: any) => {
   const data = (await query({
     query: `SELECT groups.id, groups.name, CONCAT('[', COALESCE(GROUP_CONCAT(users.id), ''), ']') AS users FROM groups LEFT JOIN users_groups ON users_groups.groupId = groups.id LEFT JOIN users ON users.id = users_groups.userId WHERE owner = ? GROUP BY groups.id`,
@@ -1164,23 +1134,6 @@ export const getUsersAvaliableReservations = async (id: any) => {
   }));
 
   return { reservations };
-};
-
-export const editGroupDetail = async ({
-  groupId,
-  name,
-  description,
-}: {
-  groupId: any;
-  name: any;
-  description: any;
-}) => {
-  const req = (await query({
-    query: `UPDATE groups set name = ?, description = ? WHERE groups.id = ?`,
-    values: [name, description, groupId],
-  })) as any;
-
-  return { success: req.affectedRows === 1 };
 };
 
 export const editUserDetail = async ({
@@ -1309,18 +1262,6 @@ export const editReservationDetail = async ({
   return { success: req.affectedRows === 1 };
 };
 
-export const getUserGroupsWidgetData = async ({ userId }: { userId: any }) => {
-  const dataRequest = (await query({
-    query: `SELECT g.id, g.name, CONCAT(u.first_name, ' ', u.last_name) as leader_name FROM users_groups ug
-    INNER JOIN groups g ON g.id = ug.groupId
-    INNER JOIN users u ON u.id = g.owner
-    WHERE ug.userId = ?`,
-    values: [userId],
-  })) as any;
-
-  return { data: dataRequest };
-};
-
 export const getUserRegistrationWidgetData = async ({
   userId,
 }: {
@@ -1337,22 +1278,6 @@ WHERE rf.user_id = ? OR r.leader = ?
 GROUP BY r.id, r.name;
      `,
     values: [userId, userId],
-  })) as any;
-
-  return dataRequest
-};
-
-export const getUserReservationsWidgetData = async ({
-  userId,
-}: {
-  userId: any;
-}) => {
-  const dataRequest = (await query({
-    query: `SELECT r.id, r.name, r.from_date, r.to_date
-    FROM users_reservations ur
-    INNER JOIN reservations r ON r.id = ur.reservationId
-    WHERE ur.userId = ?`,
-    values: [userId],
   })) as any;
 
   return dataRequest
@@ -1377,19 +1302,6 @@ export const editReservationRooms = async ({
   ])) as any;
 
   return { success: req.affectedRows === rooms.length };
-};
-
-export const getUserGroupsWhereOwner = async ({ userId }: { userId: any }) => {
-  const dataRequest = await query({
-    query: `SELECT g.id, g.name, COUNT(ug.userId) as users_count FROM groups g 
-    INNER JOIN users_groups ug ON ug.groupId = g.id
-    WHERE g.owner = ?
-    GROUP BY g.id
-    `,
-    values: [userId],
-  });
-
-  return { data: dataRequest };
 };
 
 export const createNewReservation = async ({
@@ -1504,20 +1416,11 @@ export const createNewReservation = async ({
 
 export const getUsersBySearch = async () => {
   const dataRequest = await query({
-    query: `SELECT u.id, u.email, CONCAT(u.first_name, ' ', u.last_name) as name FROM users u WHERE u.role <> 4`,
+    query: `SELECT u.id, u.email, CONCAT(u.first_name, ' ', u.last_name) as name FROM users u WHERE u.role <> 3`,
     values: [],
   });
 
   return { data: dataRequest };
-};
-
-export const groupDelete = async ({ groupId }: { groupId: any }) => {
-  const request = (await query({
-    query: `DELETE FROM groups WHERE groups.id = ?`,
-    values: [groupId],
-  })) as any;
-
-  return { success: request.affectedRows === 1 };
 };
 
 export const reservationDelete = async ({
@@ -1989,73 +1892,6 @@ ORDER BY total_nights DESC;
   }));
 
   return { data };
-};
-
-export const getSettings = async () => {
-  const data = (await query({
-    query: `
-      SELECT 
-        s.main_application_email, 
-        s.registration_document_spreadsheet, 
-        s.employees_payment, 
-        s.public_payment, 
-        s.ZO_payment, 
-        s.whole_object,
-        s.bank_account_number,
-        s.payment_symbol_format
-      FROM settings s`,
-    values: [],
-  })) as any;
-
-  return { data: data[0] };
-};
-
-export const updateSettings = async (data: any) => {
-  try {
-    const {
-      main_application_email,
-      registration_document_spreadsheet,
-      whole_object,
-      public_payment,
-      employees_payment,
-      ZO_payment,
-      bank_account_number,
-      payment_symbol_format,
-    } = data;
-
-    const req = (await query({
-      query: `UPDATE settings SET 
-    main_application_email = ?, 
-    registration_document_spreadsheet = ?,
-    whole_object = ?,
-    public_payment = ?,
-    employees_payment = ?,
-    ZO_payment = ?,
-    bank_account_number = ?,
-    payment_symbol_format	= ?
-    `,
-      values: [
-        main_application_email,
-        registration_document_spreadsheet,
-        whole_object,
-        public_payment,
-        employees_payment,
-        ZO_payment,
-        bank_account_number,
-        payment_symbol_format,
-      ],
-    })) as any;
-
-    return { success: req.changedRows };
-  } catch (e) {
-    if (data.payment_symbol_format.length > 10) {
-      return {
-        success: false,
-        msg: "Formát variabilního symbolu musí mít 10 nebo méně znaků",
-      };
-    }
-    return { success: false };
-  }
 };
 
 const generatePaymenetSymbol = async (reservationId: any) => {

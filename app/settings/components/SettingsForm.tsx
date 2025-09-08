@@ -1,5 +1,5 @@
 "use client";
-import { updateSettings } from "@/lib/api";
+import { updateSettings } from "@/api/settings/update";
 import { withToast } from "@/utils/toast/withToast";
 import { Button, InputAdornment, TextField, Typography } from "@mui/material";
 import React from "react";

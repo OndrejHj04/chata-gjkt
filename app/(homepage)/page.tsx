@@ -16,6 +16,7 @@ import { getAuthServerSession } from "@/lib/authServerSession";
 import Link from "next/link";
 import EventIcon from "@mui/icons-material/Event";
 import dayjs from "dayjs";
+import { getReservationList } from "@/api/reservations/index";
 
 export default async function Page({ searchParams }: { searchParams: any }) {
   const { firstRoom, secondRoom, thirdRoom, fourthRoom, fifthRoom } =
@@ -33,8 +34,8 @@ export default async function Page({ searchParams }: { searchParams: any }) {
   const registrationData = await getUserRegistrationWidgetData({
     userId: user.id,
   });
-  const reservationData = await getUserReservationsWidgetData({
-    userId: user.id,
+  const { data: reservationData, count } = await getReservationList({
+    user: user.id.toString(),
   });
 
   return (

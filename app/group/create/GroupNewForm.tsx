@@ -7,9 +7,9 @@ import {
   Typography,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { createNewGroup } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { withToast } from "@/utils/toast/withToast";
+import { createNewGroup } from "@/api/group/store";
 
 export default function GroupNewForm({
   options,

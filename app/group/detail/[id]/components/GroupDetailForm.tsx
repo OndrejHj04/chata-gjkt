@@ -1,6 +1,6 @@
 "use client"
 
-import { editGroupDetail } from "@/lib/api"
+import { editGroupDetail } from "@/api/group/update"
 import AvatarWrapper from "@/ui-components/AvatarWrapper"
 import { withToast } from "@/utils/toast/withToast"
 import { Button, CardHeader, Divider, TextField, Typography } from "@mui/material"

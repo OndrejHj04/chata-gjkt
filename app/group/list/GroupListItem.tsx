@@ -1,6 +1,6 @@
 "use client"
 
-import { groupDelete } from "@/lib/api"
+import { groupDelete } from "@/api/group/destroy"
 import AvatarWrapper from "@/ui-components/AvatarWrapper"
 import { withToast } from "@/utils/toast/withToast"
 import { Button, Menu, MenuItem, TableCell, TableRow } from "@mui/material"
@@ -13,7 +13,7 @@ export default function GroupListItem({ group, allowMenu }: { group: any, allowM
   const [selectedGroup, setSelectedGroup] = useState<{ id: number, mouseX: number, mouseY: number } | null>(null)
 
   const handleDeleteGroups = () => {
-    withToast(groupDelete({ groupId: group.id }), {message: "reservation.delete"})
+    withToast(groupDelete(group.id), {message: "reservation.delete"})
     refresh()
   }
 
