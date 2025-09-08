@@ -30,6 +30,7 @@
         "error": "Něco se nepovedlo"
       },
       "mismatch": {
+        "success": "",
         "error": "Hesla se neshodují"
       },
       "sendEmail": {

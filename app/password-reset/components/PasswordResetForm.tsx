@@ -1,0 +1,74 @@
+"use client";
+
+import { resetUserPassword } from "@/lib/api";
+import ToastManager from "@/utils/toast/ToastManager";
+import { withToast } from "@/utils/toast/withToast";
+import { Button, Divider, TextField, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { useForm } from "react-hook-form";
+
+export default function PasswordResetForm({ userId }: { userId: string }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid, isDirty },
+    watch,
+    reset,
+  } = useForm({
+    defaultValues: { password1: "", password2: "" },
+  });
+  const { replace } = useRouter();
+  const [password1, password2] = watch(["password1", "password2"]);
+
+  const onSubmit = (data: any) => {
+    if (data.password1 !== data.password2) {
+      reset();
+      return ToastManager.show("auth.password.mismatch.error");
+    }
+
+    withToast(resetUserPassword({ id: userId, password: data.password1 }), {
+      message: "auth.password.reset",
+      onSuccess: () => replace("/"),
+    });
+  };
+
+  return (
+    <React.Fragment>
+      <Typography variant="h5" className="text-center">
+        Změna hesla
+      </Typography>
+      <Divider flexItem />
+      <Typography className="text-center">
+        heslo musí mít minimálně 6 znaků
+      </Typography>
+      <form
+        className="gap-2 flex flex-col mt-1"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <TextField
+          type="password"
+          label="Nové heslo"
+          fullWidth
+          value={password1 || ""}
+          {...register("password1", { required: true, minLength: 6 })}
+        />
+        <TextField
+          type="password"
+          label="Nové heslo znovu"
+          fullWidth
+          {...register("password2", { required: true, minLength: 6 })}
+          value={password2 || ""}
+        />
+        <Button
+          variant="contained"
+          fullWidth
+          type="submit"
+          disabled={!isValid || !isDirty}
+        >
+          Změnit
+        </Button>
+      </form>
+    </React.Fragment>
+  );
+}
