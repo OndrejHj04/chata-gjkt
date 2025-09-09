@@ -222,5 +222,11 @@
         "error": "Něco se nepovedlo"
       }
     }
+  },
+  "news": {
+    "create": {
+      "success": "Nová zpráva úspěšně vytvořena",
+      "error": "Něco se nepovedlo"
+    }
   }
 }
