@@ -11,8 +11,7 @@ import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import dayjs from "dayjs";
 import AlbumDetailButton from "../../components/AlbumDetailButton";
 import TableListPagination from "@/ui-components/TableListPagination";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function Page({ searchParams }: any) {
   const { page, visibility, search } = await searchParams;
@@ -21,7 +20,7 @@ export default async function Page({ searchParams }: any) {
     visibility,
     search,
   });
-  const user = (await getServerSession(authOptions)) as any;
+  const user = await requireAuthServerSession()
 
   return (
     <TableContainer>
@@ -55,7 +54,7 @@ export default async function Page({ searchParams }: any) {
               </TableCell>
               <TableCell>{album.photos_count}</TableCell>
               <TableCell>{album.visibility}</TableCell>
-              {user.user.role !== 'veřejnost' || user.user.id === album.owner.id ? (
+              {user.role !== 'veřejnost' || user.id === album.owner.id ? (
                 <AlbumDetailButton name={album.name} />
               ) : (
                 <TableCell />

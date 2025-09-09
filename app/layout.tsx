@@ -7,7 +7,6 @@ import SpeedComponent from "@/ui-components/SpeedComponent";
 const inter = Inter({ subsets: ["latin"] });
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import SlidingMenu from "../ui-components/SlidingMenu";
-import { getServerSession } from "next-auth";
 import { getUserTheme } from "@/api/theme/show";
 
 export const metadata: Metadata = {
@@ -20,7 +19,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getServerSession();
   const theme = await getUserTheme();
 
   return (

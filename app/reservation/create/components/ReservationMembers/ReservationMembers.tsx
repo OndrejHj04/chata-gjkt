@@ -1,10 +1,10 @@
 import ReservationMembersRender from "./ReservationMembersRender";
 import { getUserFamily } from "@/lib/api";
 import { getGroupList } from "@/api/group/index";
-import { getAuthServerSession } from "@/lib/authServerSession";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function ReservationMembers() {
-  const user = await getAuthServerSession();
+  const user = await requireAuthServerSession()
   const { data } = await getGroupList({
     owner: user.id.toString(),
   });

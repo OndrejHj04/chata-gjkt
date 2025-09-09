@@ -9,9 +9,10 @@ import { useEffect, useState } from "react"
 import { createFamilyAccount } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import { withToast } from "@/utils/toast/withToast"
+import { User } from "next-auth"
 dayjs.extend(isSameOrBefore as any);
 
-export default function CreateFamilyAccountForm({ user }: { user: any }) {
+export default function CreateFamilyAccountForm({ user }: { user: User }) {
   const { push, refresh } = useRouter()
   const [autoAdress, setAutoAdress] = useState("")
   const { handleSubmit, register, reset, control, watch, setValue, formState: { isValid, isDirty, errors } } = useForm({

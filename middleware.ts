@@ -108,12 +108,6 @@ export default async function middleware(req: NextRequest) {
     if ((req.nextUrl.pathname.startsWith("/mailing") || req.nextUrl.pathname.startsWith("/registration")) && token.user.role === "veřejnost") {
       return NextResponse.redirect(new URL("/", req.url));
     }
-
-    // const routes = [...sideMenu.flatMap((item) => item.roles.includes(token.user.role) ? item.href : []), ...actionMenu.flatMap((item) => item.roles.includes(token.user.role) ? item.href : [])]
-
-    // if (!routes.includes(req.nextUrl.pathname)) {
-    //   return NextResponse.redirect(new URL("/", req.url));
-    // }
   }
 }
 

@@ -2,7 +2,6 @@ import FullcalendarComponent from "./components/Fullcalendar";
 import {
   getReservationCalendarData,
   getUserRegistrationWidgetData,
-  getUserReservationsWidgetData,
 } from "@/lib/api";
 import {
   ListItemText,
@@ -12,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
-import { getAuthServerSession } from "@/lib/authServerSession";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 import Link from "next/link";
 import EventIcon from "@mui/icons-material/Event";
 import dayjs from "dayjs";
@@ -30,7 +29,8 @@ export default async function Page({ searchParams }: { searchParams: any }) {
   ].filter(Boolean);
 
   const calenderData = await getReservationCalendarData({ rooms: roomsFilter });
-  const user = await getAuthServerSession();
+  const user = await requireAuthServerSession()
+
   const registrationData = await getUserRegistrationWidgetData({
     userId: user.id,
   });

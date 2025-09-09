@@ -1,11 +1,10 @@
-import { getServerSession } from "next-auth";
 import GroupNewForm from "./GroupNewForm";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getUsersBySearch } from "@/lib/api";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function CreateGroupForm() {
   const { data } = await getUsersBySearch();
-  const { user } = (await getServerSession(authOptions)) as any;
+  const user = await requireAuthServerSession()
 
   return <GroupNewForm options={data} user={user} />;
 }

@@ -10,13 +10,14 @@ import { Controller, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { withToast } from "@/utils/toast/withToast";
 import { createNewGroup } from "@/api/group/store";
+import { User } from "next-auth";
 
 export default function GroupNewForm({
   options,
   user,
 }: {
   options: any;
-  user: any;
+  user: User
 }) {
   const {
     register,

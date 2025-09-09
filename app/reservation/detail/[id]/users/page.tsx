@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@mui/material";
 import ReservationUsersRemoveButton from "../components/ReservationUsersRemoveButton";
-import { getAuthServerSession } from "@/lib/authServerSession";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import { getUserList } from "@/api/users/index";
 
@@ -24,7 +24,7 @@ export default async function ReservationUsersTable(
     page,
   });
 
-  const user = await getAuthServerSession();
+  const user = await requireAuthServerSession()
   const isAdmin = user.role !== "veřejnost";
   return (
     <TableContainer>

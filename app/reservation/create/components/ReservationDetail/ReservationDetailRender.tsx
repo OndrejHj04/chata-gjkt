@@ -14,8 +14,9 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Controller, useForm } from "react-hook-form";
 import { ReservationContext } from "../../layout";
+import { User } from "next-auth";
 
-export default function ReservationDetailRender({ user, options }: { user: any, options: any }) {
+export default function ReservationDetailRender({ user, options }: { user: User, options: any }) {
   const { createReservation, setCreateReservation } = useContext(ReservationContext);
   const [expanded, setExpanded] = useState(false);
   const reservationValidation =

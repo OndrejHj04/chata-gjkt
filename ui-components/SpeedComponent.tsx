@@ -3,8 +3,7 @@ import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import Link from "next/link";
 import { Icon } from "@mui/material";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { getAuthServerSession } from "@/lib/authServerSession";
 
 const actionMenu = [
   {
@@ -35,9 +34,9 @@ const actionMenu = [
 ];
 
 export default async function SpeedComponent() {
-  const user = await getServerSession(authOptions);
+  const user = await getAuthServerSession()
 
-  if (!user || user.user.role === "veřejnost") return null;
+  if (!user || user.role === "veřejnost") return null;
 
   return (
     <SpeedDial

@@ -1,10 +1,8 @@
-import { getServerSession } from "next-auth";
 import ReservationRegistrationToggle from "./ReservationRegistrationToggle";
 import {
   getReservationRegisteredUsers,
   getReservationRegistration,
 } from "@/lib/api";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import {
   Divider,
   Table,
@@ -21,6 +19,7 @@ import UserApproveButton from "./UserApproveButton";
 import UserRejectButton from "./UserRejectButton";
 import React from "react";
 import dayjs from "dayjs";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function ReservationRegistration({
   id,
@@ -29,7 +28,7 @@ export default async function ReservationRegistration({
   id: any;
   page: any;
 }) {
-  const { user } = (await getServerSession(authOptions)) as any;
+  const user = await requireAuthServerSession()
   const { data } = (await getReservationRegistration({
     reservationId: id,
   })) as any;

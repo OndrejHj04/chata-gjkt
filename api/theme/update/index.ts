@@ -1,10 +1,10 @@
 "use server";
 
-import { getAuthServerSession } from "@/lib/authServerSession";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 import { query } from "@/lib/db";
 
 export const setTheme = async () => {
-  const user = await getAuthServerSession();
+  const user = await requireAuthServerSession();
 
   const req = (await query({
     query: `UPDATE users SET theme = 1 - theme WHERE id = ?`,

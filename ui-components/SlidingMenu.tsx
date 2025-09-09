@@ -48,19 +48,19 @@ const protectedMenuConfig = [
     name: "Aktivní registrace",
     icon: "assignment",
     href: "/registration/list",
-    roles: ["admin", "uživatel"],
+    roles: ["admin"],
   },
   {
     name: "Archiv",
     icon: "bookmark",
     href: "/archive/list",
-    roles: ["admin", "uživatel"],
+    roles: ["admin"],
   },
   {
     name: "Mailing",
     icon: "alternate_email",
     href: "/mailing/send",
-    roles: ["admin", "uživatel"],
+    roles: ["admin"],
   },
   {
     name: "Přehledné zobrazení",

@@ -8,14 +8,13 @@ import {
   TableRow,
 } from "@mui/material";
 import GroupListItem from "./GroupListItem";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { getServerSession } from "next-auth";
 import { getGroupList } from "@/api/group/index";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function GroupList(props: ServerSideComponentProp) {
   const { page, search } = await props.searchParams;
-  const { user } = (await getServerSession(authOptions)) as any;
+  const user = await requireAuthServerSession();
   const isAdmin = user.role !== "veřejnost";
   const { data, count } = await getGroupList({
     page,

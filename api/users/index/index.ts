@@ -1,4 +1,4 @@
-import { getAuthServerSession } from "@/lib/authServerSession";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 import { query } from "@/lib/db";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 
@@ -25,7 +25,7 @@ export const getUserList = async (
     "u.verified",
   ];
 
-  const user = await getAuthServerSession();
+  const user = await requireAuthServerSession();
 
   const [users, count] = (await Promise.all([
     query({

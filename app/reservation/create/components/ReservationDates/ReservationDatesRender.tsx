@@ -33,13 +33,14 @@ import csLocale from "@fullcalendar/core/locales/cs";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Room } from "@/constants/room";
+import { User } from "next-auth";
 
 export default function ReservationDatesRender({
   reservations,
-  user
+  user,
 }: {
   reservations: any[];
-  user:any
+  user: User;
 }) {
   const { createReservation, setCreateReservation } =
     useContext(ReservationContext);
@@ -55,7 +56,7 @@ export default function ReservationDatesRender({
     },
   });
 
-  const isAdmin = user.role === "admin"
+  const isAdmin = user.role === "admin";
 
   const { from_date, to_date, rooms } = watch();
 

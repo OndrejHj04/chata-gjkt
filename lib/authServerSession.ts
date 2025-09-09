@@ -2,9 +2,12 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 
 export const getAuthServerSession = async () => {
-  const data = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
+  return session?.user ?? null;
+};
 
-  if (!data) throw new Error("No active session found");
-
-  return data?.user;
+export const requireAuthServerSession = async () => {
+  const user = await getAuthServerSession();
+  if (!user) throw new Error("No active session found");
+  return user;
 };

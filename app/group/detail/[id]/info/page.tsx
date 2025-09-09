@@ -1,18 +1,16 @@
 import GroupDetailDisplay from "../components/GroupDetailDisplay";
 import GroupDetailForm from "../components/GroupDetailForm";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
-import { getAuthServerSession } from "@/lib/authServerSession";
 import { getGroupDetail } from "@/api/group/show";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function GroupDetailPage(props: ServerSideComponentProp) {
   const { id } = await props.params;
   const data = await getGroupDetail(id);
-  
-  const user = await getAuthServerSession();
+  const user = await requireAuthServerSession()
 
-  const editable = true;
+  const editable = user.role === "admin" || data.owner_id === user.id
 
-  //user.role === "veřejnost"
   if (editable) {
     return <GroupDetailForm groupDetail={data} />;
   }

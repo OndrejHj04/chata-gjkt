@@ -3,7 +3,7 @@ import { Divider } from "@mui/material";
 import ReservationRegistration from "../components/ReservationRegistration";
 import ReservationRegistrationCustom from "../components/ReservationRegistrationCustom";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
-import { getAuthServerSession } from "@/lib/authServerSession";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 import { getReservationDetail } from "@/api/reservations/show";
 
 export default async function ReservationDetailPage(
@@ -12,7 +12,7 @@ export default async function ReservationDetailPage(
   const { page } = await props.searchParams;
   const { id } = await props.params;
 
-  const user = await getAuthServerSession();
+  const user = await requireAuthServerSession()
 
   const data = await getReservationDetail(id);
   const isAdmin = user.role !== "veřejnost";

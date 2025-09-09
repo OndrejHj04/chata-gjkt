@@ -12,10 +12,10 @@ import React from "react";
 import SortableColumn from "../../../ui-components/SortableColumn";
 import { getReservationList } from "@/api/reservations/index";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
-import { getAuthServerSession } from "@/lib/authServerSession";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function ReservationList(props: ServerSideComponentProp) {
-  const currentUser = await getAuthServerSession()
+  const currentUser = await requireAuthServerSession()
   const { page, status, search, registration, sort, dir } =
     await props.searchParams;
 

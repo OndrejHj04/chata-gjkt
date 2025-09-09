@@ -2,14 +2,14 @@ import React from "react";
 import ReservationDetailForm from "../components/ReservationDetailForm";
 import ReservationDetailDisplay from "../components/ReservationDetailDisplay";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
-import { getAuthServerSession } from "@/lib/authServerSession";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 import { getReservationDetail } from "@/api/reservations/show";
 
 export default async function ReservationDetailPage(
   props: ServerSideComponentProp
 ) {
   const { id } = await props.params;
-  const user = await getAuthServerSession();
+  const user = await requireAuthServerSession()
 
   const data = await getReservationDetail(id);
   const isAdmin = user.role !== "veřejnost";

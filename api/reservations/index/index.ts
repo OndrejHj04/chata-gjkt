@@ -1,4 +1,4 @@
-import { getAuthServerSession } from "@/lib/authServerSession";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 import { query } from "@/lib/db";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 
@@ -15,7 +15,7 @@ export const getReservationList = async (
     "users_count",
   ];
 
-  const currentUser = await getAuthServerSession();
+  const currentUser = await requireAuthServerSession();
 
   const [dataRequest, countRequest] = (await Promise.all([
     query({

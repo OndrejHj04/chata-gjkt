@@ -15,13 +15,13 @@ import TableListPagination from "@/ui-components/TableListPagination";
 import SortableColumn from "@/ui-components/SortableColumn";
 import { getUserList } from "@/api/users/index";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
-import { getAuthServerSession } from "@/lib/authServerSession";
+import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function UserList(props: ServerSideComponentProp) {
   const { page, search, role, organization, verified, sort, dir } =
     await props.searchParams;
 
-  const user = await getAuthServerSession();
+  const user = await requireAuthServerSession()
   const isAdmin = user.role !== "veřejnost";
 
   const { data, count } = await getUserList({
