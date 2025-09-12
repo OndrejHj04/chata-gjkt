@@ -1,8 +1,23 @@
-import { Paper, Typography } from "@mui/material";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import React from "react";
 import NewsForm from "./components/NewsForm";
+import { getNewsList } from "@/api/news/index";
+import dayjs from "dayjs";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
+import TableListPagination from "@/ui-components/TableListPagination";
 
-export default async function News() {
+export default async function News(props: ServerSideComponentProp) {
+  const { page } = await props.searchParams;
+
+  const { data, count } = await getNewsList({ page });
 
   return (
     <div className="flex gap-2 h-full">
@@ -10,7 +25,32 @@ export default async function News() {
         <NewsForm />
       </Paper>
       <Paper className="w-1/2 h-full p-2">
-        <Typography variant="h5">Změny ve zprávách</Typography>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow className="[&_.MuiTableCell-root]:font-semibold [&_.MuiTableCell-root]:text-lg">
+                <TableCell>Název</TableCell>
+                <TableCell>Autor</TableCell>
+                <TableCell>Zveřejněno</TableCell>
+                <TableCell>Zobrazeno</TableCell>
+                <TableListPagination count={count} />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.map((news) => (
+                <TableRow key={news.id}>
+                  <TableCell className="truncate max-w-xs">{news.title}</TableCell>
+                  <TableCell>{news.author_name}</TableCell>
+                  <TableCell>
+                    {dayjs(news.author).format("DD. MM. YYYY hh:mm")}
+                  </TableCell>
+                  <TableCell>{news.viewed}</TableCell>
+                  <TableCell />
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Paper>
     </div>
   );

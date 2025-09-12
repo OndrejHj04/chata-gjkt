@@ -11,9 +11,19 @@ type NewsFormType = {
 export const storeNews = async (data: NewsFormType) => {
   const user = await requireAuthServerSession();
 
-  const req = await query({
+  const { insertId } = await query({
     query: `INSERT INTO news (title, content, author) VALUES (?,?,?)`,
     values: [data.title, data.content, user.id],
+  });
+
+  await query({
+    query: `
+    INSERT INTO user_news (userId, newsId)
+    SELECT u.id, ?
+    FROM users u
+    WHERE u.role <> 'veřejnost';
+    `,
+    values: [insertId],
   });
 
   return { success: true };

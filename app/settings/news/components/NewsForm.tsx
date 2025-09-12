@@ -3,6 +3,7 @@
 import { storeNews } from "@/api/news/store";
 import { withToast } from "@/utils/toast/withToast";
 import { Button, FormControlLabel, Switch, TextField } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 type NewsFormType = {
@@ -12,12 +13,13 @@ type NewsFormType = {
 };
 
 export default function NewsForm() {
+  const { refresh } = useRouter();
   const {
     register,
     handleSubmit,
     control,
     formState: { isValid },
-    reset
+    reset,
   } = useForm<NewsFormType>({
     defaultValues: {
       content: "",
@@ -28,7 +30,8 @@ export default function NewsForm() {
 
   const onSubmit: SubmitHandler<NewsFormType> = (data) => {
     withToast(storeNews(data), { message: "news.create" });
-    reset()
+    reset();
+    refresh();
   };
 
   return (
