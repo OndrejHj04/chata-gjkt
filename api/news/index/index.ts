@@ -4,7 +4,7 @@ import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 export const getNewsList = async (
   searchParams: Awaited<ServerSideComponentProp["searchParams"]>
 ) => {
-  const { page = "1" } = searchParams;
+  const { page = "1", user } = searchParams;
 
   const [data, count] = (await Promise.all([
     query({
@@ -23,6 +23,7 @@ SELECT
 FROM news n
 INNER JOIN users u ON n.author = u.id
 LEFT JOIN user_news un ON un.newsId = n.id
+${user ? `WHERE un.userId = ${user} AND un.read = 0` : ""}
 GROUP BY n.id, n.title, n.content, n.created_at, u.first_name, u.last_name
 LIMIT 10 OFFSET ?;
       `,
@@ -30,7 +31,11 @@ LIMIT 10 OFFSET ?;
     }),
     query({
       query: `
-      SELECT COUNT(*) as count FROM news`,
+      SELECT COUNT(*) as count FROM news n
+LEFT JOIN user_news un ON un.newsId = n.id
+${user ? `WHERE un.userId = ${user} AND un.read = 0` : ""}
+    
+      `,
       values: [],
     }),
   ])) as any;

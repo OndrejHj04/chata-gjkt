@@ -8,10 +8,14 @@ import DarkModeToggle from "./sComponents/DarkModeToggle";
 import ToggleFullscreen from "./sComponents/ToggleFullscreen";
 import { getUserTheme } from "@/api/theme/show";
 import { getAuthServerSession } from "@/lib/authServerSession";
+import { getNewsList } from "@/api/news/index";
+import NotificationsButton from "./sComponents/NotificationsButton";
 
 export default async function TopBar() {
-  const user = await getAuthServerSession()
+  const user = await getAuthServerSession();
   const theme = await getUserTheme();
+
+  const { data, count } = await getNewsList({ user: user?.id.toString() });
 
   return (
     <AppBar position="static" className="h-[52px]">
@@ -29,6 +33,7 @@ export default async function TopBar() {
         </div>
         {user && (
           <div className="flex-1 flex justify-end">
+            <NotificationsButton count={count} />
             <ToggleFullscreen />
             <DarkModeToggle theme={theme} />
             <TopBarUserCard />
