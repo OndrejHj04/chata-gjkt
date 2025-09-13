@@ -227,6 +227,10 @@
     "create": {
       "success": "Nová zpráva úspěšně vytvořena",
       "error": "Něco se nepovedlo"
+    },
+    "destroy": {
+      "success": "Zpráva úspěšně odstraněna",
+      "error": "Něco se nepovedlo"
     }
   }
 }

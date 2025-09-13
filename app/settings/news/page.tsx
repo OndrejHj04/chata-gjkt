@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import TableListPagination from "@/ui-components/TableListPagination";
 import Link from "next/link";
+import DeleteNotificationButton from "./components/DeleteNotificationButton";
 
 export default async function News(props: ServerSideComponentProp) {
   const { page } = await props.searchParams;
@@ -59,6 +60,7 @@ export default async function News(props: ServerSideComponentProp) {
                     >
                       detail
                     </Button>
+                    <DeleteNotificationButton id={news.id} />
                   </TableCell>
                 </TableRow>
               ))}
