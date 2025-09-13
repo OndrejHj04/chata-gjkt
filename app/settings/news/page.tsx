@@ -1,4 +1,5 @@
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -13,6 +14,7 @@ import { getNewsList } from "@/api/news/index";
 import dayjs from "dayjs";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import TableListPagination from "@/ui-components/TableListPagination";
+import Link from "next/link";
 
 export default async function News(props: ServerSideComponentProp) {
   const { page } = await props.searchParams;
@@ -39,13 +41,25 @@ export default async function News(props: ServerSideComponentProp) {
             <TableBody>
               {data.map((news) => (
                 <TableRow key={news.id}>
-                  <TableCell className="truncate max-w-xs">{news.title}</TableCell>
+                  <TableCell className="truncate max-w-xs">
+                    {news.title}
+                  </TableCell>
                   <TableCell>{news.author_name}</TableCell>
                   <TableCell>
                     {dayjs(news.author).format("DD. MM. YYYY hh:mm")}
                   </TableCell>
                   <TableCell>{news.viewed}</TableCell>
-                  <TableCell />
+                  <TableCell align="right">
+                    <Button
+                      className="!p-0"
+                      size="small"
+                      variant="text"
+                      component={Link}
+                      href={`/settings/news/${news.id}`}
+                    >
+                      detail
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
