@@ -9,7 +9,8 @@ import ToggleFullscreen from "./sComponents/ToggleFullscreen";
 import { getUserTheme } from "@/api/theme/show";
 import { getAuthServerSession } from "@/lib/authServerSession";
 import { getNewsList } from "@/api/news/index";
-import NotificationsButton from "./sComponents/NotificationsButton";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import { Badge, IconButton } from "@mui/material";
 
 export default async function TopBar() {
   const user = await getAuthServerSession();
@@ -33,7 +34,11 @@ export default async function TopBar() {
         </div>
         {user && (
           <div className="flex-1 flex justify-end">
-            <NotificationsButton count={count} />
+            <IconButton href={`/news/user/${user.id}`}>
+              <Badge badgeContent={count} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
             <ToggleFullscreen />
             <DarkModeToggle theme={theme} />
             <TopBarUserCard />

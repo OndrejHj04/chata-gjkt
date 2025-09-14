@@ -1,10 +1,7 @@
 import { query } from "@/lib/db";
-import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 
-export const getNewsList = async (
-  searchParams: Awaited<ServerSideComponentProp["searchParams"]>
-) => {
-  const { page = "1", user } = searchParams;
+export const getNewsList = async (searchParams: any) => {
+  const { page = "1", user, noReadOnly = true } = searchParams;
 
   const [data, count] = (await Promise.all([
     query({
@@ -14,6 +11,7 @@ SELECT
   n.title, 
   n.content, 
   n.created_at, 
+  un.read,
   CONCAT(u.first_name, ' ', u.last_name) AS author_name,
   CONCAT(
     CAST(SUM(un.read = 1) AS CHAR),
@@ -23,18 +21,24 @@ SELECT
 FROM news n
 INNER JOIN users u ON n.author = u.id
 LEFT JOIN user_news un ON un.newsId = n.id
-${user ? `WHERE un.userId = ${user} AND un.read = 0` : ""}
+${
+  user ? `WHERE un.userId = ${user} ${noReadOnly ? "AND un.read = 0" : ""}` : ""
+}
 GROUP BY n.id, n.title, n.content, n.created_at, u.first_name, u.last_name
-LIMIT 10 OFFSET ?;
+ORDER BY n.created_at DESC
+LIMIT 10 OFFSET ?
       `,
       values: [Number(page) * 10 - 10],
     }),
     query({
       query: `
-      SELECT COUNT(*) as count FROM news n
+SELECT COUNT(DISTINCT n.id) AS count
+FROM news n
+INNER JOIN users u ON n.author = u.id
 LEFT JOIN user_news un ON un.newsId = n.id
-${user ? `WHERE un.userId = ${user} AND un.read = 0` : ""}
-    
+${
+  user ? `WHERE un.userId = ${user} ${noReadOnly ? "AND un.read = 0" : ""}` : ""
+};
       `,
       values: [],
     }),
