@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 
 export default async function ArchivePage(props: ServerSideComponentProp) {
   const { page, search, registration, sort, dir } = await props.searchParams;

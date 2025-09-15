@@ -1,12 +1,16 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import { decode } from "jsonwebtoken";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 
 export default async function middleware(req: NextRequest) {
-  const token = await getToken({ req })
+  const token = await getToken({ req });
   // disallow navigation when not loged in
-  if (!token && req.nextUrl.pathname !== "/" && !req.nextUrl.pathname.startsWith("/password-reset")) {
+  if (
+    !token &&
+    req.nextUrl.pathname !== "/" &&
+    !req.nextUrl.pathname.startsWith("/password-reset")
+  ) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
@@ -16,11 +20,16 @@ export default async function middleware(req: NextRequest) {
   }
 
   if (req.nextUrl.pathname.startsWith("/password-reset")) {
-    const userId = req.nextUrl.searchParams.get("userId")
-    const token = decode(req.nextUrl.searchParams.get("token") as any) as any
+    const userId = req.nextUrl.searchParams.get("userId");
+    const token = decode(req.nextUrl.searchParams.get("token") as any) as any;
 
     // invalid token for reset password redirect
-    if (!userId || !token || Number(userId) !== token.id || dayjs(token.exp).isBefore(new Date())) {
+    if (
+      !userId ||
+      !token ||
+      Number(userId) !== token.id ||
+      dayjs(token.exp).isBefore(new Date())
+    ) {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }

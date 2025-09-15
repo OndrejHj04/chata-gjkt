@@ -8,7 +8,7 @@ import {
   TableBody,
 } from "@mui/material";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import AlbumDetailButton from "../../components/AlbumDetailButton";
 import TableListPagination from "@/ui-components/TableListPagination";
 import { requireAuthServerSession } from "@/lib/authServerSession";
@@ -20,7 +20,7 @@ export default async function Page({ searchParams }: any) {
     visibility,
     search,
   });
-  const user = await requireAuthServerSession()
+  const user = await requireAuthServerSession();
 
   return (
     <TableContainer>
@@ -54,7 +54,7 @@ export default async function Page({ searchParams }: any) {
               </TableCell>
               <TableCell>{album.photos_count}</TableCell>
               <TableCell>{album.visibility}</TableCell>
-              {user.role !== 'veřejnost' || user.id === album.owner.id ? (
+              {user.role !== "veřejnost" || user.id === album.owner.id ? (
                 <AlbumDetailButton name={album.name} />
               ) : (
                 <TableCell />

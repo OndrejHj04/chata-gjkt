@@ -21,7 +21,7 @@ import {
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -116,8 +116,9 @@ export default function ReservationDetailForm({
         reservationId: reservationDetail.id,
         newStatus: data.status,
       }).then(({ success, symbol, reject, link }) => {
-        if (success) ToastManager.show("reservation.detail.status.update.success")
-        else ToastManager.show("reservation.detail.status.update.error")
+        if (success)
+          ToastManager.show("reservation.detail.status.update.success");
+        else ToastManager.show("reservation.detail.status.update.error");
         reset({
           ...data,
           paymentSymbol: symbol || "",
@@ -146,7 +147,8 @@ export default function ReservationDetailForm({
                     data={{ image: reservationDetail.leader_image }}
                     size={56}
                   />
-                }room
+                }
+                room
                 title={
                   <Typography variant="h5">
                     {reservationDetail.leader_name}

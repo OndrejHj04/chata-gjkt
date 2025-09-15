@@ -1,6 +1,6 @@
 import CustomEditor from "@/ui-components/CustomEditor";
 import { Paper, TextField } from "@mui/material";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 
 export default function MailDetailForm({ data }: any) {
   return (

@@ -2,7 +2,7 @@
 
 import { query } from "./db";
 import { transporter } from "./email";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import { sign } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
@@ -243,7 +243,7 @@ export const getAlbumDetail = async (name: string) => {
 };
 
 export const getAlbumList = async (filters: any) => {
-  const user = await requireAuthServerSession()
+  const user = await requireAuthServerSession();
 
   const { page = 1, visibility, search = "" } = filters;
 
@@ -284,7 +284,7 @@ export const createAlbum = async (
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
-    const user = await requireAuthServerSession()
+    const user = await requireAuthServerSession();
 
     const sanitizedAlbumName = albumName.replace(/\s+/g, "_");
 
@@ -728,7 +728,7 @@ export const setBlockedDates = async ({
   from_date: any;
   to_date: any;
 }) => {
-  const user = await requireAuthServerSession()
+  const user = await requireAuthServerSession();
 
   const blocation = (await query({
     query: `INSERT INTO reservations (from_date, to_date, name, status, leader, purpouse, instructions) VALUES(?, ?, "Blokace", 5, ?, "blokace", "")`,
@@ -996,7 +996,7 @@ export const allowReservationSignIn = async ({
 }: {
   reservation: any;
 }) => {
-  const user = await requireAuthServerSession()
+  const user = await requireAuthServerSession();
   const documentRequest = (await query({
     query: `SELECT registration_document_spreadsheet FROM settings`,
   })) as any;
@@ -1295,7 +1295,7 @@ export const createNewReservation = async ({
   name,
   family,
 }: any) => {
-  const user = await requireAuthServerSession()
+  const user = await requireAuthServerSession();
 
   const request = (await query({
     query: `INSERT INTO reservations (from_date, to_date, name, purpouse, leader, instructions, status) VALUES (?,?,?,?,?,?,2)`,

@@ -1,7 +1,7 @@
 "use client";
 import { Button, Typography } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useContext, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";

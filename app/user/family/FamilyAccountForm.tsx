@@ -2,15 +2,13 @@
 
 import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
-import dayjs from "dayjs"
 import { Controller, useForm } from "react-hook-form"
-import * as isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { useEffect, useState } from "react"
 import { createFamilyAccount } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import { withToast } from "@/utils/toast/withToast"
 import { User } from "next-auth"
-dayjs.extend(isSameOrBefore as any);
+import dayjs from "@/lib/dayjsExtended"
 
 export default function CreateFamilyAccountForm({ user }: { user: User }) {
   const { push, refresh } = useRouter()

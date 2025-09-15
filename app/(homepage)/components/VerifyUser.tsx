@@ -14,15 +14,20 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import { verifyUser } from "@/lib/api";
-import dayjs from "dayjs";
-import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import dayjs from "@/lib/dayjsExtended";
 import Link from "next/link";
 import { DatePicker } from "@mui/x-date-pickers";
 
-dayjs.extend(isSameOrBefore as any);
-
 export default function VerifyUser({ id }: { id?: number }) {
-  const { watch, reset, setError, register, handleSubmit, control, formState: { errors, isValid, isDirty } } = useForm({
+  const {
+    watch,
+    reset,
+    setError,
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isValid, isDirty },
+  } = useForm({
     defaultValues: {
       conditions: false,
       birth_date: null,
@@ -31,8 +36,8 @@ export default function VerifyUser({ id }: { id?: number }) {
       post_number: "",
       street: "",
       password: "",
-      newPassword: ""
-    }
+      newPassword: "",
+    },
   });
   const [hidePassword, setHidePassword] = useState(true);
 
@@ -42,7 +47,7 @@ export default function VerifyUser({ id }: { id?: number }) {
       .isSameOrBefore(dayjs(watch("birth_date")))) as any;
 
   const onSubmit = (data: any) => {
-    reset(data)
+    reset(data);
     const body = {
       ID_code: data.ID_code,
       birth_date: data.birth_date,
@@ -54,7 +59,7 @@ export default function VerifyUser({ id }: { id?: number }) {
       if (success) {
         signIn("credentials", {
           password: data.newPassword,
-          email
+          email,
         });
       } else {
         setError("password", { message: "Nesprávné heslo" });
@@ -65,20 +70,26 @@ export default function VerifyUser({ id }: { id?: number }) {
   return (
     <Paper className="p-2 flex flex-col gap-2">
       <div>
-        <Typography variant="h5" className="text-center">Ověření účtu</Typography>
+        <Typography variant="h5" className="text-center">
+          Ověření účtu
+        </Typography>
         <Typography className="text-center">
           Je potřeba doplnit několik informací než budete moci pokračovat
         </Typography>
       </div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-2">
           <Controller
             name="birth_date"
             control={control}
             render={({ field }) => (
-              <DatePicker {...field} label="Datum narození" format="DD. MM. YYYY" disableFuture className="w-full" />
+              <DatePicker
+                {...field}
+                label="Datum narození"
+                format="DD. MM. YYYY"
+                disableFuture
+                className="w-full"
+              />
             )}
           />
           <TextField
@@ -91,7 +102,9 @@ export default function VerifyUser({ id }: { id?: number }) {
                 message: "Číslo OP musí být ve správném formátu",
               },
             })}
-            helperText={errors.ID_code?.message || "Pro děti do 15 let nepovinné"}
+            helperText={
+              errors.ID_code?.message || "Pro děti do 15 let nepovinné"
+            }
             error={!!errors.ID_code}
             label="Číslo OP"
             autoComplete="off"
@@ -116,7 +129,7 @@ export default function VerifyUser({ id }: { id?: number }) {
             fullWidth
             {...register("post_number", {
               required: "Toto pole je povinné",
-              pattern: /^\d{5}$/
+              pattern: /^\d{5}$/,
             })}
             label="PSČ (bez mezer)"
             autoComplete="postal-code"
@@ -143,8 +156,8 @@ export default function VerifyUser({ id }: { id?: number }) {
                   >
                     {hidePassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
-                )
-              }
+                ),
+              },
             }}
           />
           <TextField
@@ -165,21 +178,20 @@ export default function VerifyUser({ id }: { id?: number }) {
                   >
                     {hidePassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
-                )
-              }
+                ),
+              },
             }}
           />
         </div>
         <FormControlLabel
-          control={
-            <Checkbox
-              {...register("conditions", { required: true })}
-            />
-          }
+          control={<Checkbox {...register("conditions", { required: true })} />}
           label={
             <Typography variant="body2">
-              Seznámil jsem se s <Link href="/podminky.pdf">podmínkami zpracování osobních údajů</Link> a
-              uděluji k tomu organizaci ZO Gymnázium J. K. Tyla souhlas
+              Seznámil jsem se s{" "}
+              <Link href="/podminky.pdf">
+                podmínkami zpracování osobních údajů
+              </Link>{" "}
+              a uděluji k tomu organizaci ZO Gymnázium J. K. Tyla souhlas
             </Typography>
           }
         />
@@ -192,6 +204,6 @@ export default function VerifyUser({ id }: { id?: number }) {
           Odeslat
         </Button>
       </form>
-    </Paper >
+    </Paper>
   );
 }

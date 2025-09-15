@@ -14,7 +14,7 @@ import CreateIcon from "@mui/icons-material/Create";
 import { requireAuthServerSession } from "@/lib/authServerSession";
 import Link from "next/link";
 import EventIcon from "@mui/icons-material/Event";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import { getReservationList } from "@/api/reservations/index";
 
 export default async function Page({ searchParams }: { searchParams: any }) {
@@ -29,7 +29,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
   ].filter(Boolean);
 
   const calenderData = await getReservationCalendarData({ rooms: roomsFilter });
-  const user = await requireAuthServerSession()
+  const user = await requireAuthServerSession();
 
   const registrationData = await getUserRegistrationWidgetData({
     userId: user.id,

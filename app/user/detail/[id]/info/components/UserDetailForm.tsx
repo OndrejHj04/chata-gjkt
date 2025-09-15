@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import ChangeProfilePictureModal from "./ChangeProfilePictureModal";

@@ -22,7 +22,7 @@ import {
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 
 import { Controller, useForm } from "react-hook-form";
 import { ReservationContext } from "../../layout";

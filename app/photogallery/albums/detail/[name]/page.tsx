@@ -1,6 +1,6 @@
 import { getAlbumDetail } from "@/lib/api";
 import { CardHeader, Paper, Typography } from "@mui/material";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import UploadAlbumPhoto from "./components/UploadAlbumPhoto";
 import DeleteAlbumButton from "./components/DeleteAlbumButton";
 import ShowAlbumPhoto from "./components/ShowAlbumPhoto";

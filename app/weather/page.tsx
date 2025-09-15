@@ -10,8 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import dayjs from "dayjs";
-import updateLocale from "dayjs/plugin/updateLocale";
+import dayjs from "@/lib/dayjsExtended";
 import Image from "next/image";
 
 const getWeather = async () => {
@@ -22,18 +21,7 @@ const getWeather = async () => {
   const { list } = await req.json();
   return list;
 };
-dayjs.extend(updateLocale);
-dayjs.updateLocale("en", {
-  weekdays: [
-    "Neděle",
-    "Pondělí",
-    "Úterý",
-    "Středa",
-    "Čtvrtek",
-    "Pátek",
-    "Sobota",
-  ],
-});
+
 export default async function Weather() {
   const weather = (await getWeather()) as any;
   const days = [] as any;

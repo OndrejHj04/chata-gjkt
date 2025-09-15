@@ -13,12 +13,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { smartTime } from "@/constants/smartTime";
 import TableListPagination from "@/ui-components/TableListPagination";
 import UserApproveButton from "./UserApproveButton";
 import UserRejectButton from "./UserRejectButton";
 import React from "react";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function ReservationRegistration({
@@ -28,7 +27,7 @@ export default async function ReservationRegistration({
   id: any;
   page: any;
 }) {
-  const user = await requireAuthServerSession()
+  const user = await requireAuthServerSession();
   const { data } = (await getReservationRegistration({
     reservationId: id,
   })) as any;
@@ -36,7 +35,7 @@ export default async function ReservationRegistration({
     await getReservationRegisteredUsers({ reservationId: id, page });
 
   const isLeader = data.leader === user.id;
-  const isAdmin = user.role !== 'veřejnost';
+  const isAdmin = user.role !== "veřejnost";
   const deprecated = data.status_id === 1;
 
   const disabled = deprecated || (!isAdmin && !isLeader);
@@ -70,7 +69,9 @@ export default async function ReservationRegistration({
             {registerdUsers.map((user: any, i: any) => (
               <TableRow key={i}>
                 <TableCell>{user.name}</TableCell>
-                <TableCell>{smartTime(user.timestamp)}</TableCell>
+                <TableCell>
+                  {dayjs(user.timestamp).format("DD. MM. YYYY")}
+                </TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.user_adress}</TableCell>
                 <TableCell>

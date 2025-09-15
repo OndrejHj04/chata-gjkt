@@ -1,4 +1,3 @@
-import { smartTime } from "@/constants/smartTime";
 import { getRegistrationList } from "@/lib/api";
 import { dayjsExtended } from "@/lib/dayjsExtended";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
@@ -12,6 +11,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import dayjs from "@/lib/dayjsExtended";
 import Link from "next/link";
 
 export default async function RegistrationList({
@@ -50,7 +50,9 @@ export default async function RegistrationList({
                 </div>
               </TableCell>
               <TableCell>{registration.outside_registration_count}</TableCell>
-              <TableCell>{smartTime(registration.from_date)}</TableCell>
+              <TableCell>
+                {dayjs(registration.from_date).format("DD. MM. YYYY")}
+              </TableCell>
               <TableCell>
                 <div className="flex gap-2 justify-end">
                   <Button

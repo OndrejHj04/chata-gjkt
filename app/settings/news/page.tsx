@@ -11,7 +11,7 @@ import {
 import React from "react";
 import NewsForm from "./components/NewsForm";
 import { getNewsList } from "@/api/news/index";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import TableListPagination from "@/ui-components/TableListPagination";
 import Link from "next/link";

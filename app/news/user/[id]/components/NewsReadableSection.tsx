@@ -1,7 +1,7 @@
 "use client";
 
 import { AccordionSummary, Typography } from "@mui/material";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import { updateNews } from "@/api/news/update";
 import { useRouter } from "next/navigation";
 

@@ -11,7 +11,7 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjsExtended";
 import Link from "next/link";
 
 export default async function Page(props: ServerSideComponentProp) {
