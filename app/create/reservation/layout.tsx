@@ -1,14 +1,17 @@
 "use client";
-import { Typography } from "@mui/material";
+import { Paper, Tab, Tabs } from "@mui/material";
 import React, { createContext, useState } from "react";
 import CreateButton from "./CreateButton";
+import Link from "next/link";
 
 interface ReservationContextType {
   createReservation: any;
   setCreateReservation: (createReservation: any) => void;
 }
 
-export const ReservationContext = createContext<ReservationContextType | null>(null);
+export const ReservationContext = createContext<ReservationContextType | null>(
+  null
+);
 
 export default function CreateReservationLayout({
   children,
@@ -29,14 +32,40 @@ export default function CreateReservationLayout({
 
   return (
     <ReservationContext value={{ createReservation, setCreateReservation }}>
-      <div className="flex flex-col">
-        <div className="flex justify-between mb-2 items-center">
-          <Typography variant="h5">Nová rezervace</Typography>
-          <CreateButton />
-        </div>
-        {children}
-      </div>
+      <Tabs value={"reservation"} variant="scrollable">
+        <Tab
+          value="reservation"
+          label="Vytvořit rezervaci"
+          component={Link}
+          href={`/create/reservation`}
+        />
+        <Tab
+          value="user"
+          label="Vytvořit uživatele"
+          component={Link}
+          href={`/create/user`}
+        />
+        <Tab
+          value="group"
+          label="Vytvořit skupinu"
+          component={Link}
+          href={`/create/group`}
+        />
+        <Tab
+          value="family"
+          label="Vytvořit účet rodinného příslušníka"
+          component={Link}
+          href={`/create/family`}
+        />
+        <Tab
+          value="import"
+          label="Importovat uživatele"
+          component={Link}
+          href={`/create/import`}
+        />
+      </Tabs>
+      {children}
+      <CreateButton />
     </ReservationContext>
   );
 }
-
