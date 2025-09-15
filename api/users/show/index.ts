@@ -1,10 +1,6 @@
-import { requireAuthServerSession } from "@/lib/authServerSession";
 import { query } from "@/lib/db";
-import { redirect } from "next/navigation";
 
 export const getUserDetail = async (id: string) => {
-  const user = await requireAuthServerSession();
-
   const req = (await query({
     query: `SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.image, u.email, r.name as role, u.verified, u.adress, u.birth_date, u.ID_code, o.id as organization_id, o.name as organization_name, parent.id as parent_id, CONCAT(parent.first_name, ' ', parent.last_name) as parent_name, COUNT(ch.id) as children
     FROM users u 
@@ -17,8 +13,6 @@ export const getUserDetail = async (id: string) => {
     `,
     values: [id],
   })) as any[];
-
-  if(!req.length || (user.role === "veřejnost" && req[0].id !== user.id)) return redirect("/")
 
   return req[0];
 };
