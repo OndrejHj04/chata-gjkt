@@ -8,9 +8,13 @@ interface ReservationContextType {
   setCreateReservation: (createReservation: any) => void;
 }
 
-const ReservationContext = createContext<ReservationContextType | null>(null);
+export const ReservationContext = createContext<ReservationContextType | null>(null);
 
-export default function CreateReservationLayout({ children }: { children: React.ReactNode }) {
+export default function CreateReservationLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [createReservation, setCreateReservation] = useState({
     from_date: "",
     to_date: "",
@@ -33,7 +37,6 @@ export default function CreateReservationLayout({ children }: { children: React.
         {children}
       </div>
     </ReservationContext>
-  )
+  );
 }
 
-export { ReservationContext }

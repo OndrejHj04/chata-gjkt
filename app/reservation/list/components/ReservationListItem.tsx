@@ -15,7 +15,7 @@ import { Cancel, CheckCircle } from "@mui/icons-material";
 import React, { useState } from "react";
 import { reservationDelete } from "@/lib/api";
 import { useRouter, useSearchParams } from "next/navigation";
-import { dayjsExtended } from "@/lib/dayjsExtended";
+import dayjs from "@/lib/dayjsExtended";
 import { withToast } from "@/utils/toast/withToast";
 
 export default function ReservationListItem({
@@ -65,13 +65,13 @@ export default function ReservationListItem({
       >
         <TableCell>{reservation.name}</TableCell>
         <TableCell>
-          {dayjsExtended(reservation.creation_date).format("DD. MMMM")}
+          {dayjs(reservation.creation_date).format("DD. MMMM")}
         </TableCell>
         <TableCell>
-          {dayjsExtended(reservation.from_date).format("DD. MMMM")}
+          {dayjs(reservation.from_date).format("DD. MMMM")}
         </TableCell>
         <TableCell>
-          {dayjsExtended(reservation.to_date).format("DD. MMMM")}
+          {dayjs(reservation.to_date).format("DD. MMMM")}
         </TableCell>
         <TableCell>{reservation.users_count}</TableCell>
         <TableCell>

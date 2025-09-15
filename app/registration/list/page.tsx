@@ -1,5 +1,5 @@
 import { getRegistrationList } from "@/lib/api";
-import { dayjsExtended } from "@/lib/dayjsExtended";
+import dayjs from "@/lib/dayjsExtended";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
 import {
@@ -11,7 +11,6 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import dayjs from "@/lib/dayjsExtended";
 import Link from "next/link";
 
 export default async function RegistrationList({
@@ -40,7 +39,7 @@ export default async function RegistrationList({
           {data.map((registration: any, i: any) => (
             <TableRow key={i}>
               <TableCell>
-                {dayjsExtended(registration.timestamp).format("DD. MMMM HH:mm")}
+                {dayjs(registration.timestamp).format("DD. MMMM HH:mm")}
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">

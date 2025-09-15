@@ -1,4 +1,4 @@
-import CreateFamilyAccountForm from "./FamilyAccountForm";
+import CreateFamilyAccountForm from "./components/FamilyAccountForm";
 import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function CreateFamilyAccount() {

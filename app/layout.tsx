@@ -1,13 +1,13 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import ClientProvider from "./clientProvider";
 import TopBar from "@/ui-components/TopBar";
-import SpeedComponent from "@/ui-components/SpeedComponent";
-const inter = Inter({ subsets: ["latin"] });
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import SlidingMenu from "../ui-components/SlidingMenu";
 import { getUserTheme } from "@/api/theme/show";
+import { Button } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { getAuthServerSession } from "@/lib/authServerSession";
 
 export const metadata: Metadata = {
   title: "Chata GJKT",
@@ -20,17 +20,24 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const theme = await getUserTheme();
+  const user = await getAuthServerSession()
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <AppRouterCacheProvider>
           {/* OMG 100dvh works like a charms!  f*/}
           <div className="flex flex-col" style={{ height: "100dvh" }}>
             <ClientProvider theme={theme}>
               <TopBar />
-              <SlidingMenu userRole={"admin"} />
-              <SpeedComponent />
+              <SlidingMenu userRole={user?.role} />
+              <Button
+                href={"/create/reservation"}
+                variant="contained"
+                className="!absolute !bottom-4 !right-4 !h-14 !w-14 !rounded-full !min-w-0 z-50"
+              >
+                <AddIcon />
+              </Button>
               <div className="py-2 overflow-auto flex-grow">{children}</div>
             </ClientProvider>
           </div>

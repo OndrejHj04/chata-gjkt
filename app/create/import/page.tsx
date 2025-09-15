@@ -2,7 +2,6 @@
 
 import {
   Button,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -103,85 +102,61 @@ export default function UsersImportForm() {
   };
 
   return (
-    <form className="flex flex-col">
-      <div className="mb-2 flex justify-between gap-2">
-        <Typography variant="h5">Importovat uživatele</Typography>
-        <Button
-          size="small"
-          type="submit"
-          variant="outlined"
-          onClick={handleSubmit}
-          disabled={Boolean(
-            !file || message.length || data.every((item) => !item[4]) || loading
-          )}
-        >
-          Importovat uživatele
-        </Button>
-      </div>
-      <Paper className="p-2 flex flex-col gap-4 justify-between">
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow className="[&_.MuiTableCell-root]:font-semibold [&_.MuiTableCell-root]:text-lg">
-                {importUsersValidFormat.map((item, i) => (
-                  <TableCell key={i}>{item.name}</TableCell>
-                ))}
-                <TableCell></TableCell>
+    <form className="flex flex-col gap-4 justify-between">
+      <TableContainer>
+        <Table size="small">
+          <TableHead>
+            <TableRow className="[&_.MuiTableCell-root]:font-semibold [&_.MuiTableCell-root]:text-lg">
+              {importUsersValidFormat.map((item, i) => (
+                <TableCell key={i}>{item.name}</TableCell>
+              ))}
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.length ? (
+              <>
+                {data.map((item, i) => {
+                  return (
+                    <TableRow key={i}>
+                      <TableCell>{item[0]}</TableCell>
+                      <TableCell>{item[1]}</TableCell>
+                      <TableCell>{item[2]}</TableCell>
+                      <TableCell>
+                        {Role.getAllRoles().find((role) => role === item)?.name}
+                      </TableCell>
+                      <TableCell>
+                        {item[4] ? (
+                          <CheckCircleIcon color="success" />
+                        ) : (
+                          <CancelIcon color="error" />
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </>
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5}>
+                  <Typography variant="h6">
+                    Žádní uživatelé k zobrazení
+                  </Typography>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.length ? (
-                <>
-                  {data.map((item, i) => {
-                    return (
-                      <TableRow key={i}>
-                        <TableCell>{item[0]}</TableCell>
-                        <TableCell>{item[1]}</TableCell>
-                        <TableCell>{item[2]}</TableCell>
-                        <TableCell>
-                          {
-                            Role.getAllRoles().find(
-                              (role) => role === item
-                            )?.name
-                          }
-                        </TableCell>
-                        <TableCell>
-                          {item[4] ? (
-                            <CheckCircleIcon color="success" />
-                          ) : (
-                            <CancelIcon color="error" />
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </>
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5}>
-                    <Typography variant="h6">
-                      Žádní uživatelé k zobrazení
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-          {
-            <Typography>
-              {file ? `Aktuální soubor: ${file?.name}` : "Soubor nevybrán"}
-            </Typography>
-          }
-          {!!message.length && <Typography color="error">{message}</Typography>}
-        </TableContainer>
-
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {
+        <Typography>
+          {file ? `Aktuální soubor: ${file?.name}` : "Soubor nevybrán"}
+        </Typography>
+      }
+      {!!message.length && <Typography color="error">{message}</Typography>}
+      <div className="w-fit flex flex-col gap-2">
         <div className="flex gap-2">
-          <Button
-            variant="contained"
-            component="label"
-            className="text-center"
-            size="small"
-          >
+          <Button variant="contained" component="label" size="small">
             Vybrat soubor .csv
             <input
               type="file"
@@ -209,7 +184,18 @@ export default function UsersImportForm() {
             Odstranit soubor
           </Button>
         </div>
-      </Paper>
+        <Button
+          size="small"
+          type="submit"
+          variant="outlined"
+          onClick={handleSubmit}
+          disabled={Boolean(
+            !file || message.length || data.every((item) => !item[4]) || loading
+          )}
+        >
+          Importovat uživatele
+        </Button>
+      </div>
     </form>
   );
 }

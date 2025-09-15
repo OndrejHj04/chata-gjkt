@@ -12,7 +12,7 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { reservationUpdateStatus } from "@/lib/api";
-import { dayjsExtended } from "@/lib/dayjsExtended";
+import dayjs from "@/lib/dayjsExtended";
 import { withToast } from "@/utils/toast/withToast";
 import { Status } from "@/constants/status";
 
@@ -51,8 +51,8 @@ export default function ReservationModal({ reservation }: { reservation: any }) 
       <Paper className="p-2 min-w-[300px]" style={style}>
         <Typography variant="h5">Název: {reservation.name}</Typography>
         <Divider />
-        <Typography variant="h6">Začátek: {dayjsExtended(reservation.from_date).format("DD. MMMM")}</Typography>
-        <Typography variant="h6">Konec: {dayjsExtended(reservation.to_date).format("DD. MMMM")}</Typography>
+        <Typography variant="h6">Začátek: {dayjs(reservation.from_date).format("DD. MMMM")}</Typography>
+        <Typography variant="h6">Konec: {dayjs(reservation.to_date).format("DD. MMMM")}</Typography>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
           <Controller control={control} name="status" render={({ field }) => (
             <TextField {...field} label="Status" select className="mt-2" fullWidth>

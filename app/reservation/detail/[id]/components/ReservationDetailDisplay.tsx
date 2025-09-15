@@ -1,4 +1,4 @@
-import { dayjsExtended } from "@/lib/dayjsExtended"
+import dayjs from "@/lib/dayjsExtended";
 import AvatarWrapper from "@/ui-components/AvatarWrapper"
 import { CardHeader, Icon, List, ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material"
 import React from "react"
@@ -27,10 +27,10 @@ export default function ReservationDetailDisplay({ reservationDetail }: { reserv
           <ListItemText>Název: {reservationDetail.name}</ListItemText>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemText>Začátek: {dayjsExtended(reservationDetail.from_date).format("DD. MMMM YYYY")}</ListItemText>
+          <ListItemText>Začátek: {dayjs(reservationDetail.from_date).format("DD. MMMM YYYY")}</ListItemText>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemText>Konec: {dayjsExtended(reservationDetail.to_date).format("DD. MMMM YYYY")}</ListItemText>
+          <ListItemText>Konec: {dayjs(reservationDetail.to_date).format("DD. MMMM YYYY")}</ListItemText>
         </ListItem>
         <ListItem disablePadding>
           <ListItemText>{reservationDetail.rooms.length} pokoje; [TODO] lůžek</ListItemText>

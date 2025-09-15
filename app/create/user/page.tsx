@@ -1,4 +1,4 @@
-import CreateUserForm from "./CreateUserForm";
+import CreateUserForm from "./components/CreateUserForm";
 import { requireAuthServerSession } from "@/lib/authServerSession";
 
 export default async function UserCreate() {

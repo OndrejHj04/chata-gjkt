@@ -1,5 +1,5 @@
 import { getReservationList } from "@/api/reservations/index";
-import { dayjsExtended } from "@/lib/dayjsExtended";
+import dayjs from "@/lib/dayjsExtended";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
@@ -29,8 +29,8 @@ export default async function GroupReservationsTable(props: ServerSideComponentP
           {data.map((reservation: any) => (
             <TableRow key={reservation.id}>
               <TableCell>{reservation.name}</TableCell>
-              <TableCell>{dayjsExtended(reservation.from_date).format("DD. MMMM YYYY")}</TableCell>
-              <TableCell>{dayjsExtended(reservation.to_date).format("DD. MMMM YYYY")}</TableCell>
+              <TableCell>{dayjs(reservation.from_date).format("DD. MMMM YYYY")}</TableCell>
+              <TableCell>{dayjs(reservation.to_date).format("DD. MMMM YYYY")}</TableCell>
               <TableCell>{reservation.users_count}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">

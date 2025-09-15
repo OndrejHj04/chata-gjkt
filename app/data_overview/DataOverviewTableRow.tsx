@@ -11,10 +11,10 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import React, { useContext, useState } from "react";
-import { dayjsExtended } from "@/lib/dayjsExtended";
 import { MergeType } from "@mui/icons-material";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import { FusionContext } from "./layout";
+import dayjs from "@/lib/dayjsExtended";
 
 export default function DataOverviewTableRow({ user }: any) {
   const [toggleDetail, setToggleDetail] = useState(false);
@@ -90,9 +90,9 @@ export default function DataOverviewTableRow({ user }: any) {
                     <TableRow key={detail.id}>
                       <TableCell>{detail.name}</TableCell>
                       <TableCell>
-                        {`${dayjsExtended(detail.from_date).format(
+                        {`${dayjs(detail.from_date).format(
                           "DD. MMMM"
-                        )} - ${dayjsExtended(detail.to_date).format(
+                        )} - ${dayjs(detail.to_date).format(
                           "DD. MMMM"
                         )}`}
                       </TableCell>
