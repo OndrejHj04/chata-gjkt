@@ -34,6 +34,7 @@ import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Room } from "@/constants/room";
 import { User } from "next-auth";
+import { Status } from "@/constants/status";
 
 export default function ReservationDatesRender({
   reservations,
@@ -86,23 +87,24 @@ export default function ReservationDatesRender({
       id: reservation.id,
       title: reservation.name,
       start: reservation.from_date,
-      end: dayjs(reservation.to_date).add(1, "day").format("YYYY-MM-DD"),
+      end: dayjs(reservation.to_date).add(1, "day").toDate(),
       resourceIds: reservation.rooms ? reservation.rooms.split(",") : [],
       leader: reservation.leader_name,
-      color: reservation.status_color,
-      icon: reservation.status_icon,
-      display_name: reservation.status_name,
+      color: Status.getStatus(reservation.status).color,
+      icon: Status.getStatus(reservation.status).icon,
+      display_name: reservation.status,
     }));
 
     if (from_date && to_date) {
-      reservationData.push({
+      const data = {
         id: "custom",
         title: "Nová rezervace",
         start: dayjs(from_date).toDate(),
         end: dayjs(to_date).add(1, "day").toDate(),
         resourceIds: rooms,
         leader: "",
-      } as any);
+      };
+      reservationData.push(data);
     }
 
     return reservationData;
@@ -142,7 +144,6 @@ export default function ReservationDatesRender({
 
   const eventContentInjection = (event: any) => {
     const { leader, rooms, display_name, icon } = event.event.extendedProps;
-
     return (
       <Tooltip
         title={

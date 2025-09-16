@@ -1502,12 +1502,10 @@ export const getReservationRegisteredUsers = async ({
 
 export const getReservationsByWeekCalendar = async () => {
   const dataRequest = (await query({
-    query: `SELECT r.id, r.name, r.from_date, r.to_date, GROUP_CONCAT(ro.id) as rooms, CONCAT(u.first_name, ' ', u.last_name) as leader_name, s.color as status_color, s.display_name as status_name, s.icon as status_icon 
+    query: `SELECT r.id, r.name, r.from_date, r.to_date, GROUP_CONCAT(rr.room) as rooms, CONCAT(u.first_name, ' ', u.last_name) as leader_name, r.status
     FROM reservations r
     LEFT JOIN reservations_rooms rr ON rr.reservationId = r.id
-    LEFT JOIN rooms ro ON ro.id = rr.room
     LEFT JOIN users u ON u.id = r.leader
-    LEFT JOIN status s ON s.id = r.status
     WHERE status <> 1
     GROUP BY r.id
     `,
