@@ -27,7 +27,7 @@ export default async function ReservationList(props: ServerSideComponentProp) {
     sort,
     dir,
   })) as any;
-  const isAdmin = currentUser.role !== "veřejnost";
+  const isAdmin = currentUser.role === "admin";
 
   return (
     <TableContainer>

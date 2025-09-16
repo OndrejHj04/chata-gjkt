@@ -12,11 +12,10 @@ export default async function ReservationDetailPage(
   const user = await requireAuthServerSession()
 
   const data = await getReservationDetail(id);
-  const isAdmin = user.role !== "veřejnost";
+  const isAdmin = user.role === "admin";
   const isLeader = data.leader_id === user.id;
-  const editable = data.status_id !== 1 && (isAdmin || isLeader);
 
-  if (editable) {
+  if (isAdmin || isLeader) {
     return <ReservationDetailForm reservationDetail={data} isAdmin={isAdmin} />;
   }
   return <ReservationDetailDisplay reservationDetail={data} />;

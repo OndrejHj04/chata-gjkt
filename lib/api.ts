@@ -242,7 +242,6 @@ export const getAlbumDetail = async (name: string) => {
     images: imagesWithUrl,
   };
 
-  console.log(data)
   if(user.role !== "admin" && data.visibility !== "veřejné" && data.owner.id !== user.id) redirect("/")
   return { data };
 };

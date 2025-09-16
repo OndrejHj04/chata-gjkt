@@ -12,6 +12,7 @@ import ReservationUsersRemoveButton from "../components/ReservationUsersRemoveBu
 import { requireAuthServerSession } from "@/lib/authServerSession";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import { getUserList } from "@/api/users/index";
+import { getReservationDetail } from "@/api/reservations/show";
 
 export default async function ReservationUsersTable(
   props: ServerSideComponentProp
@@ -25,7 +26,8 @@ export default async function ReservationUsersTable(
   });
 
   const user = await requireAuthServerSession()
-  const isAdmin = user.role !== "veřejnost";
+  await getReservationDetail(id)
+  const isAdmin = user.role === "admin";
   return (
     <TableContainer>
       <Table size="small">

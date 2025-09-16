@@ -17,13 +17,12 @@ export default async function ReservationDetailPage(
   const data = await getReservationDetail(id);
   const isAdmin = user.role !== "veřejnost";
   const isLeader = data.leader_id === user.id;
-  const editable = data.status_id !== 1 && (isAdmin || isLeader);
 
   return (
     <React.Fragment>
       <ReservationRegistration id={id} page={page} />
       <Divider className="my-3" />
-      {editable && <ReservationRegistrationCustom id={id} />}
+      {(isAdmin || isLeader) && <ReservationRegistrationCustom id={id} />}
     </React.Fragment>
   );
 }

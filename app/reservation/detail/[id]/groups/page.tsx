@@ -1,4 +1,5 @@
 import { getGroupList } from "@/api/group/index";
+import { getReservationDetail } from "@/api/reservations/show";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
@@ -18,6 +19,7 @@ export default async function ReservationGroupsTable(
   const { id } = await props.params;
 
   const { data, count } = await getGroupList({ page, reservation: id });
+  await getReservationDetail(id)
 
   return (
     <TableContainer>

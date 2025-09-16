@@ -27,14 +27,7 @@ export const getReservationList = async (
                 FROM reservations_rooms rr 
                 LEFT JOIN rooms ro ON ro.id = rr.room 
                 WHERE rr.reservationId = r.id) AS beds_count,
-                (SELECT EXISTS (SELECT rf.user_id FROM reservations_forms rf WHERE rf.reservation_id = r.id)) as active_registration,
-                CASE WHEN "${
-                  currentUser.role
-                }" IN ("admin", "veřejnost") OR r.leader = ${currentUser.id}
-                OR EXISTS (SELECT 1 FROM users_reservations ur WHERE ur.reservationId = r.id AND ur.userId = ${
-                  currentUser.id
-                })
-                THEN TRUE ELSE FALSE END AS detail
+                (SELECT EXISTS (SELECT rf.user_id FROM reservations_forms rf WHERE rf.reservation_id = r.id)) as active_registration
         FROM reservations r
         LEFT JOIN users u ON u.id = r.leader
         LEFT JOIN reservations_forms rf ON rf.reservation_id = r.id

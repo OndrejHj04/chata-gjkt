@@ -116,7 +116,7 @@ export default function ReservationListItem({
           </Button>
         </TableCell>
         <TableCell align="right" className="w-[150px]">
-          {!blocation && !!reservation.detail && (
+          {!blocation && (
             <Link
               href={`/reservation/detail/${reservation.id}/info`}
               onClick={(e) => e.stopPropagation()}
