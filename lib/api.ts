@@ -12,6 +12,7 @@ import { MessagePaths } from "@/utils/toast/types";
 import { Visibility } from "@/constants/visibility";
 import * as XLSX from "xlsx";
 import { requireAuthServerSession } from "./authServerSession";
+import { redirect } from "next/navigation";
 
 function s2ab(s: any) {
   const buf = new ArrayBuffer(s.length);
@@ -205,13 +206,14 @@ export const uploadPhotosToAlbum = async ({ album, photos }: any) => {
 };
 
 export const getAlbumDetail = async (name: string) => {
+  const user = await requireAuthServerSession()
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   const sanitizedAlbumName = name.replace(/\s+/g, "_");
 
   const [req, { data: images }] = (await Promise.all([
     query({
-      query: `SELECT pa.name, pa.created_at, pa.updated_at, JSON_OBJECT('first_name', u.first_name, 'email', u.email, 'last_name', u.last_name, 'photo', u.image) as owner, pa.visibility FROM photogallery_albums as pa
+      query: `SELECT pa.name, pa.created_at, pa.updated_at, JSON_OBJECT('id', u.id, 'first_name', u.first_name, 'email', u.email, 'last_name', u.last_name, 'photo', u.image) as owner, pa.visibility FROM photogallery_albums as pa
       INNER JOIN users u ON u.id = pa.owner
       WHERE pa.name = ?
       `,
@@ -233,12 +235,15 @@ export const getAlbumDetail = async (name: string) => {
       };
     });
 
+  if (!req[0]) return redirect("/");
   const data = {
     ...req[0],
     owner: JSON.parse(req[0].owner),
     images: imagesWithUrl,
   };
 
+  console.log(data)
+  if(user.role !== "admin" && data.visibility !== "veřejné" && data.owner.id !== user.id) redirect("/")
   return { data };
 };
 
