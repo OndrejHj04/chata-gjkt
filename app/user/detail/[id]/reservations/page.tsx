@@ -1,16 +1,28 @@
-import { getReservationList } from "@/api/reservations/index"
-import dayjs from "@/lib/dayjsExtended"
-import { ServerSideComponentProp } from "@/lib/serverSideComponentProps"
-import AvatarWrapper from "@/ui-components/AvatarWrapper"
-import TableListPagination from "@/ui-components/TableListPagination"
-import { Icon, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
+import { getReservationList } from "@/api/reservations/index";
+import { getUserDetail } from "@/api/users/show";
+import dayjs from "@/lib/dayjsExtended";
+import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
+import AvatarWrapper from "@/ui-components/AvatarWrapper";
+import TableListPagination from "@/ui-components/TableListPagination";
+import {
+  Icon,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
-export default async function UserReservationsTable(props: ServerSideComponentProp) {
+export default async function UserReservationsTable(
+  props: ServerSideComponentProp
+) {
   const { page } = await props.searchParams;
   const { id } = await props.params;
+  await getUserDetail(id);
 
-  const {data, count} = await getReservationList({page, user: id})
-  
+  const { data, count } = await getReservationList({ page, user: id });
+
   return (
     <TableContainer>
       <Table size="small">
@@ -29,8 +41,12 @@ export default async function UserReservationsTable(props: ServerSideComponentPr
           {data.map((reservation: any) => (
             <TableRow key={reservation.id}>
               <TableCell>{reservation.name}</TableCell>
-              <TableCell>{dayjs(reservation.from_date).format("DD. MMMM YYYY")}</TableCell>
-              <TableCell>{dayjs(reservation.to_date).format("DD. MMMM YYYY")}</TableCell>
+              <TableCell>
+                {dayjs(reservation.from_date).format("DD. MMMM YYYY")}
+              </TableCell>
+              <TableCell>
+                {dayjs(reservation.to_date).format("DD. MMMM YYYY")}
+              </TableCell>
               <TableCell>{reservation.users_count}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
@@ -40,18 +56,20 @@ export default async function UserReservationsTable(props: ServerSideComponentPr
               </TableCell>
               <TableCell>
                 <div className="flex items-center">
-                  <Icon sx={{ color: reservation.status_color }} className="mr-2">
+                  <Icon
+                    sx={{ color: reservation.status_color }}
+                    className="mr-2"
+                  >
                     {reservation.status_icon}
                   </Icon>
                   {reservation.status_name}
                 </div>
               </TableCell>
-              <TableCell align="right">
-              </TableCell>
+              <TableCell align="right"></TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-  )
+  );
 }

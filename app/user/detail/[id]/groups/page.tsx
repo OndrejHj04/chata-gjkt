@@ -1,4 +1,5 @@
 import { getGroupList } from "@/api/group/index";
+import { getUserDetail } from "@/api/users/show";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import TableListPagination from "@/ui-components/TableListPagination";
@@ -15,6 +16,7 @@ export default async function UserGroupsTable(props: ServerSideComponentProp) {
   const { id } = await props.params;
   const { page } = await props.searchParams;
 
+  await getUserDetail(id)
   const { data, count } = await getGroupList({ page, user: id });
 
   return (

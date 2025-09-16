@@ -11,7 +11,7 @@ export default async function UserDetailPage(props: ServerSideComponentProp) {
   const user = await requireAuthServerSession()
 
   const editable =
-    user.role !== "veřejnost" ||
+    user.role === "admin" ||
     data.parent_id === user.id ||
     user.id === data.id;
 
