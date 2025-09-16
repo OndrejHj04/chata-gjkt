@@ -49,7 +49,7 @@ export default async function ReservationUsersTable(
                 </div>
               </TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell>{user.role_name}</TableCell>
+              <TableCell>{user.role}</TableCell>
               <TableCell>{user.organization_name}</TableCell>
               <TableCell>{user.verified}</TableCell>
               <TableCell align="right">

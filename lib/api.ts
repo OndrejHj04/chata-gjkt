@@ -1448,7 +1448,7 @@ export const groupDeleteUser = async ({
 
 export const setUserAsOutside = async ({ userId }: { userId: any }) => {
   const request = (await query({
-    query: `UPDATE users SET role = 4 WHERE id = ?`,
+    query: `UPDATE users SET role = 'veřejnost' WHERE id = ?`,
     values: [userId],
   })) as any;
 
@@ -1578,7 +1578,7 @@ export const deleteUser = async ({
 }) => {
   const [_, request] = (await Promise.all([
     query({
-      query: `DELETE FROM users WHERE users.id = ? AND users.role = 4 AND verified = 0`,
+      query: `DELETE FROM users WHERE users.id = ? AND users.role = 'veřejnost' AND verified = 0`,
       values: [userId],
     }),
     query({

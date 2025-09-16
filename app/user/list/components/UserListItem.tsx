@@ -50,9 +50,10 @@ export default function UserListItem({
     mouseX: number;
     mouseY: number;
     id: number;
-    role: number;
+    role: string;
   } | null>(null);
 
+  console.log(selectedUser)
   const handleOpenSubRow = (e: any) => {
     e.stopPropagation();
     setOpen((o) => !o);
@@ -132,7 +133,7 @@ export default function UserListItem({
   return (
     <React.Fragment key={user.id}>
       <TableRow
-        onClick={(e) => setMenuPosition(e, user.id, user.role_id)}
+        onClick={(e) => setMenuPosition(e, user.id, user.role)}
         selected={isSelected}
       >
         {childrenData && (
@@ -151,7 +152,7 @@ export default function UserListItem({
           </div>
         </TableCell>
         <TableCell>{user.email}</TableCell>
-        {isAdmin && <TableCell>{user.role_name}</TableCell>}
+        {isAdmin && <TableCell>{user.role}</TableCell>}
         {isAdmin && <TableCell>{user.organization_name}</TableCell>}
         {isAdmin && (
           <TableCell>
@@ -161,7 +162,7 @@ export default function UserListItem({
               ) : (
                 <>
                   <CancelIcon color="error" />
-                  {user.role_id !== 4 && (
+                  {user.role !== 'veřejnost' && (
                     <Tooltip title="Znovu odeslat uživateli registrační email">
                       <IconButton onClick={(e) => handleResendEmail(e, user)}>
                         <ForwardToInboxIcon />
@@ -219,7 +220,7 @@ export default function UserListItem({
             <Divider className="!my-0" />
           )}
           {isAdmin &&
-            (selectedUser?.role !== 4 ? (
+            (selectedUser?.role !== 'veřejnost' ? (
               <MenuItem onClick={handleUserSetPublic}>
                 Nastavit jako veřejnost
               </MenuItem>
@@ -254,7 +255,7 @@ export default function UserListItem({
                         <TableRow
                           key={child.id}
                           onClick={(e) =>
-                            setMenuPosition(e, child.id, child.role_id)
+                            setMenuPosition(e, child.id, child.role)
                           }
                           selected={
                             isChildrenSelected && selectedUser?.id === child.id

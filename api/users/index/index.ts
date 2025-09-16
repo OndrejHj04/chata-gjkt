@@ -35,8 +35,7 @@ SELECT
     CONCAT(u.first_name, ' ', u.last_name) AS name, 
     u.email, 
     u.verified, 
-    r.name AS role_name, 
-    r.id as role_id,
+    u.role,
     u.image, 
     o.name AS organization_name,
     CASE WHEN "${user.role}" IN ('admin', 'uživatel') OR u.id = ${
@@ -49,7 +48,6 @@ SELECT
         user.id
       } THEN TRUE ELSE FALSE END) separator '|||') END as children
 FROM users u
-INNER JOIN roles r ON r.id = u.role
 LEFT JOIN organization o ON o.id = u.organization
 LEFT JOIN users u_child ON u.email = u_child.email AND u_child.children = 1
 LEFT JOIN roles child_r ON child_r.id = u_child.role
@@ -77,7 +75,6 @@ LIMIT 10 OFFSET ?
     }),
     query({
       query: `SELECT COUNT(*) as count FROM users u
-      INNER JOIN roles r ON r.id = u.role
       LEFT JOIN organization o ON o.id = u.organization
       ${group ? `INNER JOIN users_groups ug ON ug.userId = u.id` : ""}
       ${reservation ? `INNER JOIN users_reservations ur ON ur.userId = u.id` : ""}
