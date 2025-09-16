@@ -1,3 +1,4 @@
+import { getGroupDetail } from "@/api/group/show";
 import { getReservationList } from "@/api/reservations/index";
 import dayjs from "@/lib/dayjsExtended";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
@@ -9,6 +10,7 @@ export default async function GroupReservationsTable(props: ServerSideComponentP
   const { id } = await props.params;
   const { page } = await props.searchParams;
 
+  await getGroupDetail(id);
   const { data, count } = await getReservationList({ group: id, page })
 
   return (

@@ -53,7 +53,6 @@ export default function UserListItem({
     role: string;
   } | null>(null);
 
-  console.log(selectedUser)
   const handleOpenSubRow = (e: any) => {
     e.stopPropagation();
     setOpen((o) => !o);
@@ -162,7 +161,7 @@ export default function UserListItem({
               ) : (
                 <>
                   <CancelIcon color="error" />
-                  {user.role !== 'veřejnost' && (
+                  {user.role !== "veřejnost" && (
                     <Tooltip title="Znovu odeslat uživateli registrační email">
                       <IconButton onClick={(e) => handleResendEmail(e, user)}>
                         <ForwardToInboxIcon />
@@ -220,7 +219,7 @@ export default function UserListItem({
             <Divider className="!my-0" />
           )}
           {isAdmin &&
-            (selectedUser?.role !== 'veřejnost' ? (
+            (selectedUser?.role !== "veřejnost" ? (
               <MenuItem onClick={handleUserSetPublic}>
                 Nastavit jako veřejnost
               </MenuItem>

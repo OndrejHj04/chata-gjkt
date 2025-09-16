@@ -31,13 +31,13 @@ export default function GroupDetailForm({ groupDetail }: { groupDetail: any }) {
         <Typography variant="h6">Vedoucí skupiny:</Typography>
         <CardHeader
           className="!p-0"
-          avatar={<AvatarWrapper data={{ image: groupDetail.owner_image }} size={56} />}
+          avatar={<AvatarWrapper data={{ image: groupDetail.owner.image }} size={56} />}
           title={
             <Typography variant="h5">
-              {groupDetail.owner_name}
+              {groupDetail.owner.name}
             </Typography>
           }
-          subheader={groupDetail.owner_email}
+          subheader={groupDetail.owner.email}
         />
       </div>
     </div>

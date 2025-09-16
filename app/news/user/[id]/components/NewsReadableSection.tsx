@@ -13,7 +13,6 @@ export default function NewsReadableSection({ item, user }: any) {
     refresh();
   };
 
-  console.log(item);
   return (
     <AccordionSummary onClick={handleClick}>
       <div className="flex justify-between w-full">

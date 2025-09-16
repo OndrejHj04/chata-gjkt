@@ -12,15 +12,17 @@ import GroupUsersRemoveButton from "../components/GroupUsersRemoveButton";
 import { getUserList } from "@/api/users/index";
 import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import { requireAuthServerSession } from "@/lib/authServerSession";
+import { getGroupDetail } from "@/api/group/show";
 
 export default async function GroupUsersTable(props: ServerSideComponentProp) {
   const { id } = await props.params;
   const { page } = await props.searchParams;
+  const user = await requireAuthServerSession();
 
   const { data, count } = await getUserList({ group: id, page });
+  const group = await getGroupDetail(id);
 
-  const user = await requireAuthServerSession()
-  const isAdmin = user.role !== "veřejnost";
+  const isAdmin = user.role === "admin" || user.id === group.owner.id;
 
   return (
     <TableContainer>

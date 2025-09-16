@@ -2,7 +2,6 @@ import AvatarWrapper from "@/ui-components/AvatarWrapper";
 import { List, ListItem, ListItemText } from "@mui/material";
 
 export default function GroupDetailDisplay({ groupDetail }: { groupDetail: any }) {
-
   return (
     <List>
       <ListItem disablePadding>
@@ -13,8 +12,8 @@ export default function GroupDetailDisplay({ groupDetail }: { groupDetail: any }
       </ListItem>
       <ListItem disablePadding className="w-fit gap-2">
         <ListItemText>Majitel skupiny: </ListItemText>
-        <AvatarWrapper data={{ image: groupDetail.owner_image }} size={40} />
-        <ListItemText primary={groupDetail.owner_name} secondary={groupDetail.owner_email}></ListItemText>
+        <AvatarWrapper data={{ image: groupDetail.owner.image }} size={40} />
+        <ListItemText primary={groupDetail.owner.name} secondary={groupDetail.owner.email}></ListItemText>
       </ListItem>
     </List >
   )
