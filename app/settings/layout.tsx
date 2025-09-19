@@ -1,14 +1,9 @@
 import { requireAuthServerSession } from "@/lib/authServerSession";
-import { Paper } from "@mui/material";
 import { redirect } from "next/navigation";
 
-export default async function RegistrationListLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
   const user = await requireAuthServerSession();
   if (user.role !== "admin") redirect("/");
 
-  return <Paper>{children}</Paper>;
+  return children;
 }

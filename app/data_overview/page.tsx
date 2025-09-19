@@ -6,14 +6,19 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-
 import { getReservationDataOverview } from "@/lib/api";
 import DataOverviewTable from "./DataOverviewTable";
+import { requireAuthServerSession } from "@/lib/authServerSession";
+import { redirect } from "next/navigation";
 
 export default async function DataOverview({
   searchParams: { from_date, to_date, fuse },
 }: any) {
+  const user = await requireAuthServerSession();
+  if (user.role !== "admin") redirect("/");
+
   const { data } = await getReservationDataOverview({ from_date, to_date });
+
   return (
     <>
       <TableContainer className="max-h-full">

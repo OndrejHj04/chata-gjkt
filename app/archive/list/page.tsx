@@ -13,9 +13,14 @@ import {
   TableRow,
 } from "@mui/material";
 import dayjs from "@/lib/dayjsExtended";
+import { requireAuthServerSession } from "@/lib/authServerSession";
+import { redirect } from "next/navigation";
 
 export default async function ArchivePage(props: ServerSideComponentProp) {
   const { page, search, registration, sort, dir } = await props.searchParams;
+
+  const user = await requireAuthServerSession();
+  if (user.role !== "admin") redirect("/");
 
   const { data, count } = await getReservationList({
     page,
