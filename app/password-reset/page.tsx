@@ -6,13 +6,13 @@ import { redirect } from "next/navigation";
 export default async function ResetPasswordForm(
   props: ServerSideComponentProp
 ) {
-  const { id } = await props.searchParams;
+  const { userId } = await props.searchParams;
 
-  if (!id) redirect("/");
+  if (!userId) redirect("/");
 
   return (
     <Paper className="p-2 flex flex-col w-full max-w-[300px]">
-      <PasswordResetForm userId={id} />
+      <PasswordResetForm userId={userId} />
     </Paper>
   );
 }

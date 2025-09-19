@@ -3,11 +3,14 @@ import { ServerSideComponentProp } from "@/lib/serverSideComponentProps";
 import { Accordion, AccordionDetails, Typography } from "@mui/material";
 import NewsReadableSection from "./components/NewsReadableSection";
 import { requireAuthServerSession } from "@/lib/authServerSession";
+import { redirect } from "next/navigation";
 
 export default async function Page(props: ServerSideComponentProp) {
   const { id } = await props.params;
-  const { data, count } = await getNewsList({ user: id, noReadOnly: false });
   const user = await requireAuthServerSession();
+  if (user.id.toString() !== id) redirect("/");
+
+  const { data, count } = await getNewsList({ user: id, noReadOnly: false });
 
   return (
     <>
