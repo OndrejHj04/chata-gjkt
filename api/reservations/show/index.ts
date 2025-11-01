@@ -26,6 +26,6 @@ export const getReservationDetail = async (id: string) => {
     rooms: req[0].rooms.split(","),
   };
 
-  if(data.status_id === 1 || (data.owner !== user.id && !data.is_member)) redirect("/")
+  if(data.status_id === 1 || (user.role !== "admin" && data.owner !== user.id && !data.is_member)) redirect("/")
   return data
 };
