@@ -148,7 +148,6 @@ export default function ReservationDetailForm({
                     size={56}
                   />
                 }
-                room
                 title={
                   <Typography variant="h5">
                     {reservationDetail.leader_name}
